@@ -30,3 +30,13 @@
 
 # Debug files
 *.dSYM/
+Chess/Debug/vc120.pdb
+Chess/Debug/Chess.tlog/unsuccessfulbuild
+Chess/Debug/vc120.idb
+Chess.opensdf
+Chess.v12.suo
+Chess/Debug/Chess.log
+Chess/Debug/Chess.tlog/CL.read.1.tlog
+Chess/Debug/Chess.tlog/CL.write.1.tlog
+Chess/Debug/Chess.tlog/Chess.lastbuildstate
+Chess/Debug/Chess.tlog/cl.command.1.tlog
