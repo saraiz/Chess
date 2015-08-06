@@ -283,3 +283,36 @@ void* myRealloc(void* point, int x){
 	return new;
 }
 
+moveList* createMoveListNode(locationNode origin, locationNode dedtination, char soldierToPromoteTo){
+	moveList* toReturn = myCalloc(1, sizeof(moveList));
+	if (toReturn == NULL){
+		return NULL;
+	}
+	
+	toReturn->destination = dedtination;
+	toReturn->origin = origin;
+	toReturn->soldierToPromoteTo = soldierToPromoteTo; //TODO- check that OK
+	toReturn->next = NULL;
+
+	return toReturn;
+}
+
+locationNode createLocationNode(int colom, int row){
+	locationNode toReturn;
+	toReturn.column = colom;
+	toReturn.row = row;
+	return toReturn;
+}
+
+locationNode cloneLocationNode(locationNode loc){
+	locationNode toReturn;
+	toReturn.column = loc.column;
+	toReturn.row = loc.row;
+	return toReturn;
+}
+
+void addMoveToMoveList(moveList* head, moveList* toAdd){
+	moveList* temp = head->next;
+	toAdd->next = temp;
+	head->next = toAdd;
+}
