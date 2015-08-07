@@ -15,5 +15,7 @@ actionSummery checkForRemove(char *input);
 actionSummery checkForSet(char* input);
 actionSummery checkForPrint(char* input);
 actionSummery checkForStart(char* input);
+void setSettings(char* input);
+char* getNextLine(char* input);
 
 #endif

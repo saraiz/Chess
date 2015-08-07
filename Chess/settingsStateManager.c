@@ -372,3 +372,26 @@ void init_board(char board[BOARD_SIZE][BOARD_SIZE]){
 	game_board.numOfBlackKings = 1;
 	game_board.numOfWhiteKings = 1;
 }
+
+void setSettings(char* input){
+	char* currentLine = input;
+	char* nextLine = input;
+	while (currentLine != NULL && *currentLine != '\0'){
+		nextLine = getNextLine(currentLine);
+		char* line = getSubString(currentLine, nextLine);
+		executeSettings(line);
+
+		myFree(line);
+		currentLine = nextLine;
+	}
+}
+
+char* getNextLine(char* input){
+	char* nextLine = strstr(input, "\n");
+	if (nextLine != NULL){
+		return nextLine + 1;
+	}
+	else{
+		return input + strlen(input);
+	}
+}

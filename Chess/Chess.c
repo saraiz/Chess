@@ -9,6 +9,8 @@ int main()
 	init_board(game_board.board);
 	print_board(game_board.board);
 
+	//setSettings("clear\nset <a,3> black queen");
+
 	actionSummery summery = readSettings();
 	if (summery.isError){
 		//print_message(summery.failedFunc);
