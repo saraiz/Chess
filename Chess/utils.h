@@ -146,6 +146,7 @@ locationNode createLocationNode(int row, int column);
 locationNode cloneLocationNode(locationNode loc);
 void addMoveToMoveList(moveList* head, moveList* toAdd);
 void freeAllMoveList(moveList* head);
-
+void printMove(moveList* toPrint);
+void printMoveList(moveList* head);
 
 #endif
