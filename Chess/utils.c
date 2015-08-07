@@ -291,15 +291,15 @@ moveList* createMoveListNode(locationNode origin, locationNode dedtination, char
 	
 	toReturn->destination = dedtination;
 	toReturn->origin = origin;
-	toReturn->soldierToPromoteTo = soldierToPromoteTo; //TODO- check that OK
+//	toReturn->soldierToPromoteTo = soldierToPromoteTo; //TODO- check that OK
 	toReturn->next = NULL;
 
 	return toReturn;
 }
 
-locationNode createLocationNode(int colom, int row){
+locationNode createLocationNode(int row, int column){
 	locationNode toReturn;
-	toReturn.column = colom;
+	toReturn.column = column;
 	toReturn.row = row;
 	return toReturn;
 }
@@ -315,4 +315,26 @@ void addMoveToMoveList(moveList* head, moveList* toAdd){
 	moveList* temp = head->next;
 	toAdd->next = temp;
 	head->next = toAdd;
+}
+
+void freeAllMoveList(moveList* head){
+	while (head != NULL){
+		moveList* temp = head;
+		head = head->next;
+		free(temp);
+	}
+}
+
+void printMoveList(moveList* head){ //
+	locationInLetters origen = convertNumericLocationTpBoardLocation(head->origin.column, head->origin.row);
+	printf("from: <%c, %d>. to:", origen.column, origen.row);
+	for (; head != NULL; head = head->next){
+		printMove(head);
+	}
+	printf("\n");
+}
+
+void printMove(moveList* toPrint){
+	locationInLetters dest = convertNumericLocationTpBoardLocation(toPrint->destination.column, toPrint->destination.row);
+		printf("<%c, %d> ", dest.column, dest.row);
 }
