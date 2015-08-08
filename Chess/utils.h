@@ -142,7 +142,7 @@ void addUserByValue(locationNode node, char value);
 void clearBoard();
 void moveUser(moveList userMove);
 moveList* createMoveListNode(locationNode origin, locationNode dedtination, char soldierToPromoteTo);
-locationNode createLocationNode(int row, int column);
+locationNode createLocationNode(int column, int row);
 locationNode cloneLocationNode(locationNode loc);
 void addMoveToMoveList(moveList* head, moveList* toAdd);
 void freeAllMoveList(moveList* head);

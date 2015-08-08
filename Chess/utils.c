@@ -291,13 +291,13 @@ moveList* createMoveListNode(locationNode origin, locationNode dedtination, char
 	
 	toReturn->destination = dedtination;
 	toReturn->origin = origin;
-	toReturn->soldierToPromoteTo = soldierToPromoteTo; //TODO- check that OK
+//	toReturn->soldierToPromoteTo = soldierToPromoteTo; //TODO- check that OK
 	toReturn->next = NULL;
 
 	return toReturn;
 }
 
-locationNode createLocationNode(int row, int column){
+locationNode createLocationNode(int column, int row){
 	locationNode toReturn;
 	toReturn.column = column;
 	toReturn.row = row;

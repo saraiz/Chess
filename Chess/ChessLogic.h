@@ -13,6 +13,8 @@ moveList* getPossibleMovesPawn(locationNode loc, int isBlack);
 int isLocationOnBord(locationNode loc);
 int isSameColorAsMe(locationNode loc, int isBlack);
 char getPice(locationNode loc);
+int CheackDeatenetionAndAdd(moveList* sentinal, locationNode origen, locationNode destenetion, int isBlack);
+
 
 #endif
  
