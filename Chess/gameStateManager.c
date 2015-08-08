@@ -1,15 +1,21 @@
 #include "gameStateManager.h"
 
 actionSummery readGameActions(){
-
-	char* input = (char*)myCalloc(sizeof(char), 50);
-	// need to show a message if there was an error
-
 	int isWin = 0;
 	int isTie = 0;
+	int isError = 0;
 	actionSummery summery = { 0, 0, 0, 0 };
 
-	while (strcmp(input, "quit") != 0 && isWin == 0 && isTie == 0){
+	char* input = (char*)myCalloc(sizeof(char), 50);
+	if (input == NULL){
+		summery.isError = 1;
+		strcpy(summery.failedFunc, "calloc");
+
+		return summery;
+	}
+
+	while (strcmp(input, "quit") != 0 && isWin == 0 && isTie == 0 && isError == 0){
+
 		char *msg = (game_board.isBlackTurn ? "black player - enter your move!\n" : "white player - enter your move!\n");
 		print_message(msg);
 
@@ -18,6 +24,8 @@ actionSummery readGameActions(){
 			(game_board.isBlackTurn == 0 && settings.isUserBlack == 0))) || 
 			(settings.gameMode == TWO_PLAYERS)){
 			
+			// enter here if its a 2 player game OR we play against the computer, we are player color X and it's color X turn
+
 			getInput(&input);
 			if (strcmp(input, "quit") == 0){
 				break;
@@ -29,6 +37,8 @@ actionSummery readGameActions(){
 				// now it's the computer turn
 				game_board.isBlackTurn = 1 - game_board.isBlackTurn;
 			}
+
+			isError = summery.isError;
 		}
 		else{
 			// it's the computer move
@@ -84,10 +94,24 @@ actionSummery checkForGetMoves(char *input){
 			return summery;
 		}
 
+		int isValid = isLocationValid(origin, 1);
+		if (isValid){
+			isValid = isPositionContainUserPiece(game_board.isBlackTurn, origin, 1);
+			if (isValid){
+				moveList *lst = getValidMovesForLocation(origin);
+				if (lst == NULL){
+					// Error in getValidMovesForLocation
+					summery.isError = 1;
+					strcmp(summery.failedFunc, "malloc");
 
-		// Call Haim function
-		// print all moves
+					return summery;
+				}
 
+				printAllPossibleMoves(lst);
+				freeAllMoveList(lst);
+				
+			}
+		}
 	}
 
 	return summery;
@@ -136,6 +160,8 @@ actionSummery checkForSave(char *input){
 		loc = loc + 4;
 		loc = getNextChar(loc);
 		char *path = loc;
+
+		// Files - Haim
 	}
 
 	return summery;
@@ -242,9 +268,7 @@ int isValidMove(moveList soldierMove, int isBlack, int isShowMessage){
 	}
 
 	//(2)
-	char soldierToMove = game_board.board[soldierMove.origin.column][soldierMove.origin.row];
-	if ((isBlack == 1 && (soldierToMove == WHITE_B || soldierToMove == WHITE_K || soldierToMove == WHITE_N || soldierToMove == WHITE_P || soldierToMove == WHITE_Q || soldierToMove == WHITE_R)) ||
-		(isBlack == 0 && (soldierToMove == BLACK_B || soldierToMove == BLACK_K || soldierToMove == BLACK_N || soldierToMove == BLACK_P || soldierToMove == BLACK_Q || soldierToMove == BLACK_R))){
+	if (isPositionContainUserPiece(isBlack, soldierMove.origin, 0) == 0){
 		// The soldier in that we try to move is not ours (or empty)!
 
 		print_message(NO_DICS);
@@ -255,4 +279,54 @@ int isValidMove(moveList soldierMove, int isBlack, int isShowMessage){
 	// call Haim function get_All_Valid_Moves and check of my move is in the list
 	return 1;
 
+}
+
+int isPositionContainUserPiece(int isBlack, locationNode position, int isShowMessage){
+	int isValid = 1;
+	char soldierToMove = game_board.board[position.row][position.column];
+	if ((isBlack == 1 && (soldierToMove == WHITE_B || soldierToMove == WHITE_K || soldierToMove == WHITE_N || soldierToMove == WHITE_P || soldierToMove == WHITE_Q || soldierToMove == WHITE_R)) ||
+		(isBlack == 0 && (soldierToMove == BLACK_B || soldierToMove == BLACK_K || soldierToMove == BLACK_N || soldierToMove == BLACK_P || soldierToMove == BLACK_Q || soldierToMove == BLACK_R))){
+		isValid = 0;
+	}
+
+	if (isValid == 0){
+		print_message(NO_DICS);
+	}
+
+	return isValid;
+}
+
+void printAllPossibleMoves(moveList* moves){
+	if (moves == NULL || isEmptyMoveList(moves)){
+		return;
+	}
+
+	moveList* current = moves;
+	while (current != NULL){
+		printOneMove(*current);
+
+		current = current->next;
+	}
+}
+
+void printOneMove(moveList move){
+	// print origin
+	locationInLetters originToPrint = convertNumericLocationToBoardLocation(move.origin.column, move.origin.row);
+	locationInLetters destinationToPrint = convertNumericLocationToBoardLocation(move.destination.column, move.destination.row);
+	char *soldierToPromoteTo = move.soldierToPromoteTo;
+	printf("<%c,%d> to <%c,%d> %s", originToPrint.column, originToPrint.row, destinationToPrint.column, destinationToPrint.row, soldierToPromoteTo);
+
+	printf("\n");
+}
+
+int isCheck(int isBlack, int isShowMessage){
+	return 0;
+}
+
+int isMate(int isBlack, int isShowMessage){
+	return 0;
+}
+
+int isTie(int isBlack, int isShowMessage){
+	return 0;
 }
