@@ -15,31 +15,42 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Chess.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="gameStateManager.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="settingsStateManager.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="utils.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="Chess.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="gameStateManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="settingsStateManager.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="utils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="settingsStateManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ChessLogic.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="utils.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="settingsStateManager.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="gameStateManager.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Chess.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ChessLogic.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="makefile">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

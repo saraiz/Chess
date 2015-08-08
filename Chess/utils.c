@@ -283,3 +283,87 @@ void* myRealloc(void* point, int x){
 	return new;
 }
 
+moveList* createMoveListNode(locationNode origin, locationNode dedtination, char soldierToPromoteTo){
+	moveList* toReturn = myCalloc(1, sizeof(moveList));
+	if (toReturn == NULL){
+		return NULL;
+	}
+	
+	toReturn->destination = dedtination;
+	toReturn->origin = origin;
+//	toReturn->soldierToPromoteTo = soldierToPromoteTo; //TODO- check that OK
+	toReturn->next = NULL;
+
+	return toReturn;
+}
+
+locationNode createLocationNode(int column, int row){
+	locationNode toReturn;
+	toReturn.column = column;
+	toReturn.row = row;
+	return toReturn;
+}
+
+locationNode cloneLocationNode(locationNode loc){
+	locationNode toReturn;
+	toReturn.column = loc.column;
+	toReturn.row = loc.row;
+	return toReturn;
+}
+
+void addMoveToMoveList(moveList* head, moveList* toAdd){
+	moveList* temp = head->next;
+	toAdd->next = temp;
+	head->next = toAdd;
+}
+
+void freeAllMoveList(moveList* head){
+	while (head != NULL){
+		moveList* temp = head;
+		head = head->next;
+		free(temp);
+	}
+}
+
+void printMoveList(moveList* head){ //
+	locationInLetters origen = convertNumericLocationTpBoardLocation(head->origin.column, head->origin.row);
+	printf("from: <%c, %d>. to: ", origen.column, origen.row);
+	for (; head != NULL; head = head->next){
+		printMove(head);
+	}
+	printf("\n");
+}
+
+void printMove(moveList* toPrint){
+	locationInLetters dest = convertNumericLocationTpBoardLocation(toPrint->destination.column, toPrint->destination.row);
+		printf("<%c, %d> ", dest.column, dest.row);
+}
+
+moveList* moveConcat(moveList* first, moveList* second){
+	//if Standart func faild free all and return NULL
+	if (first == NULL || second == NULL){
+		if (first != NULL){
+			freeAllMoveList(first);
+		}
+		if (second != NULL){
+			freeAllMoveList(second);
+		}
+		return NULL;
+	}
+	if (isEmptyMoveList(first)){
+		return second;
+	}
+	else if(isEmptyMoveList(second)){
+		return second;
+	}
+	else{
+		moveList* tail;
+		for (tail = first; tail->next != NULL; tail = tail->next);
+		tail->next = second;
+		return first;
+	}
+}
+
+int isEmptyMoveList (moveList* list){
+	return (list->origin.column == 9) && (list->next == NULL);
+}
