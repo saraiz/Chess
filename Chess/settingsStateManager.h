@@ -3,6 +3,8 @@
 #include "utils.h"
 
 void init_board(char board[BOARD_SIZE][BOARD_SIZE]);
+int isBoardValidAfterSet(char *type, char *color, int isShowMessage);
+int isBoardValidToStartGame(int isShowMessage);
 actionSummery readSettings();
 actionSummery executeSettings(char* input);
 actionSummery checkForGameMode(char *input);

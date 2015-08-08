@@ -30,6 +30,9 @@
     <ClInclude Include="ChessLogic.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="minimax.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="utils.c">
@@ -47,10 +50,8 @@
     <ClCompile Include="ChessLogic.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="makefile">
-      <Filter>Resource Files</Filter>
-    </None>
+    <ClCompile Include="minimax.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

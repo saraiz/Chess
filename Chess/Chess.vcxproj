@@ -48,6 +48,7 @@
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -65,21 +66,20 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Chess.h" />
-    <ClInclude Include="gameStateManager.h" />
-    <ClInclude Include="ChessLogic.h" />
-    <ClInclude Include="settingsStateManager.h" />
-    <ClInclude Include="utils.h" />
-  </ItemGroup>
-  <ItemGroup>
     <ClCompile Include="Chess.c" />
-    <ClCompile Include="gameStateManager.c" />
     <ClCompile Include="ChessLogic.c" />
+    <ClCompile Include="gameStateManager.c" />
+    <ClCompile Include="minimax.c" />
     <ClCompile Include="settingsStateManager.c" />
     <ClCompile Include="utils.c" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="makefile" />
+    <ClInclude Include="Chess.h" />
+    <ClInclude Include="ChessLogic.h" />
+    <ClInclude Include="gameStateManager.h" />
+    <ClInclude Include="minimax.h" />
+    <ClInclude Include="settingsStateManager.h" />
+    <ClInclude Include="utils.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
