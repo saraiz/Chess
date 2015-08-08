@@ -326,8 +326,6 @@ void freeAllMoveList(moveList* head){
 }
 
 void printMoveList(moveList* head){ //
-	locationInLetters origen = convertNumericLocationTpBoardLocation(head->origin.column, head->origin.row);
-	printf("from: <%c, %d>. to: ", origen.column, origen.row);
 	for (; head != NULL; head = head->next){
 		printMove(head);
 	}
@@ -336,7 +334,9 @@ void printMoveList(moveList* head){ //
 
 void printMove(moveList* toPrint){
 	locationInLetters dest = convertNumericLocationTpBoardLocation(toPrint->destination.column, toPrint->destination.row);
-		printf("<%c, %d> ", dest.column, dest.row);
+	locationInLetters origen = convertNumericLocationTpBoardLocation(toPrint->origin.column, toPrint->origin.row);
+		printf("<%c, %d> -> ", origen.column, origen.row);
+		printf("<%c, %d> \n", dest.column, dest.row);
 }
 
 moveList* moveConcat(moveList* first, moveList* second){
@@ -365,5 +365,5 @@ moveList* moveConcat(moveList* first, moveList* second){
 }
 
 int isEmptyMoveList (moveList* list){
-	return (list->origin.column == 9) && (list->next == NULL);
+	return (list->origin.column == -1) && (list->next == NULL);
 }

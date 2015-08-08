@@ -1,6 +1,6 @@
 #ifndef UTILS
 #define UTILS
-#define EMPTYMOVELIST createMoveListNode(createLocationNode(9, 9), createLocationNode(9, 9), EMPTY)
+#define EMPTYMOVELIST createMoveListNode(createLocationNode(-1, -1), createLocationNode(-1, -1), EMPTY)
 
 #include<stdio.h>
 #include <assert.h>

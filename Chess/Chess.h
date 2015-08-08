@@ -3,6 +3,7 @@
 #include "utils.h"
 #include "settingsStateManager.h"
 #include "gameStateManager.h"
+#include "ChessLogic.h"
 
 
 int isLocationValid(locationNode node, int isPrintMessage);

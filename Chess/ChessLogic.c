@@ -1,5 +1,24 @@
 #include "ChessLogic.h"
 
+moveList* getAllValidMoves(int isBlack){
+	moveList* toReturn = EMPTYMOVELIST;
+	if (toReturn == NULL){
+		return NULL;
+	}
+	int i;
+	for (i = 0; i < BOARD_SIZE; i++){
+		int j;
+		for (j = 0; j < BOARD_SIZE; j++){
+			locationNode curLoc =  createLocationNode(i, j);
+			if (getPice(curLoc)!=EMPTY && isSameColorAsMe(curLoc, isBlack)){
+				moveList* move = getValidMovesForLocation(curLoc);
+				toReturn = moveConcat(toReturn, move);
+			}
+		}
+	}
+	return toReturn;
+}
+
 moveList* getValidMovesForLocation(locationNode loc){ //TODO casteling
 	char pice = tolower( getPice(loc));
 	int isBlack = isSameColorAsMe(loc, 1);

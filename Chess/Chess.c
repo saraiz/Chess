@@ -1,12 +1,10 @@
 #include "Chess.h"
-#include "ChessLogic.h"
 
 gameSettings settings = { 1, COLOR_WHITE, 0, 0, TWO_PLAYERS };
 gameBoard game_board = { 0, 0, 0, 0, 0 };
 
 
-int main()
-{
+int main(){
 	init_board(game_board.board);
 	print_board(game_board.board);
 
@@ -21,7 +19,7 @@ int main()
 	else{
 		if (summery.isExecuted == 1){
 			// Need to start the game
-			printMoveList( getValidMovesForLocation(createLocationNode(3,3)));
+			printMoveList(getAllValidMoves(1));
 			summery = readGameActions();
 			if (summery.isError == 1){
 				//print_message(summery.failedFunc);
