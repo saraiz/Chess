@@ -1,13 +1,38 @@
 #include "ChessLogic.h"
 
+moveList* getValidMovesForLocation(locationNode loc){ //TODO casteling
+	char pice = tolower( getPice(loc));
+	int isBlack = isSameColorAsMe(loc, 1);
+	switch (pice)
+	{
+	case 'm':
+		return getPossibleMovesPawn(loc, isBlack);
+	case 'b':
+		return getPossibleMovesBishop(loc, isBlack);
+	case 'r':
+		return getPossibleMovesRook(loc, isBlack);
+	case 'n':
+		return getPossibleMovesKnight(loc, isBlack);
+	case 'q':
+		return getPossibleMovesQueen(loc, isBlack);
+	case 'k':
+		return getPossibleMovesKing(loc, isBlack);
+	default: //EMPTY
+		return EMPTYMOVELIST;
+		}
+}
+
 moveList* getPossibleMovesKing(locationNode loc, int isBlack){
 
 }
 moveList* getPossibleMovesQueen(locationNode loc, int isBlack){
-
+	moveList* bishop = getPossibleMovesBishop(loc, isBlack);
+	moveList* rook = getPossibleMovesRook(loc, isBlack);
+	return moveConcat(bishop, rook);
 }
+
 moveList* getPossibleMovesRook(locationNode loc, int isBlack){
-	moveList* sentinal = createMoveListNode(createLocationNode(9, 9), createLocationNode(9, 9), EMPTY);
+	moveList* sentinal = EMPTYMOVELIST;
 	if (sentinal == NULL){
 		return NULL;
 	}
@@ -34,12 +59,11 @@ moveList* getPossibleMovesRook(locationNode loc, int isBlack){
 		}
 	}
 	moveList* toReturn = removeAndFreeSentinalIfNececery(sentinal);
-	printMoveList(toReturn); //TODO delete
 	return toReturn;
 }
 
 moveList* getPossibleMovesKnight(locationNode curLoc, int isBlack){
-	moveList* sentinal = createMoveListNode(createLocationNode(9, 9), createLocationNode(9, 9), EMPTY);
+	moveList* sentinal = EMPTYMOVELIST;
 	if (sentinal == NULL){
 		return NULL;
 	}
@@ -65,12 +89,37 @@ moveList* getPossibleMovesKnight(locationNode curLoc, int isBlack){
 		}
 	}
 	moveList* toReturn = removeAndFreeSentinalIfNececery(sentinal);
-	printMoveList(toReturn); //TODO delete
 	return toReturn;
 }
 
 moveList* getPossibleMovesBishop(locationNode loc, int isBlack){
+	moveList* sentinal = EMPTYMOVELIST;
+	if (sentinal == NULL){
+		return NULL;
+	}
+	int HorisontalDirection; //-1 go left, +1 go right
+	for (HorisontalDirection = -1; HorisontalDirection < 2; HorisontalDirection += 2){
+		int VerticalDiraction; //-1 down, 1 up
+		for (VerticalDiraction = -1; VerticalDiraction < 2; VerticalDiraction += 2){
+			int numOfSteps = 1;
+			int isAdded;
+			locationNode destenetion;
+			do
+			{
+				int destRow = loc.row + numOfSteps*VerticalDiraction;
+				int destColumn = loc.column + numOfSteps*HorisontalDirection;
+				destenetion = createLocationNode(destColumn, destRow);
+				isAdded = CheackDeatenetionAndAdd(sentinal, loc, destenetion, isBlack);
+				if (2 == isAdded){
+					return NULL;
+				}
 
+				numOfSteps++;
+			} while (isAdded == 1 && getPice(destenetion) == EMPTY);
+		}
+	}
+	moveList* toReturn = removeAndFreeSentinalIfNececery(sentinal);
+	return toReturn;
 }
 
 moveList* getPossibleMovesPawn(locationNode loc, int isBlack){

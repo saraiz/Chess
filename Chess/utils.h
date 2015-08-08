@@ -1,5 +1,6 @@
 #ifndef UTILS
 #define UTILS
+#define EMPTYMOVELIST createMoveListNode(createLocationNode(9, 9), createLocationNode(9, 9), EMPTY)
 
 #include<stdio.h>
 #include <assert.h>
@@ -148,5 +149,7 @@ void addMoveToMoveList(moveList* head, moveList* toAdd);
 void freeAllMoveList(moveList* head);
 void printMove(moveList* toPrint);
 void printMoveList(moveList* head);
+int isEmptyMoveList(moveList* list);
+moveList* moveConcat(moveList* first, moveList* second);
 
 #endif

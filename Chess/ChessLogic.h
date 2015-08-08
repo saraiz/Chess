@@ -1,6 +1,8 @@
 #ifndef GETMOVES
-#define GETMOVES
+#define ChessLogic
 #include "utils.h"
+
+moveList* getValidMovesForLocation(locationNode loc);
 
 moveList* getPossibleMovesKing(locationNode loc, int isBlack);
 moveList* getPossibleMovesQueen(locationNode loc, int isBlack);
