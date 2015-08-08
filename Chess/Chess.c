@@ -44,27 +44,27 @@ int isLocationValid(locationNode node, int isPrintMessage){
 	return isValid;
 }
 
-int isBoardValidAfterSet(char type, char *color, int isShowMessage){
+int isBoardValidAfterSet(char *type, char *color, int isShowMessage){
 	int isValid = 1;
 
 	if (strcmp(color, "black") == 0){
 
-		if ((type == BLACK_B && game_board.numOfBlackBishops == 2) ||
-			(type == BLACK_K && game_board.numOfBlackKings == 1) ||
-			(type == BLACK_N && game_board.numOfBlackKnights == 2) ||
-			(type == BLACK_P && game_board.numOfBlackPawns == 8) ||
-			(type == BLACK_Q && game_board.numOfBlackQueens == 1) ||
-			(type == BLACK_R && game_board.numOfBlackRooks == 2)){
+		if ((type == BISHOP && game_board.numOfBlackBishops == 2) ||
+			(type == KING && game_board.numOfBlackKings == 1) ||
+			(type == KNIGHT && game_board.numOfBlackKnights == 2) ||
+			(type == PAWN && game_board.numOfBlackPawns == 8) ||
+			(type == QUEEN && game_board.numOfBlackQueens == 1) ||
+			(type == ROOK && game_board.numOfBlackRooks == 2)){
 			isValid = 0;
 		}
 	}
 	else{
-		if ((type == WHITE_B && game_board.numOfWhiteBishops == 2) ||
-			(type == WHITE_K && game_board.numOfWhiteKings == 1) ||
-			(type == WHITE_N && game_board.numOfWhiteKnights == 2) ||
-			(type == WHITE_P && game_board.numOfWhitePawns == 8) ||
-			(type == WHITE_Q && game_board.numOfWhiteQueens == 1) ||
-			(type == WHITE_R && game_board.numOfWhiteRooks == 2)){
+		if ((type == BISHOP && game_board.numOfWhiteBishops == 2) ||
+			(type == KING && game_board.numOfWhiteKings == 1) ||
+			(type == KNIGHT && game_board.numOfWhiteKnights == 2) ||
+			(type == PAWN && game_board.numOfWhitePawns == 8) ||
+			(type == QUEEN && game_board.numOfWhiteQueens == 1) ||
+			(type == ROOK && game_board.numOfWhiteRooks == 2)){
 			isValid = 0;
 		}
 	}

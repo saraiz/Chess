@@ -147,7 +147,7 @@ actionSummery checkForSet(char* input){
 
 		if (isValid)
 		{
-			isValid = isBoardValidAfterSet(*type, color, 1);
+			isValid = isBoardValidAfterSet(type, color, 1);
 			if (isValid){
 				removeUser(node); // Call remove in order to set counters
 				addUser(node, color, type);

@@ -73,7 +73,7 @@ actionSummery checkForGetMoves(char *input){
 	actionSummery summery = { 0, 0, 0, 0 };
 
 	if (loc != NULL){
-		summery.isFound == 1;
+		summery.isFound = 1;
 		loc = loc + 9;
 		loc = getNextChar(loc);
 		locationNode origin = getNextLocation(&loc);
@@ -98,7 +98,7 @@ actionSummery checkForBestMoves(char *input){
 	actionSummery summery = { 0, 0, 0, 0 };
 
 	if (loc != NULL){
-		summery.isFound == 1;
+		summery.isFound = 1;
 		loc = loc + 14;
 		loc = getNextChar(loc);
 		double value = strtod(loc, NULL);
@@ -115,7 +115,7 @@ actionSummery checkForGetScore(char *input){
 	actionSummery summery = { 0, 0, 0, 0 };
 
 	if (loc != NULL){
-		summery.isFound == 1;
+		summery.isFound = 1;
 		loc = loc + 9;
 		loc = getNextChar(loc);
 
@@ -132,7 +132,7 @@ actionSummery checkForSave(char *input){
 	actionSummery summery = { 0, 0, 0, 0 };
 
 	if (loc != NULL){
-		summery.isFound == 1;
+		summery.isFound = 1;
 		loc = loc + 4;
 		loc = getNextChar(loc);
 		char *path = loc;

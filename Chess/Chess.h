@@ -6,7 +6,7 @@
 
 
 int isLocationValid(locationNode node, int isPrintMessage);
-int isBoardValidAfterSet(char type, char *color, int isShowMessage);
+int isBoardValidAfterSet(char *type, char *color, int isShowMessage);
 int isBoardValidToStartGame(int isShowMessage);
 
 #endif
