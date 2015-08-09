@@ -48,7 +48,7 @@ locationNode convertBoardLocationToNumericLocation(char column, int row){
 	return node;
 }
 
-locationInLetters convertNumericLocationTpBoardLocation(int column, int row){
+locationInLetters convertNumericLocationToBoardLocation(int column, int row){
 	locationInLetters node;
 	node.column = column + 97;
 	node.row = row + 1;
@@ -326,7 +326,7 @@ void freeAllMoveList(moveList* head){
 }
 
 void printMoveList(moveList* head){ //
-	locationInLetters origen = convertNumericLocationTpBoardLocation(head->origin.column, head->origin.row);
+	locationInLetters origen = convertNumericLocationToBoardLocation(head->origin.column, head->origin.row);
 	printf("from: <%c, %d>. to: ", origen.column, origen.row);
 	for (; head != NULL; head = head->next){
 		printMove(head);
@@ -335,7 +335,7 @@ void printMoveList(moveList* head){ //
 }
 
 void printMove(moveList* toPrint){
-	locationInLetters dest = convertNumericLocationTpBoardLocation(toPrint->destination.column, toPrint->destination.row);
+	locationInLetters dest = convertNumericLocationToBoardLocation(toPrint->destination.column, toPrint->destination.row);
 		printf("<%c, %d> ", dest.column, dest.row);
 }
 
@@ -366,4 +366,17 @@ moveList* moveConcat(moveList* first, moveList* second){
 
 int isEmptyMoveList (moveList* list){
 	return (list->origin.column == 9) && (list->next == NULL);
+}
+
+int isLocationValid(locationNode node, int isPrintMessage){
+	int isValid = 1;
+	if ((node.row < 0) || (node.row > 8) || (node.column < 0) || (node.column > 8)){
+		isValid = 0;
+	}
+
+	if (isValid == 0 && isPrintMessage == 1){
+		print_message(WRONG_POSITION);
+	}
+
+	return isValid;
 }
