@@ -291,7 +291,7 @@ moveList* createMoveListNode(locationNode origin, locationNode dedtination, char
 	
 	toReturn->destination = dedtination;
 	toReturn->origin = origin;
-//	toReturn->soldierToPromoteTo = soldierToPromoteTo; //TODO- check that OK
+	toReturn->soldierToPromoteTo = soldierToPromoteTo; //TODO- check that OK
 	toReturn->next = NULL;
 
 	return toReturn;

@@ -106,7 +106,7 @@ typedef struct list {
 typedef struct move {
 	locationNode origin;
 	locationNode destination;
-	char soldierToPromoteTo[7]; //queen, bishop, rook, knight
+	char soldierToPromoteTo;// [7]; //queen, bishop, rook, knight
 	struct move *next;
 }moveList;
 
@@ -142,7 +142,7 @@ void addUser(locationNode node, char* color, char *type);
 void addUserByValue(locationNode node, char value);
 void clearBoard();
 void moveUser(moveList userMove);
-moveList* createMoveListNode(locationNode origin, locationNode dedtination, char soldierToPromoteTo);
+moveList* createMoveListNode(locationNode origin, locationNode dedtination, char* soldierToPromoteTo);
 locationNode createLocationNode(int column, int row);
 locationNode cloneLocationNode(locationNode loc);
 void addMoveToMoveList(moveList* head, moveList* toAdd);

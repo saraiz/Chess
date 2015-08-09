@@ -142,8 +142,25 @@ moveList* getPossibleMovesBishop(locationNode loc, int isBlack){
 }
 
 moveList* getPossibleMovesPawn(locationNode loc, int isBlack){
+	moveList* sentinal = EMPTYMOVELIST;
+	if (sentinal == NULL){
+		return NULL;
+	}
+	int horisontalShift;
+	int VerticalShift = isBlack ? -1 : +1;
+	int promotionRow = isBlack ? 0 : 7;
+	int destRow = loc.row + VerticalShift;
 
+	for (horisontalShift = -1; horisontalShift < 2; horisontalShift++){
+		int destColumn = loc.column + horisontalShift;
+		locationNode dest = createLocationNode(destColumn, destRow);
 
+		if (2 == CheackDeatenetionAndAdd_Pawn(sentinal, loc, dest, abs(horisontalShift), isBlack)){
+			return NULL;
+		}
+	}
+	moveList* toReturn = removeAndFreeSentinalIfNececery(sentinal);
+	return toReturn;
 }
 
 int isLocationOnBord(locationNode loc){ //TODO the same sa isLocationValid??????????????
@@ -188,3 +205,60 @@ int CheackDeatenetionAndAdd(moveList* sentinal,locationNode origen, locationNode
 	return 0;
 }
 
+int CheackDeatenetionAndAdd_Pawn(moveList* sentinal,locationNode origen,locationNode destenation, int isEat, int isblack){
+	int isPromoten = destenation.row == (isblack ? 0 : 7);
+	int isToMove=0;
+	if (!isLocationOnBord(destenation)){
+		return 0;
+	}
+	char destPice = getPice(destenation);
+	if (isEat && destPice != EMPTY && !isSameColorAsMe(destenation, isblack)){
+		isToMove = 1;
+	}
+	else if (!isEat && destPice == EMPTY){
+		isToMove = 1;
+	}
+
+	if (isToMove){
+		if (isPromoten){
+			moveList* toAddQueen = createMoveListNode(cloneLocationNode(origen), destenation, QUEEN);
+			if (toAddQueen == NULL){
+				freeAllMoveList(sentinal);
+				return 2;
+			}
+			addMoveToMoveList(sentinal, toAddQueen);
+
+			moveList* toAddBishop = createMoveListNode(cloneLocationNode(origen), destenation, BISHOP);
+			if (toAddBishop == NULL){
+				freeAllMoveList(sentinal);
+				return 2;
+			}
+			addMoveToMoveList(sentinal, toAddBishop);
+
+			moveList* toAddKnight = createMoveListNode(cloneLocationNode(origen), destenation, KNIGHT);
+			if (toAddKnight == NULL){
+				freeAllMoveList(sentinal);
+				return 2;
+			}
+			addMoveToMoveList(sentinal, toAddKnight);
+
+			moveList* toAddRook = createMoveListNode(cloneLocationNode(origen), destenation, ROOK);
+			if (toAddRook == NULL){
+				freeAllMoveList(sentinal);
+				return 2;
+			}
+			addMoveToMoveList(sentinal, toAddRook);
+		}
+
+		else{
+			moveList* toAdd = createMoveListNode(origen, destenation, EMPTY);
+			if (toAdd == NULL){
+				freeAllMoveList(sentinal);
+				return 2;
+			}
+			addMoveToMoveList(sentinal, toAdd);
+		}
+		return 1;
+	}
+	return 0;
+} 

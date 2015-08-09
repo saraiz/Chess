@@ -17,6 +17,9 @@ int isLocationOnBord(locationNode loc);
 int isSameColorAsMe(locationNode loc, int isBlack);
 char getPice(locationNode loc);
 int CheackDeatenetionAndAdd(moveList* sentinal, locationNode origen, locationNode destenetion, int isBlack);
+int CheackDeatenetionAndAdd_Pawn(moveList* sentinal, locationNode origen, locationNode destenation, int isEat, int isblack);
+
+
 
 
 #endif
