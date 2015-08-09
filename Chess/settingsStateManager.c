@@ -12,7 +12,8 @@ actionSummery readSettings(){
 	}
 
 	int isStart = 0;
-	while (isStart == 0 && isStart == 0){
+	int isError = 0;
+	while (isStart == 0 && isStart == 0 && isError == 0){
 		print_message(ENTER_SETTINGS);
 		getInput(&input);
 
@@ -22,10 +23,11 @@ actionSummery readSettings(){
 
 		summery = executeSettings(input);
 		isStart = summery.isExecuted;
+		isError = summery.isError;
 	}
 
 	// free the input
-	//myFree(input);
+	myFree(input);
 
 	return summery;
 }
@@ -147,7 +149,7 @@ actionSummery checkForSet(char* input){
 
 		if (isValid)
 		{
-			isValid = isBoardValidAfterSet(*type, color, 1);
+			isValid = isBoardValidAfterSet(type, color, 1);
 			if (isValid){
 				removeUser(node); // Call remove in order to set counters
 				addUser(node, color, type);
@@ -219,7 +221,7 @@ actionSummery checkForNextPlayer(char *input){
 			game_board.isBlackTurn = 0;
 		}
 		else if (strstr(loc, "black")){
-			settings.isUserBlack = 1;
+			game_board.isBlackTurn = 1;
 		}
 	}
 
@@ -394,4 +396,48 @@ char* getNextLine(char* input){
 	else{
 		return input + strlen(input);
 	}
+}
+
+int isBoardValidAfterSet(char *type, char *color, int isShowMessage){
+	int isValid = 1;
+
+	if (strcmp(color, "black") == 0){
+
+		if ((type == BISHOP && game_board.numOfBlackBishops == 2) ||
+			(type == KING && game_board.numOfBlackKings == 1) ||
+			(type == KNIGHT && game_board.numOfBlackKnights == 2) ||
+			(type == PAWN && game_board.numOfBlackPawns == 8) ||
+			(type == QUEEN && game_board.numOfBlackQueens == 1) ||
+			(type == ROOK && game_board.numOfBlackRooks == 2)){
+			isValid = 0;
+		}
+	}
+	else{
+		if ((type == BISHOP && game_board.numOfWhiteBishops == 2) ||
+			(type == KING && game_board.numOfWhiteKings == 1) ||
+			(type == KNIGHT && game_board.numOfWhiteKnights == 2) ||
+			(type == PAWN && game_board.numOfWhitePawns == 8) ||
+			(type == QUEEN && game_board.numOfWhiteQueens == 1) ||
+			(type == ROOK && game_board.numOfWhiteRooks == 2)){
+			isValid = 0;
+		}
+	}
+
+	if (isValid == 0 && isShowMessage == 1){
+		print_message(NO_PIECE);
+	}
+
+	return isValid;
+}
+
+int isBoardValidToStartGame(int isShowMessage){
+	if ((game_board.numOfBlackKings < 1) || game_board.numOfWhiteKings < 1){
+		if (isShowMessage == 1){
+			print_message(WROND_BOARD_INITIALIZATION);
+		}
+
+		return 0;
+	}
+
+	return 1;
 }

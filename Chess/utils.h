@@ -58,7 +58,7 @@
 
 #define NO_DICS "The specified position does not contain your piece\n"
 
-#define perror_message(func_name) (perror("Error: standard function %s has failed", func_name));
+#define print_error_message(func_name) (printf("Error: standard function %s has failed", func_name));
 #define print_message(message) (printf("%s", message));
 
 #define BEST -1
@@ -130,7 +130,7 @@ void getInput(char** inputPointer);
 void print_board(char board[BOARD_SIZE][BOARD_SIZE]);
 void print_line();
 locationNode convertBoardLocationToNumericLocation(char column, int row);
-locationInLetters convertNumericLocationTpBoardLocation(int column, int row);
+locationInLetters convertNumericLocationToBoardLocation(int column, int row);
 char* getNextChar(char* str);
 void* myCalloc(int x, int y);
 void* myMalloc(int x);
@@ -151,5 +151,6 @@ void printMove(moveList* toPrint);
 void printMoveList(moveList* head);
 int isEmptyMoveList(moveList* list);
 moveList* moveConcat(moveList* first, moveList* second);
+int isLocationValid(locationNode node, int isPrintMessage);
 
 #endif
