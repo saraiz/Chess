@@ -42,8 +42,46 @@ moveList* getValidMovesForLocation(locationNode loc){ //TODO casteling
 }
 
 moveList* getPossibleMovesKing(locationNode loc, int isBlack){
+	moveList* sentinal = EMPTYMOVELIST;
+	if (sentinal == NULL){
+		return NULL;
+	}
+	int horisontalDiff;
+	for (horisontalDiff = -1; horisontalDiff < 2; horisontalDiff++){
+		int verticalDiff;
+		for (verticalDiff = -1; verticalDiff < 2; verticalDiff++){
+			if (verticalDiff == 0 && horisontalDiff == 0){
+				continue;
+			}
+			int destRow = loc.row + verticalDiff;
+			int destColumn = loc.column + horisontalDiff;
+			locationNode destenetion = createLocationNode(destColumn, destRow);
 
+			if (!isLocationValid(destenetion,0)){
+				continue;
+			}
+			int isTretened = amITretrnd(destenetion, isBlack);
+			if (isTretened == 2){
+				freeAllMoveList(sentinal);
+				return NULL;
+			}
+			if ((EMPTY == getPice(destenetion) || !isSameColorAsMe(destenetion, isBlack)) && !isTretened){
+				locationNode curLocClone = cloneLocationNode(loc); //TODO nedded??????????
+
+				moveList* toAdd = createMoveListNode(curLocClone, destenetion, EMPTY);
+				if (toAdd == NULL){
+					freeAllMoveList(sentinal);
+					return NULL;
+				}
+				addMoveToMoveList(sentinal, toAdd);
+			}
+
+		}
+	}
+	moveList* toReturn = removeAndFreeSentinalIfNececery(sentinal);
+	return toReturn;
 }
+
 moveList* getPossibleMovesQueen(locationNode loc, int isBlack){
 	moveList* bishop = getPossibleMovesBishop(loc, isBlack);
 	moveList* rook = getPossibleMovesRook(loc, isBlack);
@@ -98,7 +136,7 @@ moveList* getPossibleMovesKnight(locationNode curLoc, int isBlack){
 				int VerticalShift = VerticalDiraction*numOfVerticalStaps;
 
 				//printf("VS:%d, HS:%d\n", VerticalShift, horisontalShift);
-
+				
 				locationNode destenetion = createLocationNode(curLoc.column + horisontalShift, curLoc.row + VerticalShift);
 
 				if (2 == CheackDeatenetionAndAdd(sentinal, curLoc, destenetion, isBlack)){
@@ -159,13 +197,9 @@ moveList* getPossibleMovesPawn(locationNode loc, int isBlack){
 			return NULL;
 		}
 	}
-	moveList* toReturn = removeAndFreeSentinalIfNececery(sentinal);
-	return toReturn;
+	return removeAndFreeSentinalIfNececery(sentinal);
 }
 
-int isLocationOnBord(locationNode loc){ //TODO the same sa isLocationValid??????????????
-	return -1 < loc.row && loc.row < 8 && -1 < loc.column && loc.column < 8;
-}
 
 int isSameColorAsMe(locationNode loc, int amIBlack){
 	char pice = getPice(loc);
@@ -188,11 +222,11 @@ moveList* removeAndFreeSentinalIfNececery(moveList* sentinal){
 
 int CheackDeatenetionAndAdd(moveList* sentinal,locationNode origen, locationNode destenetion, int isBlack){
 	//0-didnt add, 1-add,2- error (frees sentinal's list)
-	if (!isLocationOnBord(destenetion)){
+	if (!isLocationValid(destenetion, 0)){
 		return 0;
 	}
 	if (EMPTY == getPice(destenetion) || !isSameColorAsMe(destenetion, isBlack)){
-		locationNode curLocClone = cloneLocationNode(origen);
+		locationNode curLocClone = cloneLocationNode(origen); //TODO nedded??????????
 
 		moveList* toAdd = createMoveListNode(curLocClone, destenetion, EMPTY);
 		if (toAdd == NULL){
@@ -208,7 +242,7 @@ int CheackDeatenetionAndAdd(moveList* sentinal,locationNode origen, locationNode
 int CheackDeatenetionAndAdd_Pawn(moveList* sentinal,locationNode origen,locationNode destenation, int isEat, int isblack){
 	int isPromoten = destenation.row == (isblack ? 0 : 7);
 	int isToMove=0;
-	if (!isLocationOnBord(destenation)){
+	if (!isLocationValid(destenation, 0)){
 		return 0;
 	}
 	char destPice = getPice(destenation);
@@ -221,28 +255,28 @@ int CheackDeatenetionAndAdd_Pawn(moveList* sentinal,locationNode origen,location
 
 	if (isToMove){
 		if (isPromoten){
-			moveList* toAddQueen = createMoveListNode(cloneLocationNode(origen), destenation, QUEEN);
+			moveList* toAddQueen = createMoveListNode(cloneLocationNode(origen), destenation, 'q');
 			if (toAddQueen == NULL){
 				freeAllMoveList(sentinal);
 				return 2;
 			}
 			addMoveToMoveList(sentinal, toAddQueen);
 
-			moveList* toAddBishop = createMoveListNode(cloneLocationNode(origen), destenation, BISHOP);
+			moveList* toAddBishop = createMoveListNode(cloneLocationNode(origen), destenation, 'b');
 			if (toAddBishop == NULL){
 				freeAllMoveList(sentinal);
 				return 2;
 			}
 			addMoveToMoveList(sentinal, toAddBishop);
 
-			moveList* toAddKnight = createMoveListNode(cloneLocationNode(origen), destenation, KNIGHT);
+			moveList* toAddKnight = createMoveListNode(cloneLocationNode(origen), destenation,'n');
 			if (toAddKnight == NULL){
 				freeAllMoveList(sentinal);
 				return 2;
 			}
 			addMoveToMoveList(sentinal, toAddKnight);
 
-			moveList* toAddRook = createMoveListNode(cloneLocationNode(origen), destenation, ROOK);
+			moveList* toAddRook = createMoveListNode(cloneLocationNode(origen), destenation, 'r');
 			if (toAddRook == NULL){
 				freeAllMoveList(sentinal);
 				return 2;
@@ -262,3 +296,21 @@ int CheackDeatenetionAndAdd_Pawn(moveList* sentinal,locationNode origen,location
 	}
 	return 0;
 } 
+
+int amITretrnd(locationNode loc, int myColor){
+	//0 no, 1 yes, 2 ERROR
+	moveList* validMoves = getAllValidMoves(!myColor);
+	if (validMoves == NULL){
+		return 2;
+	}
+	return isLocInDestenetion(loc, validMoves);
+}
+
+int isLocInDestenetion(locationNode loc, moveList* head){
+	for (; head != NULL; head = head->next){
+		if (head->destination.column == loc.column && head->destination.row == loc.row){
+			return 1;
+		}
+	}
+	return 0;
+}

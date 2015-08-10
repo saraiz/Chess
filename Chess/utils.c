@@ -333,8 +333,8 @@ void printMoveList(moveList* head){ //
 }
 
 void printMove(moveList* toPrint){
-	locationInLetters dest = convertNumericLocationTpBoardLocation(toPrint->destination.column, toPrint->destination.row);
-	locationInLetters origen = convertNumericLocationTpBoardLocation(toPrint->origin.column, toPrint->origin.row);
+	locationInLetters dest = convertNumericLocationToBoardLocation(toPrint->destination.column, toPrint->destination.row);
+	locationInLetters origen = convertNumericLocationToBoardLocation(toPrint->origin.column, toPrint->origin.row);
 		printf("<%c, %d> -> ", origen.column, origen.row);
 		printf("<%c, %d> \n", dest.column, dest.row);
 }

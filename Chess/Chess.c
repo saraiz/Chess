@@ -10,9 +10,9 @@ int main()
 	init_board(game_board.board);
 	print_board(game_board.board);
 
-	//setSettings("clear\nset <d,4> white bishop"); //TODO delete
-	//setSettings("set <b,6> white queen");
-	//setSettings("set <f,6> black queen");
+	//setSettings("clear\nset <d,4> white king"); //TODO delete
+	//setSettings("set <d,1> black knight");
+	//setSettings("set <c,6> black rook");
 
 	actionSummery summery = readSettings();
 	if (summery.isError){
@@ -21,7 +21,7 @@ int main()
 	else{
 		if (summery.isExecuted == 1){
 			// Need to start the game
-			//printMoveList( getValidMovesForLocation(createLocationNode(3,3)));
+			printMoveList( getValidMovesForLocation(createLocationNode(3,3)));
 			summery = readGameActions();
 			if (summery.isError){
 				print_error_message(summery.failedFunc);
