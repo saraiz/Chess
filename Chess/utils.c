@@ -1,4 +1,5 @@
 #include "utils.h"
+#include "Chess.h"
 
 void getInput(char** inputPointer){
 	char* input = *inputPointer;
@@ -231,8 +232,10 @@ void addUserByValue(locationNode node, char value){
 }
 
 void clearBoard(){
-	for (int i = 0; i < BOARD_SIZE; i++){
-		for (int j = 0; j < BOARD_SIZE; j++){
+	int i;
+	for ( i = 0; i < BOARD_SIZE; i++){
+		int j;
+		for (j = 0; j < BOARD_SIZE; j++){
 			game_board.board[i][j] = EMPTY;
 		}
 	}
