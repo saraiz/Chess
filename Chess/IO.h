@@ -5,7 +5,8 @@
 
 #define NUMOFSLOTS 7
 
-int saveGame(fileData toSave, int slot);
-fileData loadGame(int slot);
+int saveGame(fileData toSave, char* path);
+fileData loadGame(char* path);
+
 
 #endif

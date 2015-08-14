@@ -1,18 +1,54 @@
 #include "IO.h"         
 
-fileData loadGame(int slot){
+fileData loadGame(char* path){ //if error everiting is -1 TODO change to path
+	fileData toReturn = { -1, -1, -1, -1 };
+	FILE* f = fopen(path, "r");
+	if (f == NULL){
+		return toReturn;
+	}
+	fscanf(f, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<game>");
+	char StrParser[100];
+	fscanf(f, "\t<next_turn>%s", StrParser);
+	toReturn.isNextBlack = strstr(StrParser, "black") != NULL ? 1 : 0;
 
+	int intParser = 0;
+	fscanf(f, "\t<game_mode>%s", StrParser);
+	toReturn.gameMode = StrParser[0]-48;
+
+	fscanf(f, "\t<difficulty>%s", StrParser);
+	if (strstr(StrParser, "best") != NULL){
+		toReturn.difficulty = -1;
+	}
+	else{
+		toReturn.difficulty = StrParser[0] - 48;
+	}
+
+	fscanf(f, "\t<user_color>%s", StrParser);
+	toReturn.isUserColorBlack = strstr(StrParser, "black") != NULL ? 1 : 0;
+	fscanf(f,"\t<board>");
+
+	int row;
+	for (row = BOARD_SIZE - 1; row > -1; row--){
+		fscanf(f, "\t\t<row_%d>%s",&intParser, StrParser);
+		int coloumn;
+		for (coloumn = 0; coloumn < BOARD_SIZE; coloumn++){
+			locationNode loc = createLocationNode(coloumn, row);
+			char content = StrParser[coloumn] == '_' ? EMPTY : StrParser[coloumn];
+			addUserByValue(loc, content);
+		}
+	}
+	
+	fclose(f);
+	return toReturn;
 }
 
-int saveGame(fileData toSave, int slot){ //ret 1 if failure
-	assert(slot > 0 && slot <= NUMOFSLOTS);
-	char fileName[] = "slot no  .xml";
-	fileName[8] = slot + 48; // convet to ascii
-	int ispVc = toSave.gameMode == 2;
-	FILE* f = fopen(fileName, "w");
+int saveGame(fileData toSave, char* path){ //ret 1 if failure //TODO change to path
+	FILE* f = fopen(path, "w");
 	if (f == NULL){
 		return 1;
 	}
+	int ispVc = toSave.gameMode == 2;
+
 	char* line = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<game>\n";
 	fputs(line, f);
 
