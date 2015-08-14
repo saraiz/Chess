@@ -171,7 +171,6 @@ moveList* getPossibleMovesPawn(locationNode loc, int isBlack){
 	}
 	int horisontalShift;
 	int VerticalShift = isBlack ? -1 : +1;
-	int promotionRow = isBlack ? 0 : 7;
 	int destRow = loc.row + VerticalShift;
 
 	for (horisontalShift = -1; horisontalShift < 2; horisontalShift++){
