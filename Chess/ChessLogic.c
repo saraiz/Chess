@@ -57,23 +57,8 @@ moveList* getPossibleMovesKing(locationNode loc, int isBlack){
 			int destColumn = loc.column + horisontalDiff;
 			locationNode destenetion = createLocationNode(destColumn, destRow);
 
-			if (!isLocationValid(destenetion,0)){
-				continue;
-			}
-			int isTretened = amITretrnd(destenetion, isBlack);
-			if (isTretened == 2){
-				freeAllMoveList(sentinal);
+			if (2 == CheackDeatenetionAndAdd(sentinal, loc, destenetion, isBlack)){
 				return NULL;
-			}
-			if ((EMPTY == getPice(destenetion) || !isSameColorAsMe(destenetion, isBlack)) && !isTretened){
-				locationNode curLocClone = cloneLocationNode(loc); //TODO nedded??????????
-
-				moveList* toAdd = createMoveListNode(curLocClone, destenetion, EMPTY);
-				if (toAdd == NULL){
-					freeAllMoveList(sentinal);
-					return NULL;
-				}
-				addMoveToMoveList(sentinal, toAdd);
 			}
 
 		}

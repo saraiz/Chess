@@ -291,7 +291,7 @@ moveList* createMoveListNode(locationNode origin, locationNode dedtination, char
 	
 	toReturn->destination = dedtination;
 	toReturn->origin = origin;
-	toReturn->soldierToPromoteTo = soldierToPromoteTo; //TODO- check that OK
+	toReturn->soldierToPromoteTo = soldierToPromoteTo;
 	toReturn->next = NULL;
 
 	return toReturn;
@@ -336,7 +336,7 @@ void printMove(moveList* toPrint){
 	locationInLetters dest = convertNumericLocationToBoardLocation(toPrint->destination.column, toPrint->destination.row);
 	locationInLetters origen = convertNumericLocationToBoardLocation(toPrint->origin.column, toPrint->origin.row);
 		printf("<%c, %d> -> ", origen.column, origen.row);
-		printf("<%c, %d> \n", dest.column, dest.row);
+		printf("<%c, %d> %c\n", dest.column, dest.row, toPrint->soldierToPromoteTo);
 }
 
 moveList* moveConcat(moveList* first, moveList* second){

@@ -123,6 +123,17 @@ typedef struct {
 	char failedFunc[50];
 }actionSummery;
 
+typedef struct {
+	int isNextBlack; 
+	int gameMode; //1 for p VS p. 2 for p VS AI
+	int difficulty; //1-4, -1 for best, gameMode == 1 not saved
+	int isUserColorBlack; //gameMode == 1 not saved
+	//char board[BOARD_SIZE][BOARD_SIZE];
+}fileData;
+
+
+
+
 extern gameSettings settings; //= { 1, COLOR_WHITE, 0, 0, TWO_PLAYERS };
 extern gameBoard game_board;// = { 0, 0, 0, 0, 0 };
 
