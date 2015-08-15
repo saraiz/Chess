@@ -69,6 +69,7 @@
     <ClCompile Include="Chess.c" />
     <ClCompile Include="ChessLogic.c" />
     <ClCompile Include="gameStateManager.c" />
+    <ClCompile Include="IO.c" />
     <ClCompile Include="minimax.c" />
     <ClCompile Include="settingsStateManager.c" />
     <ClCompile Include="utils.c" />
@@ -77,6 +78,7 @@
     <ClInclude Include="Chess.h" />
     <ClInclude Include="ChessLogic.h" />
     <ClInclude Include="gameStateManager.h" />
+    <ClInclude Include="IO.h" />
     <ClInclude Include="minimax.h" />
     <ClInclude Include="settingsStateManager.h" />
     <ClInclude Include="utils.h" />

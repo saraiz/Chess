@@ -90,9 +90,9 @@ actionSummery checkForStart(char* input){
 	if (loc != NULL){
 		summery.isFound = 1;
 
-	//	if (isBoardValidToStartGame(1) == 1){ TODO not a comennt
+		if (isBoardValidToStartGame(1) == 1){
 			summery.isExecuted = 1;
-		//}
+		}
 	}
 
 	return summery;

@@ -291,7 +291,7 @@ moveList* createMoveListNode(locationNode origin, locationNode dedtination, char
 	
 	toReturn->destination = dedtination;
 	toReturn->origin = origin;
-//	toReturn->soldierToPromoteTo = soldierToPromoteTo; //TODO- check that OK
+	toReturn->soldierToPromoteTo = soldierToPromoteTo;
 	toReturn->next = NULL;
 
 	return toReturn;
@@ -326,8 +326,6 @@ void freeAllMoveList(moveList* head){
 }
 
 void printMoveList(moveList* head){ //
-	locationInLetters origen = convertNumericLocationToBoardLocation(head->origin.column, head->origin.row);
-	printf("from: <%c, %d>. to: ", origen.column, origen.row);
 	for (; head != NULL; head = head->next){
 		printMove(head);
 	}
@@ -336,7 +334,9 @@ void printMoveList(moveList* head){ //
 
 void printMove(moveList* toPrint){
 	locationInLetters dest = convertNumericLocationToBoardLocation(toPrint->destination.column, toPrint->destination.row);
-		printf("<%c, %d> ", dest.column, dest.row);
+	locationInLetters origen = convertNumericLocationToBoardLocation(toPrint->origin.column, toPrint->origin.row);
+		printf("<%c, %d> -> ", origen.column, origen.row);
+		printf("<%c, %d> %c\n", dest.column, dest.row, toPrint->soldierToPromoteTo);
 }
 
 moveList* moveConcat(moveList* first, moveList* second){
@@ -365,7 +365,7 @@ moveList* moveConcat(moveList* first, moveList* second){
 }
 
 int isEmptyMoveList (moveList* list){
-	return (list->origin.column == 9) && (list->next == NULL);
+	return (list->origin.column == -1) && (list->next == NULL);
 }
 
 int isLocationValid(locationNode node, int isPrintMessage){

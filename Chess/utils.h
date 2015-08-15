@@ -1,6 +1,6 @@
 #ifndef UTILS
 #define UTILS
-#define EMPTYMOVELIST createMoveListNode(createLocationNode(9, 9), createLocationNode(9, 9), EMPTY)
+#define EMPTYMOVELIST createMoveListNode(createLocationNode(-1, -1), createLocationNode(-1, -1), EMPTY)
 
 #include<stdio.h>
 #include <assert.h>
@@ -106,7 +106,7 @@ typedef struct list {
 typedef struct move {
 	locationNode origin;
 	locationNode destination;
-	char soldierToPromoteTo[7]; //queen, bishop, rook, knight
+	char soldierToPromoteTo;// [7]; //queen, bishop, rook, knight
 	struct move *next;
 }moveList;
 
@@ -122,6 +122,17 @@ typedef struct {
 	int isError;
 	char failedFunc[50];
 }actionSummery;
+
+typedef struct {
+	int isNextBlack; 
+	int gameMode; //1 for p VS p. 2 for p VS AI
+	int difficulty; //1-4, -1 for best, gameMode == 1 not saved
+	int isUserColorBlack; //gameMode == 1 not saved
+	//char board[BOARD_SIZE][BOARD_SIZE];
+}fileData;
+
+
+
 
 extern gameSettings settings; //= { 1, COLOR_WHITE, 0, 0, TWO_PLAYERS };
 extern gameBoard game_board;// = { 0, 0, 0, 0, 0 };
