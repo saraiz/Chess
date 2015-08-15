@@ -252,13 +252,6 @@ void clearBoard(){
 	game_board.numOfWhiteRooks = 0;
 }
 
-void moveUser(moveList userMove){
-	char type = game_board.board[userMove.origin.row][userMove.origin.column];
-	removeUser(userMove.origin);
-	// Add promotion
-	addUserByValue(userMove.destination, type);
-}
-
 void* myCalloc(int x, int y){
 	void* alloc = calloc(x, y);
 	//myAssert(alloc != NULL, "calloc");
@@ -354,7 +347,7 @@ moveList* moveConcat(moveList* first, moveList* second){
 		return second;
 	}
 	else if(isEmptyMoveList(second)){
-		return second;
+		return first;
 	}
 	else{
 		moveList* tail;

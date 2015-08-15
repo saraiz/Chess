@@ -20,8 +20,9 @@ int main()
 	init_board(game_board.board);
 	print_board(game_board.board);
 
-	//setSettings("clear\nset <d,4> white king"); //TODO delete
-	//setSettings("set <f,5> black king");
+	setSettings("clear\nset <a,1> white pawn"); //TODO delete
+	setSettings("set <b,2> black pawn");
+	setSettings("game_mode 2");
 	//setSettings("set <c,6> black rook");
 
 	actionSummery summery = readSettings();
