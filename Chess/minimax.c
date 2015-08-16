@@ -39,23 +39,40 @@ int getBoardScore(int isBlack){
 	}
 }
 
-minmaxValue minmax(gameBoard backup, int depth, int isMaximizingPlayer, int alpha, int betha, int isMinMaxForBlack){
+/* for get_score the minmax function will change the allPossibleMoves to be a list of one move (the wanted move)
+for get_best_move the minmax function is returning a list of steps and not 1 step
+*/
+minmaxValue minmax(gameBoard backup, 
+					int depth, 
+					int isMaximizingPlayer, 
+					int alpha, 
+					int betha, 
+					int isMinMaxForBlack, 
+					int isGetScore, 
+					moveList move){
 	// if isMaximizingPlayer == 1- its the computer turn. the color is the oposit than the user's color
 	int isBlack = isMinMaxForBlack;
 	if (isMaximizingPlayer == 0){
 		isBlack = 1 - isMinMaxForBlack;
 	}
 
-	moveList* allPossibleMoves = getAllValidMoves(isBlack);
+	moveList* allPossibleMoves;
+	if (isGetScore == 1){
+		isGetScore = 0;
+		allPossibleMoves = createMoveListNode(createLocationNode(move.origin.column, move.origin.row), createLocationNode(move.destination.column, move.destination.row), EMPTY);
+	}
+	else{
+		allPossibleMoves = getAllValidMoves(isBlack);
+	}
+	
 	int isListEmpty = isEmptyMoveList(allPossibleMoves);
 	int bestValue;
 	moveList bestMove;
 
 	if (depth == 0 || isListEmpty){
 		minmaxValue value;
-		value.score = getBoardScore(isMinMaxForBlack); // score is always for the computer?
-		value.bestMove;
-		bestMove.origin.row = bestMove.origin.column = bestMove.destination.row = bestMove.destination.column = -1;
+		value.score = getBoardScore(isMinMaxForBlack);
+		value.bestMove.origin.row = value.bestMove.origin.column = value.bestMove.destination.row = value.bestMove.destination.column = -1;
 		freeAllMoveList(allPossibleMoves);
 		return value;
 	}
@@ -66,7 +83,7 @@ minmaxValue minmax(gameBoard backup, int depth, int isMaximizingPlayer, int alph
 
 		while (current != NULL){
 			moveUser(*current, isMinMaxForBlack);
-			minmaxValue result = minmax(getCurrentBoardData(), depth - 1, 0, alpha, betha, isMinMaxForBlack);
+			minmaxValue result = minmax(getCurrentBoardData(), depth - 1, 0, alpha, betha, isMinMaxForBlack, isGetScore, move);
 			if (result.score > bestValue){
 				bestValue = result.score;
 				bestMove = *current;
@@ -100,7 +117,7 @@ minmaxValue minmax(gameBoard backup, int depth, int isMaximizingPlayer, int alph
 
 		while (current != NULL){
 			moveUser(*current, 1-isMinMaxForBlack);
-			minmaxValue result = minmax(getCurrentBoardData(), depth - 1, 1, alpha, betha, isMinMaxForBlack);
+			minmaxValue result = minmax(getCurrentBoardData(), depth - 1, 1, alpha, betha, isMinMaxForBlack, isGetScore, move);
 			if (result.score < bestValue){
 				bestValue = result.score;
 				bestMove = *current;
@@ -133,7 +150,7 @@ gameBoard getCurrentBoardData(){
 	gameBoard backup;
 	for (int col = 0; col < BOARD_SIZE; col++){
 		for (int row = 0; row < BOARD_SIZE; row++){
-			backup.board[col][row] = game_board.board[row][col];
+			backup.board[row][col] = game_board.board[row][col];
 		}
 	}
 

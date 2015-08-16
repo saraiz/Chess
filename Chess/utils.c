@@ -373,3 +373,13 @@ int isLocationValid(locationNode node, int isPrintMessage){
 
 	return isValid;
 }
+
+actionSummery createEmptySummery(){
+	actionSummery summery;
+	summery.isError = 0;
+	summery.isExecuted = 0;
+	summery.isFound = 0;
+	strcpy(summery.failedFunc,"calloc");
+
+	return summery;
+}

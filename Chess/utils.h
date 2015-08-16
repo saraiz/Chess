@@ -53,6 +53,7 @@
 #define ILLEGAL_CALTLING_MOVE "Illegal castling move\n"  
 
 #define TIE "The game ends in a tie\n"
+#define CHECK "Check!\n"
 
 #define ENTER_YOUR_MOVE "player - enter your move!\n"
 
@@ -162,6 +163,7 @@ void printMoveList(moveList* head);
 int isEmptyMoveList(moveList* list);
 moveList* moveConcat(moveList* first, moveList* second);
 int isLocationValid(locationNode node, int isPrintMessage);
+actionSummery createEmptySummery();
 
 
 #endif

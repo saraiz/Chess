@@ -19,11 +19,16 @@ int printAllPossibleMoves(moveList* moves);
 int printOneMove(moveList move);
 int isMate(int isBlack, int isShowMessage);
 int isTie(int isBlack, int isShowMessage);
+int isCheck(int isBlack, int isShowMessage);
 locationNode getKingLocation(int isBlack);
 char* convertSoldierTypeToSoldierName(char type);
 char convertSoldierNameToSoldierType(char *name, int isBlack);
 void computerTurn();
 char getSoldierTypeByColor(char type, int isBlack);
 void moveUser(moveList userMove, int isBlack);
+void checkForMate_Tie_Check(int isBlack, int *isError, int *isGameMate, int *isGameTie);
+moveList parseMove(char* loc);
+int isMovesEquale(moveList move1, moveList move2);
+int isLocationNodeEquale(locationNode node1, locationNode node2);
 
 #endif

@@ -4,7 +4,7 @@ actionSummery readGameActions(){
 	int isGameMate = 0;
 	int isGameTie = 0;
 	int isError = 0;
-	actionSummery summery = { 0, 0, 0, 0 };
+	actionSummery summery = createEmptySummery();
 
 	char* input = (char*)myCalloc(sizeof(char), 50);
 	if (input == NULL){
@@ -33,18 +33,9 @@ actionSummery readGameActions(){
 
 			summery = executeGameActions(input);
 			if (summery.isExecuted == 1){
-				isGameMate = isMate(1 - game_board.isBlackTurn, 1); // Check if there is a mante for the opponent
-				if (isGameMate == 2){
-					// ERROR
-					summery.isError = 1;
-				}
-				else if (isGameMate == 0){
-					isGameTie = isTie(1 - game_board.isBlackTurn, 1);
-					if (isGameTie == 2){
-						// ERROR
-						summery.isError = 1;
-					}
-				}
+				checkForMate_Tie_Check(game_board.isBlackTurn, &isError, &isGameMate, &isGameTie);
+				summery.isError = isError;
+				
 				// now it's the computer turn
 				game_board.isBlackTurn = 1 - game_board.isBlackTurn;
 			}
@@ -55,18 +46,8 @@ actionSummery readGameActions(){
 			computerTurn();
 			print_board(game_board.board);
 			
-			isGameMate = isMate(1 - game_board.isBlackTurn, 1); // Check if there is a mante for the opponent
-			if (isGameMate == 2){
-				// ERROR
-				summery.isError = 1;
-			}
-			else if (isGameMate == 0){
-				isGameTie = isTie(1 - game_board.isBlackTurn, 1);
-				if (isGameTie == 2){
-					// ERROR
-					summery.isError = 1;
-				}
-			}
+			checkForMate_Tie_Check(game_board.isBlackTurn, &isError, &isGameMate, &isGameTie);
+			summery.isError = isError;
 
 			game_board.isBlackTurn = 1 - game_board.isBlackTurn;
 		}
@@ -76,6 +57,24 @@ actionSummery readGameActions(){
 	myFree(input);
 
 	return summery;
+}
+
+void checkForMate_Tie_Check(int isBlack, int *isError, int *isGameMate, int *isGameTie){
+	*isGameMate = isMate(1 - isBlack, 1); // Check if there is a mate for the opponent
+	if (*isGameMate == 2){
+		// ERROR
+		*isError = 1;
+	}
+	else if (*isGameMate == 0){
+		*isGameTie = isTie(1 - isBlack, 1);
+		if (*isGameTie == 2){
+			// ERROR
+			*isError = 1;
+		}
+		else if (*isGameTie == 0){
+			isCheck(1 - isBlack, 1);
+		}
+	}
 }
 
 actionSummery executeGameActions(char* input){
@@ -103,7 +102,7 @@ actionSummery executeGameActions(char* input){
 
 actionSummery checkForGetMoves(char *input){
 	char *loc = strstr(input, "get_moves");
-	actionSummery summery = { 0, 0, 0, 0 };
+	actionSummery summery = createEmptySummery();
 
 	if (loc != NULL){
 		summery.isFound = 1;
@@ -149,13 +148,13 @@ actionSummery checkForGetMoves(char *input){
 
 actionSummery checkForBestMoves(char *input){
 	char *loc = strstr(input, "get_best_moves");
-	actionSummery summery = { 0, 0, 0, 0 };
+	actionSummery summery = createEmptySummery();
 
 	if (loc != NULL){
 		summery.isFound = 1;
 		loc = loc + 14;
 		loc = getNextChar(loc);
-		double value = strtod(loc, NULL);
+		//double value = strtod(loc, NULL);
 
 		// minmax??
 
@@ -166,14 +165,25 @@ actionSummery checkForBestMoves(char *input){
 
 actionSummery checkForGetScore(char *input){
 	char *loc = strstr(input, "get_score");
-	actionSummery summery = { 0, 0, 0, 0 };
+	actionSummery summery = createEmptySummery();
 
 	if (loc != NULL){
 		summery.isFound = 1;
 		loc = loc + 9;
 		loc = getNextChar(loc);
 
-		// need to continue
+		char *depthEnds = strstr(loc, " ");
+		if (depthEnds != NULL){
+			// shouldn't be NULL
+			char *depth = getSubString(loc, depthEnds);
+			double value = strtod(depth, NULL);
+			++depthEnds;
+
+			// Parse move 
+			moveList move = parseMove(depthEnds);
+			minmaxValue result = minmax(getCurrentBoardData(), value, 1, -99999, 99999, game_board.isBlackTurn, 1, move);
+			printf("%d\n", result.score);
+		}
 
 	}
 
@@ -183,13 +193,13 @@ actionSummery checkForGetScore(char *input){
 
 actionSummery checkForSave(char *input){
 	char *loc = strstr(input, "save");
-	actionSummery summery = { 0, 0, 0, 0 };
+	actionSummery summery = createEmptySummery();
 
 	if (loc != NULL){
 		summery.isFound = 1;
 		loc = loc + 4;
 		loc = getNextChar(loc);
-		char *path = loc;
+		//char *path = loc;
 
 		// Files - Haim
 	}
@@ -202,70 +212,84 @@ actionSummery checkForMove(char *input){
 	char *loc = strstr(input, "move");
 	char *loc2 = strstr(input, "get_moves");
 	char *loc3 = strstr(input, "get_best_moves");
+	char *loc4 = strstr(input, "get_score");
 
-	actionSummery summery = { 0, 0, 0, 0 };
-	if (loc != NULL && loc2 == NULL && loc3 == NULL){
+	actionSummery summery = createEmptySummery();
+	if (loc != NULL && loc2 == NULL && loc3 == NULL && loc4 == NULL){
 		summery.isFound = 1;
-		loc = loc + 4;
-		loc = getNextChar(loc);
-
-		// Pars the soldier to move
-
-		locationNode origin = getNextLocation(&loc);
-		if (origin.column == -1 && origin.row == -1){
+		
+		moveList move = parseMove(loc);
+		if (move.origin.row == -1 || move.destination.row == -1){
 			summery.isError = 1;
-			strcmp(summery.failedFunc, "calloc");
+			strcpy(summery.failedFunc, "calloc");
 
 			return summery;
 		}
-
-		++loc;
-		loc = getNextChar(loc);
-		loc = loc + 2; // pass "to"
-		loc = getNextChar(loc);
-
-		locationNode destination = getNextLocation(&loc);
-		if (origin.column == -1 && origin.row == -1){
-			summery.isError = 1;
-			strcmp(summery.failedFunc, "calloc");
-
-			return summery;
-		}
-
-		// Check for promotion
-		++loc; // pass the > sign
-		loc = getNextChar(loc);
-		char *soldierToPromoteTo;
-		int isNeedToPromote = 0;
-		if (loc != NULL && *loc != '\0'){
-			// the user asked for promotion
-			soldierToPromoteTo = loc;
-			isNeedToPromote = 1;
-		}
-
-		moveList move;
-		move.origin = origin;
-		move.destination = destination;
-		move.soldierToPromoteTo = isNeedToPromote == 1 ? convertSoldierNameToSoldierType(loc, game_board.isBlackTurn) : 32;// 32 is the empty string
 
 		int isValid = isValidMove(move, game_board.isBlackTurn, 1);
 		if (isValid == 2){
 			// ERROR
 			summery.isError = 1;
-			strcmp(summery.failedFunc, "calloc");
+			strcpy(summery.failedFunc, "calloc");
 
 			return summery;
 		}
 
 		if (isValid == 1){
 			summery.isExecuted = 1;
-			moveUser(move, settings.isUserBlack);
+			moveUser(move, game_board.isBlackTurn);
 			print_board(game_board.board);
 		}
 	}
 
 	return summery;
 
+}
+
+moveList parseMove(char* loc){
+	moveList move;
+	move.origin = createLocationNode(-1,-1);
+	move.destination = createLocationNode(-1, -1);
+	move.next = NULL;
+	move.soldierToPromoteTo = EMPTY;
+
+	loc = loc + 4;
+	loc = getNextChar(loc);
+
+	// Pars the soldier to move
+
+	locationNode origin = getNextLocation(&loc);
+	if (origin.column == -1 && origin.row == -1){
+		return move;
+	}
+
+	++loc;
+	loc = getNextChar(loc);
+	loc = loc + 2; // pass "to"
+	loc = getNextChar(loc);
+
+	locationNode destination = getNextLocation(&loc);
+	if (origin.column == -1 && origin.row == -1){
+		return move;
+	}
+
+	// Check for promotion
+	++loc; // pass the > sign
+	loc = getNextChar(loc);
+	char *soldierToPromoteTo;
+	int isNeedToPromote = 0;
+	if (loc != NULL && *loc != '\0'){
+		// the user asked for promotion
+		soldierToPromoteTo = loc;
+		isNeedToPromote = 1;
+	}
+
+	
+	move.origin = origin;
+	move.destination = destination;
+	move.soldierToPromoteTo = isNeedToPromote == 1 ? convertSoldierNameToSoldierType(soldierToPromoteTo, game_board.isBlackTurn) : 32;// 32 is the empty string
+
+	return move;
 }
 
 locationNode getNextLocation(char **loc){
@@ -387,7 +411,7 @@ int isPositionContainUserPiece(int isBlack, locationNode position, int isShowMes
 
 int printAllPossibleMoves(moveList* moves){
 	if (moves == NULL || isEmptyMoveList(moves)){
-		return;
+		return 0;
 	}
 
 	moveList* current = moves;
@@ -425,9 +449,19 @@ int printOneMove(moveList move){
 	return 1;
 }
 
-// Haim wrote it in ChessLogic.c
 int isCheck(int isBlack, int isShowMessage){
-	return 0;
+	locationNode kingLocation = getKingLocation(isBlack);
+	int isKingThreated = amITretrnd(kingLocation, isBlack);
+	if (isKingThreated == 2){
+		// ERROR
+		return 0;
+	}
+
+	if (isKingThreated == 1 && isShowMessage == 1){
+		print_message(CHECK);
+	}
+
+	return isKingThreated;
 }
 
 int isMate(int isBlack, int isShowMessage){
@@ -651,9 +685,20 @@ char getSoldierTypeByColor(char type, int isBlack){
 }
 
 void computerTurn(){
+	// TBD handle best difficulty
+	moveList emptyMove;
+	emptyMove.origin = createLocationNode(-1, -1);
+	emptyMove.destination = createLocationNode(-1, -1);
+	emptyMove.soldierToPromoteTo = EMPTY;
+	emptyMove.next = NULL;
 
-	minmaxValue result = minmax(getCurrentBoardData(), settings.minmax_depth, 1, -99999, 99999, 1 - settings.isUserBlack);
+	minmaxValue result = minmax(getCurrentBoardData(), settings.minmax_depth, 1, -99999, 99999, 1 - settings.isUserBlack, 0, emptyMove);
+	if (result.bestMove.destination.row != -1 && result.bestMove.destination.column != -1){
+		moveUser(result.bestMove, 1 - settings.isUserBlack);
 
+		printf("Computer: move ");
+		printOneMove(result.bestMove);
+	}
 
 	/*if (result.bestMove.path != NULL){
 	moveUser(result.bestMove.path);
@@ -675,7 +720,7 @@ void moveUser(moveList userMove, int isBlack){
 
 	if (userMove.soldierToPromoteTo != EMPTY){
 		// The soldier need to be promoted
-		type = getSoldierTypeByColor(userMove.soldierToPromoteTo, isblank);
+		type = getSoldierTypeByColor(userMove.soldierToPromoteTo, isBlack);
 	}
 	addUserByValue(userMove.destination, type);
 }
