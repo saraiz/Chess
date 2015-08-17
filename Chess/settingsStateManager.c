@@ -1,7 +1,7 @@
 #include "settingsStateManager.h"
 
 actionSummery readSettings(){
-	actionSummery summery = { 0, 0, 0, 0 };
+	actionSummery summery = createEmptySummery();
 
 	char *input = myMalloc(sizeof(char) * 50);
 	if (input == NULL){
@@ -72,7 +72,7 @@ actionSummery executeSettings(char* input){
 
 actionSummery checkForPrint(char* input){
 	char* loc = strstr(input, "print");
-	actionSummery summery = { 0, 0, 0, 0 };
+	actionSummery summery = createEmptySummery();
 
 	if (loc != NULL){
 		summery.isFound = 1;
@@ -85,7 +85,7 @@ actionSummery checkForPrint(char* input){
 
 actionSummery checkForStart(char* input){
 	char* loc = strstr(input, "start");
-	actionSummery summery = { 0, 0, 0, 0 };
+	actionSummery summery = createEmptySummery();
 
 	if (loc != NULL){
 		summery.isFound = 1;
@@ -100,7 +100,7 @@ actionSummery checkForStart(char* input){
 
 actionSummery checkForSet(char* input){
 	char* loc = strstr(input, "set");
-	actionSummery summery = { 0, 0, 0, 0 };
+	actionSummery summery = createEmptySummery();
 
 	if (loc != NULL){
 		summery.isFound = 1;
@@ -166,7 +166,7 @@ actionSummery checkForSet(char* input){
 
 actionSummery checkForRemove(char *input){
 	char* loc = strstr(input, "rm");
-	actionSummery summery = { 0, 0, 0, 0 };
+	actionSummery summery = createEmptySummery();
 
 	if (loc != NULL){
 		summery.isFound = 1;
@@ -211,7 +211,7 @@ actionSummery checkForRemove(char *input){
 
 actionSummery checkForNextPlayer(char *input){
 	char *loc = strstr(input, "next_player");
-	actionSummery summery = { 0, 0, 0, 0 };
+	actionSummery summery = createEmptySummery();
 	if (loc != NULL){
 		summery.isFound = 1;
 		loc = loc + 11;
@@ -231,7 +231,7 @@ actionSummery checkForNextPlayer(char *input){
 
 actionSummery checkForClear(char *input){
 	char *loc = strstr(input, "clear");
-	actionSummery summery = { 0, 0, 0, 0 };
+	actionSummery summery = createEmptySummery();
 	if (loc != NULL){
 		summery.isFound = 1;
 
@@ -243,7 +243,7 @@ actionSummery checkForClear(char *input){
 
 actionSummery checkForLoad(char *input){
 	char *loc = strstr(input, "load");
-	actionSummery summery = { 0, 0, 0, 0 };
+	actionSummery summery = createEmptySummery();
 	if (loc != NULL){
 		summery.isFound = 1;
 		loc = loc + 4;
@@ -255,7 +255,7 @@ actionSummery checkForLoad(char *input){
 	return summery;
 }
 actionSummery checkForUserColor(char* input){
-	actionSummery summery = { 0, 0, 0, 0 };
+	actionSummery summery = createEmptySummery();
 
 	if (settings.gameMode == PLAYER_VS_AI){
 		char* loc = strstr(input, "user_color");
@@ -276,7 +276,7 @@ actionSummery checkForUserColor(char* input){
 
 actionSummery checkForGameMode(char *input){
 	char* loc = strstr(input, "game_mode");
-	actionSummery summery = { 0, 0, 0, 0 };
+	actionSummery summery = createEmptySummery();
 
 	if (loc != NULL){
 		summery.isFound = 1;
@@ -297,7 +297,7 @@ actionSummery checkForGameMode(char *input){
 }
 
 actionSummery checkForDifficulty(char *input){
-	actionSummery summery = { 0, 0, 0, 0 };
+	actionSummery summery = createEmptySummery();
 
 	if (settings.gameMode == PLAYER_VS_AI){
 		char* loc = strstr(input, "difficulty depth");
@@ -403,22 +403,22 @@ int isBoardValidAfterSet(char *type, char *color, int isShowMessage){
 
 	if (strcmp(color, "black") == 0){
 
-		if ((type == BISHOP && game_board.numOfBlackBishops == 2) ||
-			(type == KING && game_board.numOfBlackKings == 1) ||
-			(type == KNIGHT && game_board.numOfBlackKnights == 2) ||
-			(type == PAWN && game_board.numOfBlackPawns == 8) ||
-			(type == QUEEN && game_board.numOfBlackQueens == 1) ||
-			(type == ROOK && game_board.numOfBlackRooks == 2)){
+		if ((strcmp(type, BISHOP) == 0 && game_board.numOfBlackBishops == 2) ||
+			(strcmp(type, KING) == 0 && game_board.numOfBlackKings == 1) ||
+			(strcmp(type, KNIGHT) == 0 && game_board.numOfBlackKnights == 2) ||
+			(strcmp(type, PAWN) == 0 && game_board.numOfBlackPawns == 8) ||
+			(strcmp(type, QUEEN) == 0 && game_board.numOfBlackQueens == 1) ||
+			(strcmp(type, ROOK) == 0 && game_board.numOfBlackRooks == 2)){
 			isValid = 0;
 		}
 	}
 	else{
-		if ((type == BISHOP && game_board.numOfWhiteBishops == 2) ||
-			(type == KING && game_board.numOfWhiteKings == 1) ||
-			(type == KNIGHT && game_board.numOfWhiteKnights == 2) ||
-			(type == PAWN && game_board.numOfWhitePawns == 8) ||
-			(type == QUEEN && game_board.numOfWhiteQueens == 1) ||
-			(type == ROOK && game_board.numOfWhiteRooks == 2)){
+		if ((strcmp(type, BISHOP) == 0 && game_board.numOfWhiteBishops == 2) ||
+			(strcmp(type, KING) == 0 && game_board.numOfWhiteKings == 1) ||
+			(strcmp(type, KNIGHT) == 0 && game_board.numOfWhiteKnights == 2) ||
+			(strcmp(type, PAWN) == 0 && game_board.numOfWhitePawns == 8) ||
+			(strcmp(type, QUEEN) == 0 && game_board.numOfWhiteQueens == 1) ||
+			(strcmp(type, ROOK) == 0 && game_board.numOfWhiteRooks == 2)){
 			isValid = 0;
 		}
 	}

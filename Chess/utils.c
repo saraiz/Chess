@@ -255,13 +255,6 @@ void clearBoard(){
 	game_board.numOfWhiteRooks = 0;
 }
 
-void moveUser(moveList userMove){
-	char type = game_board.board[userMove.origin.row][userMove.origin.column];
-	removeUser(userMove.origin);
-	// Add promotion
-	addUserByValue(userMove.destination, type);
-}
-
 void* myCalloc(int x, int y){
 	void* alloc = calloc(x, y);
 	//myAssert(alloc != NULL, "calloc");
@@ -382,4 +375,14 @@ int isLocationValid(locationNode node, int isPrintMessage){
 	}
 
 	return isValid;
+}
+
+actionSummery createEmptySummery(){
+	actionSummery summery;
+	summery.isError = 0;
+	summery.isExecuted = 0;
+	summery.isFound = 0;
+	strcpy(summery.failedFunc,"calloc");
+
+	return summery;
 }

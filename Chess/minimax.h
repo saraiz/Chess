@@ -9,7 +9,26 @@
 #define ROOK_SCORE 5
 #define QUEEN_SCORE 9
 #define KING_SCORE 400
+#define LOSSING_SCORE -500
+#define WINNING_SCORE 500
+#define TIE_SCORE 600
+
+typedef struct minmaxValue{
+	int score;
+	moveList bestMove;
+	//struct minmaxValue *next;
+}minmaxValue;
 
 int getBoardScore(int isBlack);
+minmaxValue minmax(gameBoard backup,
+	int depth,
+	int isMaximizingPlayer,
+	int alpha,
+	int betha,
+	int isMinMaxForBlack,
+	int isGetScore,
+	moveList move);
+gameBoard getCurrentBoardData();
+void restorBoardData(gameBoard backUp);
 
 #endif
