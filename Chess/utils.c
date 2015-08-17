@@ -357,7 +357,7 @@ moveList* moveConcat(moveList* first, moveList* second){
 		return second;
 	}
 	else if(isEmptyMoveList(second)){
-		return second;
+		return first;
 	}
 	else{
 		moveList* tail;
@@ -373,7 +373,7 @@ int isEmptyMoveList (moveList* list){
 
 int isLocationValid(locationNode node, int isPrintMessage){
 	int isValid = 1;
-	if ((node.row < 0) || (node.row > 8) || (node.column < 0) || (node.column > 8)){
+	if ((node.row < 0) || (node.row > 7) || (node.column < 0) || (node.column > 7)){
 		isValid = 0;
 	}
 
