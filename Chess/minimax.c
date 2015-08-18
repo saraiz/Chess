@@ -62,7 +62,7 @@ minmaxValue minmax(gameBoard backup,
 		allPossibleMoves = createMoveListNode(createLocationNode(move.origin.column, move.origin.row), createLocationNode(move.destination.column, move.destination.row), EMPTY);
 	}
 	else{
-		allPossibleMoves = getAllValidMoves(isBlack);
+		allPossibleMoves = getAllValidMoves(isBlack, 0);
 	}
 	
 	int isListEmpty = isEmptyMoveList(allPossibleMoves);

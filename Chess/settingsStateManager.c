@@ -90,7 +90,7 @@ actionSummery checkForStart(char* input){
 	if (loc != NULL){
 		summery.isFound = 1;
 
-		if (isBoardValidToStartGame(1) == 1){
+		if (isBoardValidToStartGame(1) == 1){ //TODO- not a comment
 			summery.isExecuted = 1;
 		}
 	}

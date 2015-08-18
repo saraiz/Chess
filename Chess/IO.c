@@ -1,6 +1,6 @@
 #include "IO.h"         
 
-fileData loadGame(char* path){ //if error everiting is -1 TODO change to path
+fileData loadGame(char* path){ //if error everithing is -1
 	fileData toReturn = { -1, -1, -1, -1 };
 	FILE* f = fopen(path, "r");
 	if (f == NULL){
@@ -42,7 +42,7 @@ fileData loadGame(char* path){ //if error everiting is -1 TODO change to path
 	return toReturn;
 }
 
-int saveGame(fileData toSave, char* path){ //ret 1 if failure //TODO change to path
+int saveGame(fileData toSave, char* path){ //ret 1 if failure 
 	FILE* f = fopen(path, "w");
 	if (f == NULL){
 		return 1;

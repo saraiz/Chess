@@ -20,12 +20,12 @@ minimax.o: minimax.c utils.c gameStateManager.c
 IO.o: IO.c utils.c utils.c
 	gcc  -std=c99 -pedantic-errors -c -Wall -g -lm IO.c `sdl-config --cflags`
 
-gameStateManager.o: gameStateManager.c utils.c ChessLogic.c
+gameStateManager.o: gameStateManager.c utils.c ChessLogic.c minimax.c
 	gcc  -std=c99 -pedantic-errors -c -Wall -g -lm gameStateManager.c `sdl-config --cflags`
 
-ChessLogic.o: ChessLogic.c utils.c
+ChessLogic.o: ChessLogic.c utils.c gameStateManager.c 
 	gcc  -std=c99 -pedantic-errors -c -Wall -g -lm ChessLogic.c `sdl-config --cflags`
 
 
-Chess.exe : utils.o settingsStateManager.o minimax.o IO.o ChessLogic.o Chess.o gameStateManager.o
+Chess : utils.o settingsStateManager.o minimax.o IO.o ChessLogic.o Chess.o gameStateManager.o
 	gcc  -o Chess.exe -lm -std=c99 -pedantic-errors -g `sdl-config --libs` utils.o settingsStateManager.o minimax.o IO.o ChessLogic.o Chess.o gameStateManager.o
