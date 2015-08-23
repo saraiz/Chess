@@ -2,7 +2,7 @@
 #define UTILS
 #define EMPTYMOVELIST createMoveListNode(createLocationNode(-1, -1), createLocationNode(-1, -1), EMPTY)
 
-#include<stdio.h>
+#include <stdio.h>
 #include <assert.h>
 #include <string.h>
 #include <stdlib.h>
@@ -107,7 +107,7 @@ typedef struct list {
 typedef struct move {
 	locationNode origin;
 	locationNode destination;
-	char soldierToPromoteTo;//queen, bishop, rook, knight
+	char soldierToPromoteTo;// queen, bishop, rook, knight
 	struct move *next;
 }moveList;
 

@@ -1,4 +1,5 @@
 #include "utils.h"
+#include "Chess.h"
 
 void getInput(char** inputPointer){
 	char* input = *inputPointer;
@@ -231,8 +232,10 @@ void addUserByValue(locationNode node, char value){
 }
 
 void clearBoard(){
-	for (int i = 0; i < BOARD_SIZE; i++){
-		for (int j = 0; j < BOARD_SIZE; j++){
+	int i;
+	for ( i = 0; i < BOARD_SIZE; i++){
+		int j;
+		for (j = 0; j < BOARD_SIZE; j++){
 			game_board.board[i][j] = EMPTY;
 		}
 	}
@@ -363,7 +366,7 @@ int isEmptyMoveList (moveList* list){
 
 int isLocationValid(locationNode node, int isPrintMessage){
 	int isValid = 1;
-	if ((node.row < 0) || (node.row > 8) || (node.column < 0) || (node.column > 8)){
+	if ((node.row < 0) || (node.row > 7) || (node.column < 0) || (node.column > 7)){
 		isValid = 0;
 	}
 

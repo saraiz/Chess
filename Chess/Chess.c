@@ -1,19 +1,19 @@
 #include "Chess.h"
-#include "ChessLogic.h"
-#include "IO.h"
 
 gameSettings settings = { 1, COLOR_WHITE, 0, 0, TWO_PLAYERS };
 gameBoard game_board = { 0, 0, 0, 0, 0 };
 
 
-void NOTmain(){ //TODO delete
+void NOTmain(){
 	init_board(game_board.board);
 	print_board(game_board.board);
-	fileData tosave = { 1, 1, 1, 1 };
-	saveGame(tosave, 2);
+	fileData bla1 = { 0, 1, -1, 0 };
+	//saveGame(bla1, "no 1.xml");
+	//fileData bla = loadGame("no 1.xml");
+	
+	print_board(game_board.board);
 	getchar();
 }
-
 
 int main()
 {

@@ -19,8 +19,7 @@ int CheackDeatenetionAndAdd(moveList* sentinal, locationNode origen, locationNod
 int CheackDeatenetionAndAdd_Pawn(moveList* sentinal, locationNode origen, locationNode destenation, int isEat, int isblack);
 moveList* removeAndFreeSentinalIfNececery(moveList* sentinal);
 int amITretrnd(locationNode loc, int myColor);
-int isLocInDestenetion(locationNode loc, moveList* head);
-
+int amIThreatened(locationNode loc, int isMyColorBlack);
 
 
 
