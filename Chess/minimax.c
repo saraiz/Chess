@@ -49,7 +49,9 @@ minmaxValue minmax(gameBoard backup,
 					int betha, 
 					int isMinMaxForBlack, 
 					int isGetScore, 
-					moveList move){
+					moveList move, 
+					int isGetBest, 
+					int isFirstIteration){
 	// if isMaximizingPlayer == 1- its the computer turn. the color is the oposit than the user's color
 	int isBlack = isMinMaxForBlack;
 	if (isMaximizingPlayer == 0){
@@ -58,8 +60,9 @@ minmaxValue minmax(gameBoard backup,
 
 	moveList* allPossibleMoves;
 	if (isGetScore == 1){
+		// this is the get_score function 
 		isGetScore = 0;
-		allPossibleMoves = createMoveListNode(createLocationNode(move.origin.column, move.origin.row), createLocationNode(move.destination.column, move.destination.row), EMPTY);
+		allPossibleMoves = createMoveListNode(createLocationNode(move.origin.column, move.origin.row), createLocationNode(move.destination.column, move.destination.row), move.soldierToPromoteTo);
 	}
 	else{
 		allPossibleMoves = getAllValidMoves(isBlack);
@@ -68,6 +71,7 @@ minmaxValue minmax(gameBoard backup,
 	int isListEmpty = isEmptyMoveList(allPossibleMoves);
 	int bestValue;
 	moveList bestMove;
+	moveList *bestMovesList;
 
 	if (depth == 0 || isListEmpty){
 		minmaxValue value;
@@ -83,10 +87,21 @@ minmaxValue minmax(gameBoard backup,
 
 		while (current != NULL){
 			moveUser(*current, isMinMaxForBlack);
-			minmaxValue result = minmax(getCurrentBoardData(), depth - 1, 0, alpha, betha, isMinMaxForBlack, isGetScore, move);
+			minmaxValue result = minmax(getCurrentBoardData(), depth - 1, 0, alpha, betha, isMinMaxForBlack, isGetScore, move, isGetBest, 0);
 			if (result.score > bestValue){
 				bestValue = result.score;
 				bestMove = *current;
+
+				if (isGetBest == 1 && isFirstIteration == 1){
+					// This is the get_best_moves function
+					// need to init the best moves list with the current move 
+					bestMovesList = createMoveListNode(createLocationNode(current->origin.column, current->origin.row), createLocationNode(current->destination.column, current->destination.row), current->soldierToPromoteTo);
+				}
+			}
+			else if (result.score == bestValue && isGetBest == 1 && isFirstIteration == 1){
+				// This is the get_best_moves function
+				// need to add the current move to the best moves list
+				bestMovesList->next = createMoveListNode(createLocationNode(current->origin.column, current->origin.row), createLocationNode(current->destination.column, current->destination.row), current->soldierToPromoteTo);
 			}
 
 			//alpha = max(alpha, bestValue);
@@ -107,8 +122,13 @@ minmaxValue minmax(gameBoard backup,
 
 
 		finalResult.bestMove = bestMove;
+		if (isGetBest == 1&& isFirstIteration == 1){
+			finalResult.bestMovesList = bestMovesList;
+		}
+		
 		finalResult.score = bestValue;
 		freeAllMoveList(allPossibleMoves);
+		//freeAllMoveList(bestMovesList);
 
 		return finalResult;
 	}
@@ -117,7 +137,7 @@ minmaxValue minmax(gameBoard backup,
 
 		while (current != NULL){
 			moveUser(*current, 1-isMinMaxForBlack);
-			minmaxValue result = minmax(getCurrentBoardData(), depth - 1, 1, alpha, betha, isMinMaxForBlack, isGetScore, move);
+			minmaxValue result = minmax(getCurrentBoardData(), depth - 1, 1, alpha, betha, isMinMaxForBlack, isGetScore, move, isGetBest, 0);
 			if (result.score < bestValue){
 				bestValue = result.score;
 				bestMove = *current;
@@ -195,4 +215,5 @@ void restorBoardData(gameBoard backUp){
 	game_board.numOfWhiteRooks = backUp.numOfWhiteRooks;
 
 }
+
 
