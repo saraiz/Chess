@@ -452,6 +452,7 @@ int printOneMove(moveList move){
 int isCheck(int isBlack, int isShowMessage){
 	//locationNode kingLocation = getKingLocation(isBlack);
 	int isKingThreated = amIThreatened(isBlack);
+
 	if (isKingThreated == 2){
 		// ERROR
 		return 0;
@@ -473,7 +474,9 @@ int isMate(int isBlack, int isShowMessage){
 	}*/
 
 	// 0- black, 1- white
+
 	int isCheck = amIThreatened( 1 - isBlack) == 1;
+
 	if (isCheck == 2){
 		// ERROR
 		return 2;
@@ -506,7 +509,9 @@ int isTie(int isBlack, int isShowMessage){
 	//locationNode node= getKingLocation(isBlack);
 
 	// 0- black, 1- white
+
 	int isCheck = amIThreatened( 1 - isBlack) == 1;
+
 	if (isCheck == 2){
 		// ERROR
 		return 0;
