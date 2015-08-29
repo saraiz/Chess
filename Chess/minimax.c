@@ -72,6 +72,7 @@ minmaxValue minmax(gameBoard backup,
 	int bestValue;
 	moveList bestMove;
 	moveList *bestMovesList;
+	int isBestMovesListEmpty = 1;
 
 	if (depth == 0 || isListEmpty){
 		minmaxValue value;
@@ -95,7 +96,12 @@ minmaxValue minmax(gameBoard backup,
 				if (isGetBest == 1 && isFirstIteration == 1){
 					// This is the get_best_moves function
 					// need to init the best moves list with the current move 
+					if (!isBestMovesListEmpty){
+						freeAllMoveList(bestMovesList);
+					}
+
 					bestMovesList = createMoveListNode(createLocationNode(current->origin.column, current->origin.row), createLocationNode(current->destination.column, current->destination.row), current->soldierToPromoteTo);
+					isBestMovesListEmpty = 0;
 				}
 			}
 			else if (result.score == bestValue && isGetBest == 1 && isFirstIteration == 1){
