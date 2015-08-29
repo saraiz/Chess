@@ -8,6 +8,8 @@ int main()
 	init_board(game_board.board);
 
 	//setSettings("clear\nset <a,1> black king"); //TODO delete
+	setSettings("set <d,3> white pawn");
+	setSettings("set <e,4> black pawn");
 	//setSettings("game_mode 2");
 	//setSettings("difficulty 4");
 	//setSettings("set <d,1> black bishop");

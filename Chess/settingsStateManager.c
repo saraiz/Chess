@@ -249,7 +249,18 @@ actionSummery checkForLoad(char *input){
 		loc = loc + 4;
 		loc = getNextChar(loc);
 
-		// load file - HAIM
+		fileData gameData = loadGame(loc);
+		if (gameData.difficulty == -1 && 
+			gameData.gameMode == -1 && 
+			gameData.isNextBlack == -1 && 
+			gameData.isUserColorBlack == -1){
+			// ERROR
+
+			summery.isError = 1;
+			strcpy(summery.failedFunc, "fopen");
+
+			return summery;
+		}
 	}
 
 	return summery;
