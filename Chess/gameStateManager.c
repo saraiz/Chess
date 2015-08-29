@@ -217,9 +217,24 @@ actionSummery checkForSave(char *input){
 		summery.isFound = 1;
 		loc = loc + 4;
 		loc = getNextChar(loc);
-		//char *path = loc;
+		char *path = loc;
 
-		// Files - Haim
+		fileData data;
+		data.difficulty = settings.minmax_depth;
+		data.gameMode = settings.gameMode;
+		data.isNextBlack = game_board.isBlackTurn;
+		data.isUserColorBlack = settings.isUserBlack;
+		
+		int isFailure = saveGame(data, path);
+		if (isFailure == 1){
+			// ERROR
+
+			summery.isError = 1;
+			strcpy(summery.failedFunc, "fopen");
+
+			return summery;
+		}
+
 	}
 
 	return summery;
