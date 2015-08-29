@@ -154,10 +154,24 @@ actionSummery checkForBestMoves(char *input){
 		summery.isFound = 1;
 		loc = loc + 14;
 		loc = getNextChar(loc);
-		//double value = strtod(loc, NULL);
+		double depth = strtod(loc, NULL);
 
-		// minmax??
+		moveList emptyMove;
+		emptyMove.destination = createLocationNode(-1, -1);
+		emptyMove.origin = createLocationNode(-1, -1);
+		emptyMove.soldierToPromoteTo = EMPTY;
+		emptyMove.next = NULL;
 
+		minmaxValue result = minmax(getCurrentBoardData(), depth, 1, -99999, 99999, game_board.isBlackTurn, 0, emptyMove, 1, 1);
+		int isSuccess = printAllPossibleMoves(result.bestMovesList);
+		freeAllMoveList(result.bestMovesList);
+		if (isSuccess == 0){
+			// ERROR
+			summery.isError = 1;
+			strcpy(summery.failedFunc, "calloc");
+
+			return summery;
+		}
 	}
 
 	return summery;
@@ -181,8 +195,12 @@ actionSummery checkForGetScore(char *input){
 
 			// Parse move 
 			moveList move = parseMove(depthEnds);
-			minmaxValue result = minmax(getCurrentBoardData(), value, 1, -99999, 99999, game_board.isBlackTurn, 1, move);
-			printf("%d\n", result.score);
+			if (isValidMove(move, game_board.isBlackTurn, 1) == 1){ //TODO - ask if we need to check if the move is valid
+				minmaxValue result = minmax(getCurrentBoardData(), value, 1, -99999, 99999, game_board.isBlackTurn, 1, move, 0, 1);
+				printf("%d\n", result.score);
+				//freeAllMoveList(result.bestMovesList);
+			}
+			
 		}
 
 	}
@@ -199,9 +217,24 @@ actionSummery checkForSave(char *input){
 		summery.isFound = 1;
 		loc = loc + 4;
 		loc = getNextChar(loc);
-		//char *path = loc;
+		char *path = loc;
 
-		// Files - Haim
+		fileData data;
+		data.difficulty = settings.minmax_depth;
+		data.gameMode = settings.gameMode;
+		data.isNextBlack = game_board.isBlackTurn;
+		data.isUserColorBlack = settings.isUserBlack;
+		
+		int isFailure = saveGame(data, path);
+		if (isFailure == 1){
+			// ERROR
+
+			summery.isError = 1;
+			strcpy(summery.failedFunc, "fopen");
+
+			return summery;
+		}
+
 	}
 
 	return summery;
@@ -692,7 +725,7 @@ void computerTurn(){
 	emptyMove.soldierToPromoteTo = EMPTY;
 	emptyMove.next = NULL;
 
-	minmaxValue result = minmax(getCurrentBoardData(), settings.minmax_depth, 1, -99999, 99999, 1 - settings.isUserBlack, 0, emptyMove);
+	minmaxValue result = minmax(getCurrentBoardData(), settings.minmax_depth, 1, -99999, 99999, 1 - settings.isUserBlack, 0, emptyMove, 0, 1);
 	if (result.bestMove.destination.row != -1 && result.bestMove.destination.column != -1){
 		moveUser(result.bestMove, 1 - settings.isUserBlack);
 
@@ -700,14 +733,7 @@ void computerTurn(){
 		printOneMove(result.bestMove);
 	}
 
-	/*if (result.bestMove.path != NULL){
-	moveUser(result.bestMove.path);
-
-	printf("Computer: move ");
-	printOneMove(result.bestMove.path);
-
-	freeLocList(result.bestMove.path);
-	}*/
+	//freeAllMoveList(result.bestMovesList);
 }
 
 void moveUser(moveList userMove, int isBlack){

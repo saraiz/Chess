@@ -16,6 +16,7 @@
 typedef struct minmaxValue{
 	int score;
 	moveList bestMove;
+	moveList *bestMovesList;
 	//struct minmaxValue *next;
 }minmaxValue;
 
@@ -27,7 +28,9 @@ minmaxValue minmax(gameBoard backup,
 	int betha,
 	int isMinMaxForBlack,
 	int isGetScore,
-	moveList move);
+	moveList move,
+	int isGetBest,
+	int isFirstIteration);
 gameBoard getCurrentBoardData();
 void restorBoardData(gameBoard backUp);
 

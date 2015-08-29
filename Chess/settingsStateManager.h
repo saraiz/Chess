@@ -1,6 +1,7 @@
 #ifndef SETTINGS
 #define SETTINGS
 #include "utils.h"
+#include "IO.h"
 
 void init_board(char board[BOARD_SIZE][BOARD_SIZE]);
 int isBoardValidAfterSet(char *type, char *color, int isShowMessage);
