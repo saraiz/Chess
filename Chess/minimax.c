@@ -115,13 +115,13 @@ minmaxValue minmax(gameBoard backup,
 				alpha = bestValue;
 			}
 
+			// delete last changes
+			restorBoardData(backup);
+
 			if (betha <= alpha){
 				// PRUNING
 				break;
 			}
-
-			// delete last changes
-			restorBoardData(backup);
 
 			current = current->next;
 		}
@@ -153,13 +153,13 @@ minmaxValue minmax(gameBoard backup,
 				betha = bestValue;
 			}
 
+			// delete last changes
+			restorBoardData(backup);
+
 			if (betha <= alpha){
 				// PRUNING
 				break;
 			}
-
-			// delete last changes
-			restorBoardData(backup);
 
 			current = current->next;
 		}
