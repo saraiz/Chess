@@ -3,10 +3,12 @@
 gameSettings settings = { 1, COLOR_WHITE, 0, 0, TWO_PLAYERS };
 gameBoard game_board = { 0, 0, 0, 0, 0 };
 
-int main()
+int main(int argc, char* argv[])
 {
+	haimstart();
+	/*
 	init_board(game_board.board);
-
+	
 	//setSettings("clear\nset <a,1> black king"); //TODO delete
 	setSettings("set <d,3> white pawn");
 	setSettings("set <e,4> black pawn");
@@ -37,7 +39,7 @@ int main()
 
 		}
 	}
-
+	*/
 	getchar(); //TODO delete
 	return 1;
 }

@@ -1,6 +1,7 @@
 #include "utils.h"
 #include "Chess.h"
 
+
 void getInput(char** inputPointer){
 	char* input = *inputPointer;
 	int curSize = 0;

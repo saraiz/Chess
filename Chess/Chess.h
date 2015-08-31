@@ -4,6 +4,7 @@
 #include "settingsStateManager.h"
 #include "gameStateManager.h"
 #include "ChessLogic.h"
+#include "gui.h"
 
 
 #endif

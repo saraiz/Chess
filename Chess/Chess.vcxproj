@@ -38,7 +38,10 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
-  <PropertyGroup />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <IncludePath>C:\Users\haimsa\Documents\Visual Studio 2013\Projects\Chess\SDL-devel-1.2.15-VC\SDL-1.2.15\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Users\haimsa\Documents\Visual Studio 2013\Projects\Chess\SDL-devel-1.2.15-VC\SDL-1.2.15\lib\x86;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level1</WarningLevel>
@@ -48,7 +51,8 @@
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
+      <AdditionalDependencies>SDL.lib;SDLmain.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -69,6 +73,7 @@
     <ClCompile Include="Chess.c" />
     <ClCompile Include="ChessLogic.c" />
     <ClCompile Include="gameStateManager.c" />
+    <ClCompile Include="gui.c" />
     <ClCompile Include="IO.c" />
     <ClCompile Include="minimax.c" />
     <ClCompile Include="settingsStateManager.c" />
@@ -78,6 +83,7 @@
     <ClInclude Include="Chess.h" />
     <ClInclude Include="ChessLogic.h" />
     <ClInclude Include="gameStateManager.h" />
+    <ClInclude Include="gui.h" />
     <ClInclude Include="IO.h" />
     <ClInclude Include="minimax.h" />
     <ClInclude Include="settingsStateManager.h" />
