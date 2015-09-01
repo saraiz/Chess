@@ -7,7 +7,8 @@ int main()
 {
 	init_board(game_board.board);
 
-	setSettings("clear\nset <a,1> black queen"); //TODO delete
+	setSettings("clear\nset <a,1> white pawn"); //TODO delete
+	setSettings("set <b,2> black pawn");
 	setSettings("set <d,3> white pawn");
 	setSettings("set <e,4> black pawn");
 	setSettings("game_mode 2");
@@ -24,7 +25,7 @@ int main()
 	else{
 		if (summery.isExecuted == 1){
 			// Need to start the game
-			printAllPossibleMoves( getAllValidMoves(0,0)); //TODO delete
+			//printAllPossibleMoves( getAllValidMoves(0,0)); //TODO delete
 			//print_board(game_board.board); //TODO delete
 			summery = readGameActions();
 			if (summery.isError){

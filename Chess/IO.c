@@ -9,7 +9,7 @@ fileData loadGame(char* path){ //if error everithing is -1
 	fscanf(f, "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<game>");
 	char StrParser[100];
 	fscanf(f, "\t<next_turn>%s", StrParser);
-	toReturn.isNextBlack = strstr(StrParser, "black") != NULL ? 1 : 0;
+	toReturn.isNextBlack = strstr(StrParser, "Black") != NULL ? 1 : 0;
 
 	int intParser = 0;
 	fscanf(f, "\t<game_mode>%s", StrParser);
@@ -24,7 +24,7 @@ fileData loadGame(char* path){ //if error everithing is -1
 	}
 
 	fscanf(f, "\t<user_color>%s", StrParser);
-	toReturn.isUserColorBlack = strstr(StrParser, "black") != NULL ? 1 : 0;
+	toReturn.isUserColorBlack = strstr(StrParser, "Black") != NULL ? 1 : 0;
 	fscanf(f,"\t<board>");
 
 	int row;
@@ -53,7 +53,7 @@ int saveGame(fileData toSave, char* path){ //ret 1 if failure
 	fputs(line, f);
 
 	line = "\t<next_turn>%s</next_turn>\n";
-	char* nextPlyer = toSave.isNextBlack ? "black" : "white";
+	char* nextPlyer = toSave.isNextBlack ? "Black" : "White";
 	fprintf(f, line, nextPlyer);
 
 	line = "\t<game_mode>%d</game_mode>\n";
@@ -71,7 +71,7 @@ int saveGame(fileData toSave, char* path){ //ret 1 if failure
 
 
 		line = "\t<user_color>%s</user_color>\n";
-		char* userColor = toSave.isUserColorBlack ? "black" : "white";
+		char* userColor = toSave.isUserColorBlack ? "Black" : "White";
 		fprintf(f, line, userColor);
 
 	}
