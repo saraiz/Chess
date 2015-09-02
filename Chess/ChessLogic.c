@@ -1,7 +1,8 @@
 #include "ChessLogic.h"
 
-
+//int counter = 0;
 moveList* getAllValidMoves(int isBlack, int depth){ 
+	//printf("%d ",++counter);
 	moveList* toReturn = EMPTYMOVELIST;
 	if (toReturn == NULL){
 		return NULL;
@@ -251,7 +252,17 @@ int CheackDeatenetionAndAdd_Pawn(moveList* sentinal,locationNode origen,location
 
 	char me = getPice(origen);
 	int isSueside = 0;
-	if (depth == 0){
+
+
+	char destPice = getPice(destenation);
+	if (isEat && destPice != EMPTY && !isSameColorAsMe(destenation, isblack)){
+		isToMove = 1;
+	}
+	else if (!isEat && destPice == EMPTY){
+		isToMove = 1;
+	}
+
+	if (depth == 0 && isToMove){
 		whatMoved toUndo = moveUserByLocationNode(origen, destenation, me);
 		isSueside = amIThreatened(isblack);
 		if (isSueside == 2){
@@ -261,18 +272,12 @@ int CheackDeatenetionAndAdd_Pawn(moveList* sentinal,locationNode origen,location
 
 		undoWhatMoved(toUndo);
 	}
-	if (!isSueside){
-		char destPice = getPice(destenation);
-		if (isEat && destPice != EMPTY && !isSameColorAsMe(destenation, isblack)){
-			isToMove = 1;
-		}
-		else if (!isEat && destPice == EMPTY){
-			isToMove = 1;
-		}
+//	if (!isSueside){
 
 
 
-		if (isToMove){
+
+		if (isToMove && !isSueside){
 			if (isPromoten){
 				moveList* toAddQueen = createMoveListNode(cloneLocationNode(origen), destenation, 'q');
 				if (toAddQueen == NULL){
@@ -313,7 +318,7 @@ int CheackDeatenetionAndAdd_Pawn(moveList* sentinal,locationNode origen,location
 			}
 			return 1;
 		}
-	}
+//	}
 	return 0;
 } 
 
