@@ -520,6 +520,8 @@ int isMate(int isBlack, int isShowMessage){
 		return 2;
 	}
 	int isListEmpty = isEmptyMoveList(list);
+	freeAllMoveList(list);
+
 	int isMate = 0;
 
 	if (isCheck && isListEmpty){
@@ -555,6 +557,8 @@ int isTie(int isBlack, int isShowMessage){
 		return 2;
 	}
 	int isListEmpty = isEmptyMoveList(list);
+	freeAllMoveList(list);
+
 	int isTie = 0;
 
 	if (!isCheck && isListEmpty){

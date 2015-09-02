@@ -1,5 +1,8 @@
 #include "utils.h"
+
 #include "Chess.h"
+
+int countAlloc = 0;
 
 void getInput(char** inputPointer){
 	char* input = *inputPointer;
@@ -259,7 +262,7 @@ void* myCalloc(int x, int y){
 	void* alloc = calloc(x, y);
 	//myAssert(alloc != NULL, "calloc");
 	//numOfTotalAllocs++;
-	//countAlloc++;
+	countAlloc++;
 	return alloc;
 }
 
@@ -268,7 +271,7 @@ void* myMalloc(int x){
 }
 
 void myFree(void* tofree){
-	//countAlloc--;
+	countAlloc--;
 	free(tofree);
 }
 
@@ -317,7 +320,7 @@ void freeAllMoveList(moveList* head){
 	while (head != NULL){
 		moveList* temp = head;
 		head = head->next;
-		free(temp);
+		myFree(temp);
 	}
 }
 
@@ -347,9 +350,11 @@ moveList* moveConcat(moveList* first, moveList* second){
 		return NULL;
 	}
 	if (isEmptyMoveList(first)){
+		freeAllMoveList(first);
 		return second;
 	}
 	else if(isEmptyMoveList(second)){
+		freeAllMoveList(second);
 		return first;
 	}
 	else{
