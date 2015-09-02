@@ -188,7 +188,7 @@ moveList* getPossibleMovesPawn(locationNode loc, int isBlack,int depth){
 
 int isSameColorAsMe(locationNode loc, int amIBlack){
 	char pice = getPice(loc);
-	int isPiceBlack = isupper(pice);
+	int isPiceBlack = isupper(pice)?1:0; // isupper ret vaal is different in different OS
 	return isPiceBlack == amIBlack;
 }
 
