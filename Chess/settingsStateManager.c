@@ -261,6 +261,12 @@ actionSummery checkForLoad(char *input){
 
 			return summery;
 		}
+
+		// the board data was saved in function loadGame. The rest should be saved by me
+		settings.minmax_depth = gameData.difficulty;
+		settings.gameMode = gameData.gameMode;
+		settings.isUserBlack = gameData.isUserColorBlack;
+		game_board.isBlackTurn = gameData.isNextBlack;
 	}
 
 	return summery;

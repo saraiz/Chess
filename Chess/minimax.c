@@ -71,7 +71,8 @@ minmaxValue minmax(gameBoard backup,
 	int isListEmpty = isEmptyMoveList(allPossibleMoves);
 	int bestValue;
 	moveList bestMove;
-	moveList *bestMovesList;
+	moveList *headBestMovesList;
+	moveList *tailBestMoveList;
 	int isBestMovesListEmpty = 1;
 
 	if (depth == 0 || isListEmpty){
@@ -97,17 +98,20 @@ minmaxValue minmax(gameBoard backup,
 					// This is the get_best_moves function
 					// need to init the best moves list with the current move 
 					if (!isBestMovesListEmpty){
-						freeAllMoveList(bestMovesList);
+						freeAllMoveList(headBestMovesList);
 					}
 
-					bestMovesList = createMoveListNode(createLocationNode(current->origin.column, current->origin.row), createLocationNode(current->destination.column, current->destination.row), current->soldierToPromoteTo);
+					headBestMovesList = createMoveListNode(createLocationNode(current->origin.column, current->origin.row), createLocationNode(current->destination.column, current->destination.row), current->soldierToPromoteTo);
+					tailBestMoveList = headBestMovesList;
 					isBestMovesListEmpty = 0;
 				}
 			}
 			else if (result.score == bestValue && isGetBest == 1 && isFirstIteration == 1){
 				// This is the get_best_moves function
 				// need to add the current move to the best moves list
-				bestMovesList->next = createMoveListNode(createLocationNode(current->origin.column, current->origin.row), createLocationNode(current->destination.column, current->destination.row), current->soldierToPromoteTo);
+				tailBestMoveList->next = createMoveListNode(createLocationNode(current->origin.column, current->origin.row), createLocationNode(current->destination.column, current->destination.row), current->soldierToPromoteTo);
+				tailBestMoveList = tailBestMoveList->next;
+
 			}
 
 			//alpha = max(alpha, bestValue);
@@ -129,12 +133,11 @@ minmaxValue minmax(gameBoard backup,
 
 		finalResult.bestMove = bestMove;
 		if (isGetBest == 1&& isFirstIteration == 1){
-			finalResult.bestMovesList = bestMovesList;
+			finalResult.bestMovesList = headBestMovesList;
 		}
 		
 		finalResult.score = bestValue;
 		freeAllMoveList(allPossibleMoves);
-		//freeAllMoveList(bestMovesList);
 
 		return finalResult;
 	}

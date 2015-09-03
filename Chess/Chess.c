@@ -7,10 +7,15 @@ int main()
 {
 	init_board(game_board.board);
 	
-
+	setSettings("clear\nset <a,1> white pawn");
+	setSettings("set <d,3> white pawn");
+	setSettings("set <b,2> black pawn");
+	setSettings("set <e,4> black pawn");
 	setSettings("game_mode 2");
+	setSettings("set <h,1> white king");
+	setSettings("set <a,8> black king");
 
-
+	print_board(game_board.board);
 
 
 	actionSummery summery = readSettings();
