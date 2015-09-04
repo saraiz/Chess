@@ -8,6 +8,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <ctype.h>
+#include <SDL.h>
 
 #define WHITE_P 'm'
 #define WHITE_B 'b'
