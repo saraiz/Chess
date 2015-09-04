@@ -154,7 +154,14 @@ actionSummery checkForBestMoves(char *input){
 		summery.isFound = 1;
 		loc = loc + 14;
 		loc = getNextChar(loc);
-		double depth = strtod(loc, NULL);
+		char* bestDepth = strstr(loc, "best");
+		double depth;
+		if (bestDepth != NULL){
+			depth = getBestDepth();
+		}
+		else{
+			depth = strtod(loc, NULL);
+		}
 
 		moveList emptyMove;
 		emptyMove.destination = createLocationNode(-1, -1);
@@ -162,9 +169,21 @@ actionSummery checkForBestMoves(char *input){
 		emptyMove.soldierToPromoteTo = EMPTY;
 		emptyMove.next = NULL;
 
-		minmaxValue result = minmax(getCurrentBoardData(), depth, 1, -99999, 99999, game_board.isBlackTurn, 0, emptyMove, 1, 1);
-		int isSuccess = printAllPossibleMoves(result.bestMovesList);
-		freeAllMoveList(result.bestMovesList);
+		minmaxValue result = minmax(getCurrentBoardData(), depth, 1, -99999, 99999, game_board.isBlackTurn, 0, emptyMove);
+		// all possible moves
+		moveList *bestMoves = getBestMoves(game_board.isBlackTurn, depth, result.score);
+		if(bestMoves == NULL){
+			// ERROR 
+			
+			summery.isError = 1;
+			strcpy(summery.failedFunc, "calloc");
+
+			return summery;
+		}
+
+
+		int isSuccess = printAllPossibleMoves(bestMoves);
+		freeAllMoveList(bestMoves);
 		if (isSuccess == 0){
 			// ERROR
 			summery.isError = 1;
@@ -190,15 +209,20 @@ actionSummery checkForGetScore(char *input){
 		if (depthEnds != NULL){
 			// shouldn't be NULL
 			char *depth = getSubString(loc, depthEnds);
-			double value = strtod(depth, NULL);
-			++depthEnds;
+			double value;
+			if (strcmp(depth, "best") == 0){
+				value = getBestDepth();
+			}
+			else{
+				value = strtod(depth, NULL);
+			}
 
+			++depthEnds;
 			// Parse move 
 			moveList move = parseMove(depthEnds);
 			if (isValidMove(move, game_board.isBlackTurn, 1) == 1){ //TODO - ask if we need to check if the move is valid
-				minmaxValue result = minmax(getCurrentBoardData(), value, 1, -99999, 99999, game_board.isBlackTurn, 1, move, 0, 1);
-				printf("%d\n", result.score);
-				//freeAllMoveList(result.bestMovesList);
+				int score = getScore(move, value);
+				printf("%d\n", score);
 			}
 			
 		}
@@ -734,7 +758,12 @@ void computerTurn(){
 	emptyMove.soldierToPromoteTo = EMPTY;
 	emptyMove.next = NULL;
 
-	minmaxValue result = minmax(getCurrentBoardData(), settings.minmax_depth, 1, -99999, 99999, 1 - settings.isUserBlack, 0, emptyMove, 0, 1);
+	int depth = settings.minmax_depth;
+	if (depth == BEST){
+		depth = getBestDepth();
+	}
+
+	minmaxValue result = minmax(getCurrentBoardData(), depth , 1, -99999, 99999, 1 - settings.isUserBlack, 0, emptyMove);
 	if (result.bestMove.destination.row != -1 && result.bestMove.destination.column != -1){
 		moveUser(result.bestMove, 1 - settings.isUserBlack);
 
@@ -759,4 +788,54 @@ void moveUser(moveList userMove, int isBlack){
 	}
 	addUserByValue(userMove.destination, type);
 }
+
+moveList* getBestMoves(int isBlack, int depth, int bestMoveScore){
+	moveList *allPossibleMoves = getAllValidMoves(isBlack, depth);
+	moveList *curr = allPossibleMoves;
+
+	moveList *head;
+	moveList *tail;
+	int headInitialize = 0;
+
+	while (curr != NULL){
+		int score = getScore(*curr, depth);
+		if (bestMoveScore == score){
+			if (headInitialize == 0){
+				headInitialize = 1;
+				head = createMoveListNode(curr->origin, curr->destination, curr->soldierToPromoteTo);
+				if (head == NULL){
+					// ERROR
+
+					return NULL;
+				}
+
+				head->next = NULL;
+				tail = head;
+			}
+			else{
+				tail->next = createMoveListNode(curr->origin, curr->destination, curr->soldierToPromoteTo);
+				if (tail->next == NULL){
+					// ERROR
+
+					return NULL;
+				}
+				tail = tail->next;
+			}
+		}
+
+		curr = curr->next;
+	}
+
+	freeAllMoveList(allPossibleMoves);
+
+	return head;
+}
+
+int getScore(moveList move, int depth){
+	minmaxValue result = minmax(getCurrentBoardData(), depth, 1, -99999, 99999, game_board.isBlackTurn, 1, move);
+
+	return result.score;
+}
+
+
 

@@ -31,5 +31,7 @@ void checkForMate_Tie_Check(int isBlack, int *isError, int *isGameMate, int *isG
 moveList parseMove(char* loc);
 int isMovesEquale(moveList move1, moveList move2);
 int isLocationNodeEquale(locationNode node1, locationNode node2);
+moveList* getBestMoves(int isBlack, int depth, int bestMoveScore);
+int getScore(moveList move, int depth);
 
 #endif
