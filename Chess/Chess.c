@@ -9,11 +9,14 @@ int main()
 	
 	setSettings("clear");
 	setSettings("game_mode 1");
-	//setSettings("next_player black");
-	setSettings("set <a,1> white king");
-	setSettings("set <b,1> black rook");
-	setSettings("set <h,1> black king");
-	setSettings("set <b,3> black queen");
+	setSettings("user_color black");
+	setSettings("next_player white");
+	setSettings("set <b,8> black king");
+	setSettings("set <e,7> white queen");
+	setSettings("set <d,6> white knight");
+	setSettings("set <b,6> white rook");
+	setSettings("set <h,1> white king");
+	
 
 	// Don't delete me. We need to print the board in the begining og the game according to the instructions. 
 	print_board(game_board.board);

@@ -8,7 +8,7 @@ int getBoardScore(int isBlack){
 		// The opponent is lossing, therfore I'm winning
 		return WINNING_SCORE;
 	}
-	else if (isTie(isBlack, 0)==1){
+	else if (isTie(1-isBlack, 0)==1){
 		return TIE_SCORE;
 	}
 	else{

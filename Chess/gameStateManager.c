@@ -20,15 +20,15 @@ actionSummery readGameActions(){
 
 	while (strcmp(input, "quit") != 0 && isGameMate == 0 && isGameTie == 0 && summery.isError == 0){
 
-		char *msg = (game_board.isBlackTurn ? "black player - enter your move!\n" : "white player - enter your move!\n");
-		print_message(msg);
-
 		if ((settings.gameMode == PLAYER_VS_AI && 
 			((game_board.isBlackTurn == 1 && settings.isUserBlack == 1) ||
 			(game_board.isBlackTurn == 0 && settings.isUserBlack == 0))) || 
 			(settings.gameMode == TWO_PLAYERS)){
 			
 			// enter here if its a 2 player game OR we play against the computer, we are player color X and it's color X turn
+
+			char *msg = (game_board.isBlackTurn ? "black player - enter your move!\n" : "white player - enter your move!\n");
+			print_message(msg);
 
 			getInput(&input);
 			if (strcmp(input, "quit") == 0){
@@ -76,7 +76,11 @@ void checkForMate_Tie_Check(int isBlack, int *isError, int *isGameMate, int *isG
 			*isError = 1;
 		}
 		else if (*isGameTie == 0){
-			isCheck(1 - isBlack, 1);
+			int isInCheck = isCheck(1 - isBlack, 1);
+			if (isInCheck == 2){
+				// ERROR
+				*isError = 1;
+			}
 		}
 	}
 }
@@ -511,12 +515,11 @@ int printOneMove(moveList move){
 }
 
 int isCheck(int isBlack, int isShowMessage){
-	//locationNode kingLocation = getKingLocation(isBlack);
 	int isKingThreated = amIThreatened(isBlack);
 
 	if (isKingThreated == 2){
 		// ERROR
-		return 0;
+		return 2;
 	}
 
 	if (isKingThreated == 1 && isShowMessage == 1){
@@ -527,14 +530,6 @@ int isCheck(int isBlack, int isShowMessage){
 }
 
 int isMate(int isBlack, int isShowMessage){
-	// There is a mate if my king is threatened and I don't have where to move
-	/**locationNode node = getKingLocation(isBlack);
-	if (node.row == -1 || node.column == -1){
-		// ERRORamIThreatened
-		return 0;
-	}*/
-
-	// 0- black, 1- white
 
 	int isCheck = amIThreatened(isBlack) == 1;
 
@@ -568,12 +563,7 @@ int isMate(int isBlack, int isShowMessage){
 
 int isTie(int isBlack, int isShowMessage){
 	// There is a tie if my king is not threatened and I don't have where to move
-
-	//locationNode node= getKingLocation(isBlack);
-
-	// 0- black, 1- white
-
-	int isCheck = amIThreatened( 1 - isBlack) == 1;
+	int isCheck = amIThreatened(isBlack) == 1;
 
 	if (isCheck == 2){
 		// ERROR
@@ -794,7 +784,7 @@ void moveUser(moveList userMove, int isBlack){
 }
 
 moveList* getBestMoves(int isBlack, int depth, int bestMoveScore){
-	moveList *allPossibleMoves = getAllValidMoves(isBlack, depth);
+	moveList *allPossibleMoves = getAllValidMoves(isBlack, 0);
 	moveList *curr = allPossibleMoves;
 
 	moveList *head;
