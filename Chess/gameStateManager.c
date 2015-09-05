@@ -14,10 +14,11 @@ actionSummery readGameActions(){
 		return summery;
 	}
 
-	while (strcmp(input, "quit") != 0 && isGameMate == 0 && isGameTie == 0 && summery.isError == 0){
+	// Need to check if there is a mate or tie before the first player moves
+	checkForMate_Tie_Check(1 - game_board.isBlackTurn, &isError, &isGameMate, &isGameTie);
 
-		char *msg = (game_board.isBlackTurn ? "black player - enter your move!\n" : "white player - enter your move!\n");
-		print_message(msg);
+
+	while (strcmp(input, "quit") != 0 && isGameMate == 0 && isGameTie == 0 && summery.isError == 0){
 
 		if ((settings.gameMode == PLAYER_VS_AI && 
 			((game_board.isBlackTurn == 1 && settings.isUserBlack == 1) ||
@@ -25,6 +26,9 @@ actionSummery readGameActions(){
 			(settings.gameMode == TWO_PLAYERS)){
 			
 			// enter here if its a 2 player game OR we play against the computer, we are player color X and it's color X turn
+
+			char *msg = (game_board.isBlackTurn ? "black player - enter your move!\n" : "white player - enter your move!\n");
+			print_message(msg);
 
 			getInput(&input);
 			if (strcmp(input, "quit") == 0){
@@ -72,7 +76,11 @@ void checkForMate_Tie_Check(int isBlack, int *isError, int *isGameMate, int *isG
 			*isError = 1;
 		}
 		else if (*isGameTie == 0){
-			isCheck(1 - isBlack, 1);
+			int isInCheck = isCheck(1 - isBlack, 1);
+			if (isInCheck == 2){
+				// ERROR
+				*isError = 1;
+			}
 		}
 	}
 }
@@ -131,13 +139,13 @@ actionSummery checkForGetMoves(char *input){
 
 				int isSuccess = printAllPossibleMoves(lst);
 				freeAllMoveList(lst);
-				if (isSuccess == 0){
+				/*if (isSuccess == 0){
 					// ERROR
 					summery.isError = 1;
 					strcpy(summery.failedFunc, "calloc");
 
 					return summery;
-				}
+				}*/
 				
 			}
 		}
@@ -154,7 +162,14 @@ actionSummery checkForBestMoves(char *input){
 		summery.isFound = 1;
 		loc = loc + 14;
 		loc = getNextChar(loc);
-		double depth = strtod(loc, NULL);
+		char* bestDepth = strstr(loc, "best");
+		double depth;
+		if (bestDepth != NULL){
+			depth = getBestDepth();
+		}
+		else{
+			depth = strtod(loc, NULL);
+		}
 
 		moveList emptyMove;
 		emptyMove.destination = createLocationNode(-1, -1);
@@ -162,9 +177,21 @@ actionSummery checkForBestMoves(char *input){
 		emptyMove.soldierToPromoteTo = EMPTY;
 		emptyMove.next = NULL;
 
-		minmaxValue result = minmax(getCurrentBoardData(), depth, 1, -99999, 99999, game_board.isBlackTurn, 0, emptyMove, 1, 1);
-		int isSuccess = printAllPossibleMoves(result.bestMovesList);
-		freeAllMoveList(result.bestMovesList);
+		minmaxValue result = minmax(getCurrentBoardData(), depth, 1, -99999, 99999, game_board.isBlackTurn, 0, emptyMove);
+		// all possible moves
+		moveList *bestMoves = getBestMoves(game_board.isBlackTurn, depth, result.score);
+		if(bestMoves == NULL){
+			// ERROR 
+			
+			summery.isError = 1;
+			strcpy(summery.failedFunc, "calloc");
+
+			return summery;
+		}
+
+
+		int isSuccess = printAllPossibleMoves(bestMoves);
+		freeAllMoveList(bestMoves);
 		if (isSuccess == 0){
 			// ERROR
 			summery.isError = 1;
@@ -190,15 +217,20 @@ actionSummery checkForGetScore(char *input){
 		if (depthEnds != NULL){
 			// shouldn't be NULL
 			char *depth = getSubString(loc, depthEnds);
-			double value = strtod(depth, NULL);
-			++depthEnds;
+			double value;
+			if (strcmp(depth, "best") == 0){
+				value = getBestDepth();
+			}
+			else{
+				value = strtod(depth, NULL);
+			}
 
+			++depthEnds;
 			// Parse move 
 			moveList move = parseMove(depthEnds);
 			if (isValidMove(move, game_board.isBlackTurn, 1) == 1){ //TODO - ask if we need to check if the move is valid
-				minmaxValue result = minmax(getCurrentBoardData(), value, 1, -99999, 99999, game_board.isBlackTurn, 1, move, 0, 1);
-				printf("%d\n", result.score);
-				//freeAllMoveList(result.bestMovesList);
+				int score = getScore(move, value);
+				printf("%d\n", score);
 			}
 			
 		}
@@ -227,12 +259,16 @@ actionSummery checkForSave(char *input){
 		
 		int isFailure = saveGame(data, path);
 		if (isFailure == 1){
-			// ERROR
+			/*// ERROR
+
+			// No need to exit the game in such case. Only print a message
 
 			summery.isError = 1;
 			strcpy(summery.failedFunc, "fopen");
 
-			return summery;
+			return summery;*/ 
+
+			print_message(WRONG_FILE_NAME);
 		}
 
 	}
@@ -483,12 +519,11 @@ int printOneMove(moveList move){
 }
 
 int isCheck(int isBlack, int isShowMessage){
-	//locationNode kingLocation = getKingLocation(isBlack);
 	int isKingThreated = amIThreatened(isBlack);
 
 	if (isKingThreated == 2){
 		// ERROR
-		return 0;
+		return 2;
 	}
 
 	if (isKingThreated == 1 && isShowMessage == 1){
@@ -499,16 +534,8 @@ int isCheck(int isBlack, int isShowMessage){
 }
 
 int isMate(int isBlack, int isShowMessage){
-	// There is a mate if my king is threatened and I don't have where to move
-	/**locationNode node = getKingLocation(isBlack);
-	if (node.row == -1 || node.column == -1){
-		// ERRORamIThreatened
-		return 0;
-	}*/
 
-	// 0- black, 1- white
-
-	int isCheck = amIThreatened( 1 - isBlack) == 1;
+	int isCheck = amIThreatened(isBlack) == 1;
 
 	if (isCheck == 2){
 		// ERROR
@@ -540,12 +567,7 @@ int isMate(int isBlack, int isShowMessage){
 
 int isTie(int isBlack, int isShowMessage){
 	// There is a tie if my king is not threatened and I don't have where to move
-
-	//locationNode node= getKingLocation(isBlack);
-
-	// 0- black, 1- white
-
-	int isCheck = amIThreatened( 1 - isBlack) == 1;
+	int isCheck = amIThreatened(isBlack) == 1;
 
 	if (isCheck == 2){
 		// ERROR
@@ -734,7 +756,12 @@ void computerTurn(){
 	emptyMove.soldierToPromoteTo = EMPTY;
 	emptyMove.next = NULL;
 
-	minmaxValue result = minmax(getCurrentBoardData(), settings.minmax_depth, 1, -99999, 99999, 1 - settings.isUserBlack, 0, emptyMove, 0, 1);
+	int depth = settings.minmax_depth;
+	if (depth == BEST){
+		depth = getBestDepth();
+	}
+
+	minmaxValue result = minmax(getCurrentBoardData(), depth , 1, -99999, 99999, 1 - settings.isUserBlack, 0, emptyMove);
 	if (result.bestMove.destination.row != -1 && result.bestMove.destination.column != -1){
 		moveUser(result.bestMove, 1 - settings.isUserBlack);
 
@@ -759,4 +786,54 @@ void moveUser(moveList userMove, int isBlack){
 	}
 	addUserByValue(userMove.destination, type);
 }
+
+moveList* getBestMoves(int isBlack, int depth, int bestMoveScore){
+	moveList *allPossibleMoves = getAllValidMoves(isBlack, 0);
+	moveList *curr = allPossibleMoves;
+
+	moveList *head;
+	moveList *tail;
+	int headInitialize = 0;
+
+	while (curr != NULL){
+		int score = getScore(*curr, depth);
+		if (bestMoveScore == score){
+			if (headInitialize == 0){
+				headInitialize = 1;
+				head = createMoveListNode(curr->origin, curr->destination, curr->soldierToPromoteTo);
+				if (head == NULL){
+					// ERROR
+
+					return NULL;
+				}
+
+				head->next = NULL;
+				tail = head;
+			}
+			else{
+				tail->next = createMoveListNode(curr->origin, curr->destination, curr->soldierToPromoteTo);
+				if (tail->next == NULL){
+					// ERROR
+
+					return NULL;
+				}
+				tail = tail->next;
+			}
+		}
+
+		curr = curr->next;
+	}
+
+	freeAllMoveList(allPossibleMoves);
+
+	return head;
+}
+
+int getScore(moveList move, int depth){
+	minmaxValue result = minmax(getCurrentBoardData(), depth, 1, -99999, 99999, game_board.isBlackTurn, 1, move);
+
+	return result.score;
+}
+
+
 

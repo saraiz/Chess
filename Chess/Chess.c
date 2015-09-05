@@ -7,10 +7,19 @@ int main()
 {
 	init_board(game_board.board);
 	
+	setSettings("clear");
+	setSettings("game_mode 1");
+	setSettings("user_color black");
+	setSettings("next_player white");
+	setSettings("set <b,8> black king");
+	setSettings("set <e,7> white queen");
+	setSettings("set <d,6> white knight");
+	setSettings("set <b,6> white rook");
+	setSettings("set <h,1> white king");
+	
 
-	setSettings("game_mode 2");
-
-
+	// Don't delete me. We need to print the board in the begining og the game according to the instructions. 
+	print_board(game_board.board);
 
 
 	actionSummery summery = readSettings();
