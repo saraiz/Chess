@@ -7,21 +7,15 @@ int main()
 {
 	init_board(game_board.board);
 	
-	//setSettings("clear");
-	//setSettings("set <d,4> white king");
-	//setSettings("set <a,1> white pawn");
-	//setSettings("set <c,1> white pawn");
-	//setSettings("set <a,7> black king");
-	//setSettings("set <h,1> white king");
+	setSettings("clear");
+	setSettings("game_mode 1");
+	//setSettings("next_player black");
+	setSettings("set <a,1> white king");
+	setSettings("set <b,1> black rook");
+	setSettings("set <h,1> black king");
+	setSettings("set <b,3> black queen");
 
-	setSettings("clear\nset <a,1> white pawn");
-	setSettings("set <d,3> white pawn");
-	setSettings("set <b,2> black pawn");
-	setSettings("set <e,4> black pawn");
-	setSettings("game_mode 2");
-	setSettings("set <h,1> white king");
-	setSettings("set <a,8> black king");
-
+	// Don't delete me. We need to print the board in the begining og the game according to the instructions. 
 	print_board(game_board.board);
 
 

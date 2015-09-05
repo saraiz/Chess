@@ -14,6 +14,10 @@ actionSummery readGameActions(){
 		return summery;
 	}
 
+	// Need to check if there is a mate or tie before the first player moves
+	checkForMate_Tie_Check(1 - game_board.isBlackTurn, &isError, &isGameMate, &isGameTie);
+
+
 	while (strcmp(input, "quit") != 0 && isGameMate == 0 && isGameTie == 0 && summery.isError == 0){
 
 		char *msg = (game_board.isBlackTurn ? "black player - enter your move!\n" : "white player - enter your move!\n");
@@ -131,13 +135,13 @@ actionSummery checkForGetMoves(char *input){
 
 				int isSuccess = printAllPossibleMoves(lst);
 				freeAllMoveList(lst);
-				if (isSuccess == 0){
+				/*if (isSuccess == 0){
 					// ERROR
 					summery.isError = 1;
 					strcpy(summery.failedFunc, "calloc");
 
 					return summery;
-				}
+				}*/
 				
 			}
 		}
@@ -532,7 +536,7 @@ int isMate(int isBlack, int isShowMessage){
 
 	// 0- black, 1- white
 
-	int isCheck = amIThreatened( 1 - isBlack) == 1;
+	int isCheck = amIThreatened(isBlack) == 1;
 
 	if (isCheck == 2){
 		// ERROR
