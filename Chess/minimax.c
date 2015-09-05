@@ -1,6 +1,6 @@
 #include "minimax.h"
 
-int getBoardScore(int isBlack){
+int getBoardScoreOld(int isBlack){
 	if (isMate(isBlack, 0) == 1){
 		return LOSSING_SCORE;
 	}
@@ -27,6 +27,45 @@ int getBoardScore(int isBlack){
 			KING_SCORE * game_board.numOfWhiteKings;
 
 		if (!isBlack){
+			// The current User is white
+			int temp = currentUserScore;
+			currentUserScore = opponentUserScore;
+			opponentUserScore = temp;
+		}
+
+		int finalScore = currentUserScore - opponentUserScore;
+
+		return finalScore;
+	}
+}
+
+int getBoardScore(int isCurrentPlayerBlack, int isMinmaxForBlack){
+	if (isMate(isMinmaxForBlack, 0) == 1){
+		return LOSSING_SCORE;
+	}
+	else if (isMate(1 - isMinmaxForBlack, 0) == 1){
+		// The opponent is lossing, therfore I'm winning
+		return WINNING_SCORE;
+	}
+	else if (isTie(1 - isCurrentPlayerBlack, 0) == 1){
+		return TIE_SCORE;
+	}
+	else{
+		int currentUserScore = PAWN_SCORE * game_board.numOfBlackPawns +
+			KNIGHT_SCORE * game_board.numOfBlackKnights +
+			BISHOP_SCORE * game_board.numOfBlackBishops +
+			ROOK_SCORE * game_board.numOfBlackRooks +
+			QUEEN_SCORE * game_board.numOfBlackQueens +
+			KING_SCORE * game_board.numOfBlackKings;
+
+		int opponentUserScore = PAWN_SCORE * game_board.numOfWhitePawns +
+			KNIGHT_SCORE * game_board.numOfWhiteKnights +
+			BISHOP_SCORE * game_board.numOfWhiteBishops +
+			ROOK_SCORE * game_board.numOfWhiteRooks +
+			QUEEN_SCORE * game_board.numOfWhiteQueens +
+			KING_SCORE * game_board.numOfWhiteKings;
+
+		if (!isMinmaxForBlack){
 			// The current User is white
 			int temp = currentUserScore;
 			currentUserScore = opponentUserScore;
@@ -72,7 +111,8 @@ minmaxValue minmax(gameBoard backup,
 
 	if (depth == 0 || isListEmpty){
 		minmaxValue value;
-		value.score = getBoardScore(isMinMaxForBlack);
+		// For the isCurrPlayerBlack I send 1-isBlack because the player that did the last step is the not the current one.
+		value.score = getBoardScore(1-isBlack, isMinMaxForBlack); 
 		value.bestMove.origin.row = value.bestMove.origin.column = value.bestMove.destination.row = value.bestMove.destination.column = -1;
 		freeAllMoveList(allPossibleMoves);
 		return value;
