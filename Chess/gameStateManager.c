@@ -259,12 +259,16 @@ actionSummery checkForSave(char *input){
 		
 		int isFailure = saveGame(data, path);
 		if (isFailure == 1){
-			// ERROR
+			/*// ERROR
+
+			// No need to exit the game in such case. Only print a message
 
 			summery.isError = 1;
 			strcpy(summery.failedFunc, "fopen");
 
-			return summery;
+			return summery;*/ 
+
+			print_message(WRONG_FILE_NAME);
 		}
 
 	}

@@ -9,9 +9,9 @@
 #define ROOK_SCORE 5
 #define QUEEN_SCORE 9
 #define KING_SCORE 400
-#define LOSSING_SCORE -500
+#define LOSSING_SCORE -600
 #define WINNING_SCORE 600
-#define TIE_SCORE 500
+#define TIE_SCORE -500
 
 #define MAX_BOARDS 1000000
 
