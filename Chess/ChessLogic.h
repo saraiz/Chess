@@ -1,25 +1,36 @@
 #ifndef ChessLogic
 #define ChessLogic
 #include "utils.h"
+#include "gameStateManager.h"
 
-moveList* getAllValidMoves(int isBlack);
-moveList* getValidMovesForLocation(locationNode loc);
 
-moveList* getPossibleMovesKing(locationNode loc, int isBlack);
-moveList* getPossibleMovesQueen(locationNode loc, int isBlack);
-moveList* getPossibleMovesRook(locationNode loc, int isBlack);
-moveList* getPossibleMovesKnight(locationNode loc, int isBlack);
-moveList* getPossibleMovesBishop(locationNode loc, int isBlack);
-moveList* getPossibleMovesPawn(locationNode loc, int isBlack);
+typedef struct  {
+	locationNode origen;
+	char origenPice;
+	locationNode destenetion;
+	char destenetionPice;
+}whatMoved;
+
+moveList* getAllValidMoves(int isBlack, int depth);
+moveList* getValidMovesForLocation(locationNode loc, int depth);
+
+moveList* getPossibleMovesKing(locationNode loc, int isBlack, int depth);
+moveList* getPossibleMovesQueen(locationNode loc, int isBlack, int depth);
+moveList* getPossibleMovesRook(locationNode loc, int isBlack, int depth);
+moveList* getPossibleMovesKnight(locationNode loc, int isBlack, int depth);
+moveList* getPossibleMovesBishop(locationNode loc, int isBlack, int depth);
+moveList* getPossibleMovesPawn(locationNode loc, int isBlack, int depth);
 
 
 int isSameColorAsMe(locationNode loc, int isBlack);
 char getPice(locationNode loc);
-int CheackDeatenetionAndAdd(moveList* sentinal, locationNode origen, locationNode destenetion, int isBlack);
-int CheackDeatenetionAndAdd_Pawn(moveList* sentinal, locationNode origen, locationNode destenation, int isEat, int isblack);
+int CheackDeatenetionAndAdd(moveList* sentinal, locationNode origen, locationNode destenetion, int isBlack, int depth);
+int CheackDeatenetionAndAdd_Pawn(moveList* sentinal, locationNode origen, locationNode destenation, int isEat, int isblack, int depth);
 moveList* removeAndFreeSentinalIfNececery(moveList* sentinal);
-int amITretrnd(locationNode loc, int myColor);
-int amIThreatened(locationNode loc, int isMyColorBlack);
+int isLocInDestenetion(locationNode loc, moveList* head);
+int amIThreatened( int isMyColorBlack);
+whatMoved moveUserByLocationNode(locationNode origen, locationNode destenetion, char piceToChangeTo);
+void undoWhatMoved(whatMoved toUndo);
 
 
 

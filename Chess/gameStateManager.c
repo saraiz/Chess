@@ -120,7 +120,7 @@ actionSummery checkForGetMoves(char *input){
 		if (isValid){
 			isValid = isPositionContainUserPiece(game_board.isBlackTurn, origin, 1);
 			if (isValid){
-				moveList *lst = getValidMovesForLocation(origin);
+				moveList *lst = getValidMovesForLocation(origin,0);
 				if (lst == NULL){
 					// Error in getValidMovesForLocation
 					summery.isError = 1;
@@ -376,7 +376,7 @@ int isValidMove(moveList soldierMove, int isBlack, int isShowMessage){
 
 	// (3)
 	int isValid = 0;
-	moveList *list = getValidMovesForLocation(soldierMove.origin);
+	moveList *list = getValidMovesForLocation(soldierMove.origin,0);
 	if (list == NULL){
 		// ERROR
 		isValid = 2;
@@ -483,8 +483,9 @@ int printOneMove(moveList move){
 }
 
 int isCheck(int isBlack, int isShowMessage){
-	locationNode kingLocation = getKingLocation(isBlack);
-	int isKingThreated = amIThreatened(kingLocation, isBlack);
+	//locationNode kingLocation = getKingLocation(isBlack);
+	int isKingThreated = amIThreatened(isBlack);
+
 	if (isKingThreated == 2){
 		// ERROR
 		return 0;
@@ -499,24 +500,28 @@ int isCheck(int isBlack, int isShowMessage){
 
 int isMate(int isBlack, int isShowMessage){
 	// There is a mate if my king is threatened and I don't have where to move
-	locationNode node = getKingLocation(isBlack);
+	/**locationNode node = getKingLocation(isBlack);
 	if (node.row == -1 || node.column == -1){
-		// ERROR
+		// ERRORamIThreatened
 		return 0;
-	}
+	}*/
 
 	// 0- black, 1- white
-	int isCheck = amIThreatened(node, isBlack) == 1;
+
+	int isCheck = amIThreatened( 1 - isBlack) == 1;
+
 	if (isCheck == 2){
 		// ERROR
 		return 2;
 	}
-	moveList* list = getAllValidMoves(isBlack);
+	moveList* list = getAllValidMoves(isBlack, 0);
 	if (list == NULL){
 		// ERROR
 		return 2;
 	}
 	int isListEmpty = isEmptyMoveList(list);
+	freeAllMoveList(list);
+
 	int isMate = 0;
 
 	if (isCheck && isListEmpty){
@@ -536,20 +541,24 @@ int isMate(int isBlack, int isShowMessage){
 int isTie(int isBlack, int isShowMessage){
 	// There is a tie if my king is not threatened and I don't have where to move
 
-	locationNode node= getKingLocation(isBlack);
+	//locationNode node= getKingLocation(isBlack);
 
 	// 0- black, 1- white
-	int isCheck = amIThreatened(node, isBlack) == 1;
+
+	int isCheck = amIThreatened( 1 - isBlack) == 1;
+
 	if (isCheck == 2){
 		// ERROR
 		return 0;
 	}
-	moveList* list = getAllValidMoves(isBlack);
+	moveList* list = getAllValidMoves(isBlack, 0);
 	if (list == NULL){
 		// ERROR
 		return 2;
 	}
 	int isListEmpty = isEmptyMoveList(list);
+	freeAllMoveList(list);
+
 	int isTie = 0;
 
 	if (!isCheck && isListEmpty){
