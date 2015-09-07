@@ -5,6 +5,9 @@
 #include "gameStateManager.h"
 #include "ChessLogic.h"
 
+void handleConsole();
+void handleGUI();
+
 
 #endif
 
