@@ -1,10 +1,14 @@
 #include "Chess.h"
+#include <SDL.h>
 
 gameSettings settings = { 1, COLOR_WHITE, 0, 0, TWO_PLAYERS };
 gameBoard game_board = { 0, 0, 0, 0, 0 };
 
 int main()
 {
+	SDL_Init(SDL_INIT_EVERYTHING);
+	SDL_Quit();
+
 	init_board(game_board.board);
 	
 	setSettings("clear");
