@@ -137,16 +137,8 @@ actionSummery checkForGetMoves(char *input){
 					return summery;
 				}
 
-				int isSuccess = printAllPossibleMoves(lst);
+				printAllPossibleMoves(lst);
 				freeAllMoveList(lst);
-				/*if (isSuccess == 0){
-					// ERROR
-					summery.isError = 1;
-					strcpy(summery.failedFunc, "calloc");
-
-					return summery;
-				}*/
-				
 			}
 		}
 	}
@@ -269,6 +261,7 @@ actionSummery checkForSave(char *input){
 			return summery;*/ 
 
 			print_message(WRONG_FILE_NAME);
+			return summery;
 		}
 
 	}
