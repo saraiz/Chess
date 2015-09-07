@@ -22,7 +22,7 @@ int main(int argc, char* argv[] )
 		if (strcmp(mode, "console") == 0){
 			handleConsole();
 		}
-		else if (strcmp(mode, "gui")){
+		else if (strcmp(mode, "gui") == 0){
 			handleGUI();
 		}
 	}
