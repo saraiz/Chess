@@ -1,0 +1,36 @@
+#ifndef GUI_SETTINGS
+#define GUI_SETTINGS
+
+#include "guiUtils.h"
+
+#define SPACE 45
+
+typedef struct Page{
+	SDL_Rect pageRect;
+	SDL_Surface *page;
+	Button *btnList;
+	int btnListLen;
+	int isError;
+}Page;
+
+typedef struct PagesNavigator{
+	Page mainMenu;
+	Page playersSelecionWindow;
+	Page aiSettingsWindow;
+	Page currentPage;
+}PagesNavigator;
+
+Page containerPage;
+PagesNavigator navigator;
+
+void createMainContainer();
+Page createMainMenuPage();
+Button createButton(char *imgUrl, int id, int width, int height, int x, int y);
+int addButtons(Button list[], int len, SDL_Surface *surface);
+int buildSettingsWindow();
+int handleMainMenuEvents();
+int handleButtonClicked_mainMenu(SDL_Event e);
+int navigatToPage(char* pageName);
+int removeCurrentPage();
+
+#endif
