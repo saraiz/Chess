@@ -23,7 +23,7 @@ Page createMainMenuPage(){
 	//Add Background
 	SDL_Surface *bkg = loadImage("./images/settings/bkg/mainMenu_bkg.bmp");
 	addImageToSurface(bkg, NULL, containerPage.page, NULL);
-	navigator.mainMenu.bkg = bkg;
+	currentPage.bkg = bkg;
 
 	// CreateButtons
 	Button newGameBtn = createButton("./images/settings/btn/button.bmp", 1, 150, 42, SCREEN_WIDTH / 2 - 150 / 2, 200);
@@ -39,13 +39,13 @@ Page createMainMenuPage(){
 	btnLst[1] = loadGameBtn;
 	btnLst[2] = quitGameBtn;
 
-	navigator.mainMenu.btnList = btnLst;
-	navigator.mainMenu.btnListLen = 3;
-	navigator.mainMenu.id = 1;
+	currentPage.btnList = btnLst;
+	currentPage.btnListLen = 3;
+	currentPage.id = 1;
 
 	addButtons(btnLst, 3, containerPage.page);
 
-	return navigator.mainMenu;
+	return currentPage;
 }
 
 Page createSelecetionPage(){
@@ -54,7 +54,7 @@ Page createSelecetionPage(){
 	//Add Background
 	SDL_Surface *bkg = loadImage("./images/settings/bkg/selectionWindow_bkg.bmp");
 	addImageToSurface(bkg, NULL, containerPage.page, NULL);
-	navigator.playersSelecionWindow.bkg = bkg;
+	currentPage.bkg = bkg;
 
 	// create game mode section
 	Button game_mode_2PlayersMode = createButton("./images/settings/btn/button.bmp", 1, 150, 42, 30, 110);
@@ -87,14 +87,107 @@ Page createSelecetionPage(){
 	btnLst[6] = cancelButton;
 	btnLst[7] = okButton;
 
-	navigator.playersSelecionWindow.btnList = btnLst;
-	navigator.playersSelecionWindow.btnListLen = 8;
-	navigator.playersSelecionWindow.id = 2;
+	currentPage.btnList = btnLst;
+	currentPage.btnListLen = 8;
+	currentPage.id = 2;
 
 	addButtons(btnLst, 8, containerPage.page);
 	updateSurface(containerPage.page);
 
-	return navigator.playersSelecionWindow;
+	return currentPage;
+}
+
+Page createAiSettingsPage(){
+	Page emptyPage;
+
+	//Add Background
+	SDL_Surface *bkg = loadImage("./images/settings/bkg/AiSettingsWindow_bkg.bmp");
+	addImageToSurface(bkg, NULL, containerPage.page, NULL);
+	currentPage.bkg = bkg;
+
+	// create game mode section
+	int y = 120;
+	int x = 45;
+	Button *btnLst = (Button*)malloc(sizeof(Button) * 9);
+	if (btnLst == NULL){
+		// TBD - free all images in current page
+		emptyPage.isError = 1;
+		return emptyPage;
+	}
+
+
+	for (int i = 1; i <= 5; i++){
+		Button slot = createButton("./images/settings/btn/slot.bmp", i, 50, 50, x, y);
+
+		//y = y + slot.buttonsDestRect.h + SPACE;
+		x = x + slot.buttonsDestRect.w + SPACE;
+		btnLst[i - 1] = slot;
+	}
+
+	Button next_player_black = createButton("./images/settings/btn/button.bmp", 3, 150, 42, 45, 230);
+	Button next_player_white = createButton("./images/settings/btn/button.bmp", 4, 150, 42, next_player_black.buttonsDestRect.x + next_player_black.buttonsDestRect.w + SPACE, 230);
+	btnLst[5] = next_player_black;
+	btnLst[6] = next_player_white;
+
+	// create ok and cancel buttons
+	Button cancelButton = createButton("./images/settings/btn/button.bmp", 8, 150, 42, SCREEN_WIDTH - SPACE - 150, SCREEN_HEIGHT - 30 - 42);
+	Button okButton = createButton("./images/settings/btn/button.bmp", 9, 150, 42, cancelButton.buttonsDestRect.x - 30 - cancelButton.buttonsDestRect.w, cancelButton.buttonsDestRect.y);
+	btnLst[7] = cancelButton;
+	btnLst[8] = okButton;
+
+
+	currentPage.btnList = btnLst;
+	currentPage.btnListLen = 9;
+	currentPage.id = 4;
+
+	addButtons(btnLst, 9, containerPage.page);
+	updateSurface(containerPage.page);
+
+	return currentPage;
+}
+
+Page createLoadFromSlotPage(){
+	Page emptyPage;
+
+	//Add Background
+	SDL_Surface *bkg = loadImage("./images/settings/bkg/loadFromSlot_bkg.bmp");
+	addImageToSurface(bkg, NULL, containerPage.page, NULL);
+	currentPage.bkg = bkg;
+
+	// create game mode section
+	int y = 100;
+	int x = 30;
+	Button *btnLst = (Button*)malloc(sizeof(Button) * (NUM_OF_SLOTS + 2));
+	if (btnLst == NULL){
+		// TBD - free all images in current page
+		emptyPage.isError = 1;
+		return emptyPage;
+	}
+
+
+	for (int i = 1; i <= NUM_OF_SLOTS; i++){
+		Button slot = createButton("./images/settings/btn/slot.bmp", i, 50, 50, x, y);
+
+		//y = y + slot.buttonsDestRect.h + SPACE;
+		x = x + slot.buttonsDestRect.w + SPACE;
+		btnLst[i - 1] = slot;
+	}
+
+	// create ok and cancel buttons
+	Button cancelButton = createButton("./images/settings/btn/button.bmp", NUM_OF_SLOTS + 1, 150, 42, SCREEN_WIDTH - SPACE - 150, SCREEN_HEIGHT - 30 - 42);
+	Button okButton = createButton("./images/settings/btn/button.bmp", NUM_OF_SLOTS + 2, 150, 42, cancelButton.buttonsDestRect.x - 30 - cancelButton.buttonsDestRect.w, cancelButton.buttonsDestRect.y);
+	btnLst[NUM_OF_SLOTS] = cancelButton;
+	btnLst[NUM_OF_SLOTS + 1] = okButton;
+
+
+	currentPage.btnList = btnLst;
+	currentPage.btnListLen = NUM_OF_SLOTS + 2;
+	currentPage.id = 3;
+
+	addButtons(btnLst, NUM_OF_SLOTS + 2, containerPage.page);
+	updateSurface(containerPage.page);
+
+	return currentPage;
 }
 
 Button createButton(char *imgUrl, int id, int width, int height, int x, int y){
@@ -163,7 +256,7 @@ int handleEvents(){
 }
 
 int handleButtonClicked(SDL_Event e){
-	int id = navigator.currentPage.id;
+	int id = currentPage.id;
 	int quit = 0;
 	switch (id)
 	{
@@ -173,14 +266,17 @@ int handleButtonClicked(SDL_Event e){
 	case 2:
 		quit = handleButtonClicked_selectionWindow(e);
 		break;
+	case 3:
+		quit = handleButtonClicked_loadFromSlotWindow(e);
+		break;
 	}
 
 	return quit;
 }
 
 int handleButtonClicked_mainMenu(SDL_Event e){
-	Button *lst = navigator.mainMenu.btnList;
-	int len = navigator.mainMenu.btnListLen;
+	Button *lst = currentPage.btnList;
+	int len = currentPage.btnListLen;
 	Button curr;
 	int quit = 0;
 
@@ -208,8 +304,8 @@ int handleButtonClicked_mainMenu(SDL_Event e){
 }
 
 int handleButtonClicked_selectionWindow(SDL_Event e){
-	Button *lst = navigator.playersSelecionWindow.btnList;
-	int len = navigator.playersSelecionWindow.btnListLen;
+	Button *lst = currentPage.btnList;
+	int len = currentPage.btnListLen;
 	Button curr;
 	int quit = 0;
 
@@ -251,6 +347,7 @@ int handleButtonClicked_selectionWindow(SDL_Event e){
 				saveSettings();
 				if (userGuiSettings.gameMode == PLAYER_VS_AI){
 					// navigate to AI settings window
+					navigatToPage("aiSettingsWindow");
 				}
 				else if(userGuiSettings.isSetBoard){
 					// navigate to set board window
@@ -266,28 +363,68 @@ int handleButtonClicked_selectionWindow(SDL_Event e){
 
 }
 
+int handleButtonClicked_loadFromSlotWindow(SDL_Event e){
+	Button *lst = currentPage.btnList;
+	int len = currentPage.btnListLen;
+	Button curr;
+	int quit = 0;
+
+	for (int i = 0; i < len; i++){
+		curr = lst[i];
+		if (isClickInRect(e, curr.buttonsDestRect) == 1){
+			if (curr.id >=1 && curr.id <=NUM_OF_SLOTS){
+				// a slot was chosen - load from slot
+
+			}
+			else{
+				switch (curr.id)
+				{
+				case NUM_OF_SLOTS+1:
+					navigatToPage("mainMenu");
+					break;
+				case NUM_OF_SLOTS+2:
+					// load from chosen slot
+					//check if there is no slot chosen
+					break;
+				}
+			}
+		}
+	}
+	return quit;
+
+}
+
 int navigatToPage(char* pageName){
 	removeCurrentPage();
 	if (strcmp(pageName, "mainMenu") == 0){
-		navigator.currentPage = createMainMenuPage();
-		if (navigator.currentPage.isError == 1){
+		currentPage = createMainMenuPage();
+		if (currentPage.isError == 1){
 			// ERROR
 		}
 	}
 	else if (strcmp(pageName, "selectionWindow") == 0){
-		navigator.currentPage = createSelecetionPage();
-		if (navigator.currentPage.isError == 1){
+		currentPage = createSelecetionPage();
+		if (currentPage.isError == 1){
 			// ERROR
 		}
 	}
 	else if (strcmp(pageName, "loadSlotWindow") == 0){
-
+		currentPage = createLoadFromSlotPage();
+		if (currentPage.isError == 1){
+			// ERROR
+		}
+	}
+	else if (strcmp(pageName, "aiSettingsWindow") == 0){
+		currentPage = createAiSettingsPage();
+		if (currentPage.isError == 1){
+			// ERROR
+		}
 	}
 }
 
 int removeCurrentPage(){
-	Button *lst = navigator.currentPage.btnList;
-	int len = navigator.currentPage.btnListLen;
+	Button *lst = currentPage.btnList;
+	int len = currentPage.btnListLen;
 
 	for (int i = 0; i < len; i++){
 		SDL_FreeSurface(lst[i].img);
@@ -297,7 +434,7 @@ int removeCurrentPage(){
 
 	myFree(lst);
 
-	SDL_FreeSurface(navigator.currentPage.bkg);
+	SDL_FreeSurface(currentPage.bkg);
 
 	// put white screen on top
 	SDL_FillRect(containerPage.page, &containerPage.page->clip_rect, SDL_MapRGB(containerPage.page->format, 0xFF, 0xFF, 0xFF));

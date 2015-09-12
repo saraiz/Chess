@@ -4,6 +4,7 @@
 #include "guiUtils.h"
 
 #define SPACE 45
+#define NUM_OF_SLOTS 7
 
 typedef struct Page{
 	SDL_Rect pageRect;
@@ -15,12 +16,6 @@ typedef struct Page{
 	int id;
 }Page;
 
-typedef struct PagesNavigator{
-	Page mainMenu;
-	Page playersSelecionWindow;
-	Page aiSettingsWindow;
-	Page currentPage;
-}PagesNavigator;
 
 typedef struct UserGuiSettings{
 	int gameMode;
@@ -28,14 +23,15 @@ typedef struct UserGuiSettings{
 	int isSetBoard;
 }UserGuiSettings;
 
-
+Page currentPage;
 Page containerPage;
-PagesNavigator navigator;
 UserGuiSettings userGuiSettings;
 
 void createMainContainer();
 Page createMainMenuPage();
 Page createSelecetionPage();
+Page createLoadFromSlotPage();
+Page createAiSettingsPage();
 Button createButton(char *imgUrl, int id, int width, int height, int x, int y);
 int addButtons(Button list[], int len, SDL_Surface *surface);
 int buildSettingsWindow();
