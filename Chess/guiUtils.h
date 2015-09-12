@@ -15,9 +15,10 @@ typedef struct Button{
 	int id;
 }Button;
 
-int addImageToSurface(SDL_Surface *img, SDL_Rect rOrigin, SDL_Surface *dest, SDL_Rect rDest);
+int addImageToSurface(SDL_Surface *img, SDL_Rect *rOrigin, SDL_Surface *dest, SDL_Rect *rDest);
 SDL_Surface* loadImage(char* url);
 SDL_Surface* createSurface(int width, int height);
 int updateSurface(SDL_Surface *surface);
+int isClickInRect(SDL_Event e, SDL_Rect buttonRect);
 
 #endif
