@@ -10,9 +10,6 @@ int main()
 
 	setSettings("game_mode 2");
 
-	SDL_Init(SDL_INIT_EVERYTHING);
-	SDL_Quit();
-
 
 
 	actionSummery summery = readSettings();
