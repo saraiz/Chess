@@ -2,9 +2,20 @@
 #define GUI_SETTINGS
 
 #include "guiUtils.h"
+#include "IO.h"
+#include "settingsStateManager.h"
 
 #define SPACE 45
 #define NUM_OF_SLOTS 7
+
+#define MAIN_MENU_BKG "./images/settings/bkg/mainMenu_bkg.bmp"
+#define SELECTION_WINDOW_BKG "./images/settings/bkg/selectionWindow_bkg.bmp"
+#define AI_SETTINGS_WINDOW "./images/settings/bkg/AiSettingsWindow_bkg.bmp"
+#define LOAD_FROM_SLOT_WINDOW "./images/settings/bkg/loadFromSlot_bkg.bmp"
+#define REG_BTN_URL "./images/settings/btn/button.bmp"
+#define REG_BTN_SELECTED_URL "./images/settings/btn/button_selected.bmp"
+#define SLOT_BTN_URL "./images/settings/btn/slot.bmp"
+#define SLOT_BTN_SELECTED_URL "./images/settings/btn/slot_selected.bmp"
 
 typedef struct Page{
 	SDL_Rect pageRect;
@@ -21,11 +32,12 @@ typedef struct UserGuiSettings{
 	int gameMode;
 	int isNextPlayerBlack;
 	int isSetBoard;
+	int savedSlot;
 }UserGuiSettings;
 
 Page currentPage;
 Page containerPage;
-UserGuiSettings userGuiSettings;
+extern UserGuiSettings userGuiSettings;// = { 1, 0, 0, 0 };
 
 void createMainContainer();
 Page createMainMenuPage();
@@ -39,5 +51,9 @@ int handleButtonClicked_mainMenu(SDL_Event e);
 int handleButtonClicked_selectionWindow(SDL_Event e);
 int navigatToPage(char* pageName);
 int removeCurrentPage();
+void saveSettings();
+int selectButton(char *url, Button button);
+int deselectButton(char *url, Button button);
+Button getButtonAccordingToId(Button list[], int len, int id);
 
 #endif

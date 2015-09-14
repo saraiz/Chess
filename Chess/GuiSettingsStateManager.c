@@ -1,5 +1,7 @@
 #include "GuiSettingsStateManager.h"
 
+UserGuiSettings userGuiSettings = { 1, 0, 0, 0 };
+
 int buildSettingsWindow(){
 	createMainContainer();
 	navigatToPage("mainMenu");
@@ -21,14 +23,14 @@ Page createMainMenuPage(){
 	Page emptyPage;
 
 	//Add Background
-	SDL_Surface *bkg = loadImage("./images/settings/bkg/mainMenu_bkg.bmp");
+	SDL_Surface *bkg = loadImage(MAIN_MENU_BKG);
 	addImageToSurface(bkg, NULL, containerPage.page, NULL);
 	currentPage.bkg = bkg;
 
 	// CreateButtons
-	Button newGameBtn = createButton("./images/settings/btn/button.bmp", 1, 150, 42, SCREEN_WIDTH / 2 - 150 / 2, 200);
-	Button loadGameBtn = createButton("./images/settings/btn/button.bmp", 2, 150, 42, SCREEN_WIDTH / 2 - 150 / 2, newGameBtn.buttonsDestRect.y + newGameBtn.buttonsDestRect.h + SPACE);
-	Button quitGameBtn = createButton("./images/settings/btn/button.bmp", 3, 150, 42, SCREEN_WIDTH / 2 - 150 / 2, loadGameBtn.buttonsDestRect.y + loadGameBtn.buttonsDestRect.h + SPACE);
+	Button newGameBtn = createButton(REG_BTN_URL, 1, 150, 42, SCREEN_WIDTH / 2 - 150 / 2, 200);
+	Button loadGameBtn = createButton(REG_BTN_URL, 2, 150, 42, SCREEN_WIDTH / 2 - 150 / 2, newGameBtn.buttonsDestRect.y + newGameBtn.buttonsDestRect.h + SPACE);
+	Button quitGameBtn = createButton(REG_BTN_URL, 3, 150, 42, SCREEN_WIDTH / 2 - 150 / 2, loadGameBtn.buttonsDestRect.y + loadGameBtn.buttonsDestRect.h + SPACE);
 	Button *btnLst = (Button*)malloc(sizeof(Button)*3);
 	if (btnLst == NULL){
 		emptyPage.isError = 1;
@@ -45,6 +47,9 @@ Page createMainMenuPage(){
 
 	addButtons(btnLst, 3, containerPage.page);
 
+	// set defaults
+	selectButton(REG_BTN_SELECTED_URL, newGameBtn);
+
 	return currentPage;
 }
 
@@ -52,25 +57,25 @@ Page createSelecetionPage(){
 	Page emptyPage;
 
 	//Add Background
-	SDL_Surface *bkg = loadImage("./images/settings/bkg/selectionWindow_bkg.bmp");
+	SDL_Surface *bkg = loadImage(SELECTION_WINDOW_BKG);
 	addImageToSurface(bkg, NULL, containerPage.page, NULL);
 	currentPage.bkg = bkg;
 
 	// create game mode section
-	Button game_mode_2PlayersMode = createButton("./images/settings/btn/button.bmp", 1, 150, 42, 30, 110);
-	Button game_mode_playerVsAI = createButton("./images/settings/btn/button.bmp", 2, 150, 42, game_mode_2PlayersMode.buttonsDestRect.x + game_mode_2PlayersMode.buttonsDestRect.w + SPACE, 110);
+	Button game_mode_2PlayersMode = createButton(REG_BTN_URL, 1, 150, 42, 30, 110);
+	Button game_mode_playerVsAI = createButton(REG_BTN_URL, 2, 150, 42, game_mode_2PlayersMode.buttonsDestRect.x + game_mode_2PlayersMode.buttonsDestRect.w + SPACE, 110);
 
 	// create next player section
-	Button next_player_black = createButton("./images/settings/btn/button.bmp", 3, 150, 42, 30, 220);
-	Button next_player_white = createButton("./images/settings/btn/button.bmp", 4, 150, 42, next_player_black.buttonsDestRect.x + next_player_black.buttonsDestRect.w + SPACE, 220);
+	Button next_player_white = createButton(REG_BTN_URL, 3, 150, 42, 30, 220);
+	Button next_player_black = createButton(REG_BTN_URL, 4, 150, 42, next_player_white.buttonsDestRect.x + next_player_white.buttonsDestRect.w + SPACE, 220);
 
 	// create next player section
-	Button set_board_yes = createButton("./images/settings/btn/button.bmp", 5, 150, 42, 30, 330);
-	Button set_board_no = createButton("./images/settings/btn/button.bmp", 6, 150, 42, set_board_yes.buttonsDestRect.x + set_board_yes.buttonsDestRect.w + SPACE, 330);
+	Button set_board_no = createButton(REG_BTN_URL, 5, 150, 42, 30, 330);
+	Button set_board_yes = createButton(REG_BTN_URL, 6, 150, 42, set_board_no.buttonsDestRect.x + set_board_no.buttonsDestRect.w + SPACE, 330);
 
 	// create ok and cancel buttons
-	Button cancelButton = createButton("./images/settings/btn/button.bmp", 7, 150, 42, SCREEN_WIDTH - SPACE - 150, SCREEN_HEIGHT - 30 - 42);
-	Button okButton = createButton("./images/settings/btn/button.bmp", 8, 150, 42, cancelButton.buttonsDestRect.x - 30 - cancelButton.buttonsDestRect.w, cancelButton.buttonsDestRect.y);
+	Button cancelButton = createButton(REG_BTN_URL, 7, 150, 42, SCREEN_WIDTH - SPACE - 150, SCREEN_HEIGHT - 30 - 42);
+	Button okButton = createButton(REG_BTN_URL, 8, 150, 42, cancelButton.buttonsDestRect.x - 30 - cancelButton.buttonsDestRect.w, cancelButton.buttonsDestRect.y);
 	
 	Button *btnLst = (Button*)malloc(sizeof(Button) * 8);
 	if (btnLst == NULL){
@@ -92,6 +97,12 @@ Page createSelecetionPage(){
 	currentPage.id = 2;
 
 	addButtons(btnLst, 8, containerPage.page);
+
+	// set defaults
+	selectButton(REG_BTN_SELECTED_URL, game_mode_2PlayersMode);
+	selectButton(REG_BTN_SELECTED_URL, next_player_white);
+	selectButton(REG_BTN_SELECTED_URL, set_board_no);
+
 	updateSurface(containerPage.page);
 
 	return currentPage;
@@ -101,7 +112,7 @@ Page createAiSettingsPage(){
 	Page emptyPage;
 
 	//Add Background
-	SDL_Surface *bkg = loadImage("./images/settings/bkg/AiSettingsWindow_bkg.bmp");
+	SDL_Surface *bkg = loadImage(AI_SETTINGS_WINDOW);
 	addImageToSurface(bkg, NULL, containerPage.page, NULL);
 	currentPage.bkg = bkg;
 
@@ -117,21 +128,21 @@ Page createAiSettingsPage(){
 
 
 	for (int i = 1; i <= 5; i++){
-		Button slot = createButton("./images/settings/btn/slot.bmp", i, 50, 50, x, y);
+		Button difficulty = createButton(SLOT_BTN_URL, i, 50, 50, x, y);
 
 		//y = y + slot.buttonsDestRect.h + SPACE;
-		x = x + slot.buttonsDestRect.w + SPACE;
-		btnLst[i - 1] = slot;
+		x = x + difficulty.buttonsDestRect.w + SPACE;
+		btnLst[i - 1] = difficulty;
 	}
 
-	Button next_player_black = createButton("./images/settings/btn/button.bmp", 3, 150, 42, 45, 230);
-	Button next_player_white = createButton("./images/settings/btn/button.bmp", 4, 150, 42, next_player_black.buttonsDestRect.x + next_player_black.buttonsDestRect.w + SPACE, 230);
-	btnLst[5] = next_player_black;
-	btnLst[6] = next_player_white;
+	Button userColor_black = createButton(REG_BTN_URL, 3, 150, 42, 45, 230);
+	Button userColor_white = createButton(REG_BTN_URL, 4, 150, 42, userColor_black.buttonsDestRect.x + userColor_black.buttonsDestRect.w + SPACE, 230);
+	btnLst[5] = userColor_black;
+	btnLst[6] = userColor_white;
 
 	// create ok and cancel buttons
-	Button cancelButton = createButton("./images/settings/btn/button.bmp", 8, 150, 42, SCREEN_WIDTH - SPACE - 150, SCREEN_HEIGHT - 30 - 42);
-	Button okButton = createButton("./images/settings/btn/button.bmp", 9, 150, 42, cancelButton.buttonsDestRect.x - 30 - cancelButton.buttonsDestRect.w, cancelButton.buttonsDestRect.y);
+	Button cancelButton = createButton(REG_BTN_URL, 8, 150, 42, SCREEN_WIDTH - SPACE - 150, SCREEN_HEIGHT - 30 - 42);
+	Button okButton = createButton(REG_BTN_URL, 9, 150, 42, cancelButton.buttonsDestRect.x - 30 - cancelButton.buttonsDestRect.w, cancelButton.buttonsDestRect.y);
 	btnLst[7] = cancelButton;
 	btnLst[8] = okButton;
 
@@ -150,7 +161,7 @@ Page createLoadFromSlotPage(){
 	Page emptyPage;
 
 	//Add Background
-	SDL_Surface *bkg = loadImage("./images/settings/bkg/loadFromSlot_bkg.bmp");
+	SDL_Surface *bkg = loadImage(LOAD_FROM_SLOT_WINDOW);
 	addImageToSurface(bkg, NULL, containerPage.page, NULL);
 	currentPage.bkg = bkg;
 
@@ -166,7 +177,7 @@ Page createLoadFromSlotPage(){
 
 
 	for (int i = 1; i <= NUM_OF_SLOTS; i++){
-		Button slot = createButton("./images/settings/btn/slot.bmp", i, 50, 50, x, y);
+		Button slot = createButton(SLOT_BTN_URL, i, 50, 50, x, y);
 
 		//y = y + slot.buttonsDestRect.h + SPACE;
 		x = x + slot.buttonsDestRect.w + SPACE;
@@ -174,8 +185,8 @@ Page createLoadFromSlotPage(){
 	}
 
 	// create ok and cancel buttons
-	Button cancelButton = createButton("./images/settings/btn/button.bmp", NUM_OF_SLOTS + 1, 150, 42, SCREEN_WIDTH - SPACE - 150, SCREEN_HEIGHT - 30 - 42);
-	Button okButton = createButton("./images/settings/btn/button.bmp", NUM_OF_SLOTS + 2, 150, 42, cancelButton.buttonsDestRect.x - 30 - cancelButton.buttonsDestRect.w, cancelButton.buttonsDestRect.y);
+	Button cancelButton = createButton(REG_BTN_URL, NUM_OF_SLOTS + 1, 150, 42, SCREEN_WIDTH - SPACE - 150, SCREEN_HEIGHT - 30 - 42);
+	Button okButton = createButton(REG_BTN_URL, NUM_OF_SLOTS + 2, 150, 42, cancelButton.buttonsDestRect.x - 30 - cancelButton.buttonsDestRect.w, cancelButton.buttonsDestRect.y);
 	btnLst[NUM_OF_SLOTS] = cancelButton;
 	btnLst[NUM_OF_SLOTS + 1] = okButton;
 
@@ -185,6 +196,10 @@ Page createLoadFromSlotPage(){
 	currentPage.id = 3;
 
 	addButtons(btnLst, NUM_OF_SLOTS + 2, containerPage.page);
+
+	// set default
+	selectButton(SLOT_BTN_SELECTED_URL, btnLst[0]);
+
 	updateSurface(containerPage.page);
 
 	return currentPage;
@@ -265,6 +280,7 @@ int handleButtonClicked_selectionWindow(SDL_Event e){
 	int len = currentPage.btnListLen;
 	Button curr;
 	int quit = 0;
+	Button prev;
 
 	for (int i = 0; i < len; i++){
 		curr = lst[i];
@@ -274,26 +290,45 @@ int handleButtonClicked_selectionWindow(SDL_Event e){
 			case 1:
 				// user choose player vs. player
 				userGuiSettings.gameMode = TWO_PLAYERS;
+				prev = getButtonAccordingToId(lst, len, 2);
+				deselectButton(REG_BTN_URL, prev);
+				selectButton(REG_BTN_SELECTED_URL, curr);
+
 				break;
 			case 2:
 				// user choose player vs. AI
 				userGuiSettings.gameMode = PLAYER_VS_AI;
+				prev = getButtonAccordingToId(lst, len, 1);
+				deselectButton(REG_BTN_URL, prev);
+				selectButton(REG_BTN_SELECTED_URL, curr);
 				break;
 			case 3:
 				// user choose next player black
 				userGuiSettings.isNextPlayerBlack = 1;
+				prev = getButtonAccordingToId(lst, len, 4);
+				deselectButton(REG_BTN_URL, prev);
+				selectButton(REG_BTN_SELECTED_URL, curr);
 				break;
 			case 4:
 				// user choose next player white
 				userGuiSettings.isNextPlayerBlack = 0;
+				prev = getButtonAccordingToId(lst, len, 3);
+				deselectButton(REG_BTN_URL, prev);
+				selectButton(REG_BTN_SELECTED_URL, curr);
 				break;
 			case 5:
 				// user choose to set board
 				userGuiSettings.isSetBoard = 1;
+				prev = getButtonAccordingToId(lst, len, 6);
+				deselectButton(REG_BTN_URL, prev);
+				selectButton(REG_BTN_SELECTED_URL, curr);
 				break;
 			case 6:
 				// user choose not to set board
 				userGuiSettings.isSetBoard = 0;
+				prev = getButtonAccordingToId(lst, len, 5);
+				deselectButton(REG_BTN_URL, prev);
+				selectButton(REG_BTN_SELECTED_URL, curr);
 				break;
 			case 7:
 				// user choose to cancel and return to the main menu
@@ -331,7 +366,17 @@ int handleButtonClicked_loadFromSlotWindow(SDL_Event e){
 		if (isClickInRect(e, curr.buttonsDestRect) == 1){
 			if (curr.id >=1 && curr.id <=NUM_OF_SLOTS){
 				// a slot was chosen - load from slot
-
+				int isSuccess = 1;
+				if (userGuiSettings.savedSlot != 0){
+					// need to deselect the prevButton
+					Button prevChosenButton = getButtonAccordingToId(lst, len, userGuiSettings.savedSlot);
+					isSuccess = deselectButton(" ", prevChosenButton);
+				}
+				if (isSuccess == 1){
+					userGuiSettings.savedSlot = curr.id;
+					isSuccess = selectButton(SLOT_BTN_SELECTED_URL, curr);
+				}
+				quit = !isSuccess;
 			}
 			else{
 				switch (curr.id)
@@ -342,6 +387,18 @@ int handleButtonClicked_loadFromSlotWindow(SDL_Event e){
 				case NUM_OF_SLOTS+2:
 					// load from chosen slot
 					//check if there is no slot chosen
+					if (userGuiSettings.savedSlot != 0){
+						
+						char path[10];
+						char *slot = "./slots/slot";
+						char *xmlStr = ".xml";
+						sprintf(path, "%s%d%s", slot, userGuiSettings.savedSlot, xmlStr);
+						fileData data = loadGame(path);
+						int isSuccess = saveLoadedData(data, 0);
+						if (!isSuccess){
+							// TBD - what do we need to do? Show a dialog?
+						}
+					}
 					break;
 				}
 			}
@@ -384,9 +441,16 @@ int removeCurrentPage(){
 	int len = currentPage.btnListLen;
 
 	for (int i = 0; i < len; i++){
-		SDL_FreeSurface(lst[i].img);
-		lst[i].buttonsOriginRect.h = 0;
-		lst[i].buttonsOriginRect.w = 0;
+		if (lst[i].img != NULL){
+			SDL_FreeSurface(lst[i].img);
+		}
+
+		if (lst[i].selectedImg != NULL){
+			SDL_FreeSurface(lst[i].selectedImg);
+		}
+
+		//lst[i].buttonsOriginRect.h = 0;
+		//lst[i].buttonsOriginRect.w = 0;
 	}
 
 	myFree(lst);
@@ -402,5 +466,51 @@ void saveSettings(){
 	settings.gameMode = userGuiSettings.gameMode;
 	game_board.isBlackTurn = userGuiSettings.isNextPlayerBlack;
 }
+
+int selectButton(char *url, Button button){
+	SDL_FillRect(containerPage.page, &button.buttonsDestRect, SDL_MapRGB(containerPage.page->format, 0xFF, 0xFF, 0xFF));
+	if (button.selectedImg == NULL){
+		button.selectedImg = loadImage(url);
+		if (button.selectedImg == NULL){
+			return 0;
+		}
+	}
+	int isSuccess = addImageToSurface(button.selectedImg, &button.buttonsOriginRect, containerPage.page, &button.buttonsDestRect);
+	if (isSuccess == 1){
+		updateSurface(containerPage.page);
+	}
+	
+	return isSuccess;
+}
+
+int deselectButton(char *url, Button button){
+	SDL_FillRect(containerPage.page, &button.buttonsDestRect, SDL_MapRGB(containerPage.page->format, 0xFF, 0xFF, 0xFF));
+	if (button.img == NULL){
+		button.img = loadImage(url);
+		if (button.img == NULL){
+			return 0;
+		}
+	}
+	int isSuccess = addImageToSurface(button.img, &button.buttonsOriginRect, containerPage.page, &button.buttonsDestRect);
+	if (isSuccess == 1){
+		updateSurface(containerPage.page);
+	}
+	return isSuccess;
+}
+
+Button getButtonAccordingToId(Button list[], int len, int id){
+	Button curr = { {0,0,0,0}, {0,0,0,0}, NULL, 0 };
+	for (int i = 0; i < len; i++){
+		curr = list[i]; 
+		if (curr.id == id){
+			return curr;
+		}
+	}
+
+	return curr;
+}
+
+//SDL_Surface
+
 
 

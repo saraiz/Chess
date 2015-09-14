@@ -7,7 +7,8 @@
 #include "GuiSettingsStateManager.h"
 
 void handleConsole();
-void handleGUI();
+int handleGUI();
+//int handleGUI2();
 
 
 #endif
