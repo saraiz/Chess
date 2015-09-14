@@ -3,12 +3,18 @@
 UserGuiSettings userGuiSettings = { 1, 0, 0, 0 };
 
 int buildSettingsWindow(){
-	createMainContainer();
-	navigatToPage("mainMenu");
-	handleEvents();
+	int isSuccess = createMainContainer();
+	if (isSuccess == 1){
+		isSuccess = navigatToPage("mainMenu");
+		if (isSuccess == 1){
+			handleEvents();	
+		}
+	}
+
+	return isSuccess;
 }
 
-void createMainContainer(){
+int createMainContainer(){
 	SDL_Rect rect = { 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT };
 	SDL_Surface *surface = createSurface(SCREEN_WIDTH, SCREEN_HEIGHT);
 	containerPage.pageRect = rect;
@@ -16,7 +22,10 @@ void createMainContainer(){
 
 	if (SDL_FillRect(containerPage.page, &containerPage.pageRect, SDL_MapRGB(containerPage.page->format, 0, 0, 0)) != 0) {
 		printf("ERROR: failed to draw rect: %s\n", SDL_GetError());
+		return 0;
 	}
+
+	return 1;
 }
 
 Page createMainMenuPage(){
@@ -33,8 +42,8 @@ Page createMainMenuPage(){
 	Button quitGameBtn = createButton(REG_BTN_URL, 3, 150, 42, SCREEN_WIDTH / 2 - 150 / 2, loadGameBtn.buttonsDestRect.y + loadGameBtn.buttonsDestRect.h + SPACE);
 	Button *btnLst = (Button*)malloc(sizeof(Button)*3);
 	if (btnLst == NULL){
-		emptyPage.isError = 1;
-		return emptyPage;
+		currentPage.isError = 1;
+		return currentPage;
 	}
 
 	btnLst[0] = newGameBtn;
@@ -122,8 +131,8 @@ Page createAiSettingsPage(){
 	Button *btnLst = (Button*)malloc(sizeof(Button) * 9);
 	if (btnLst == NULL){
 		// TBD - free all images in current page
-		emptyPage.isError = 1;
-		return emptyPage;
+		currentPage.isError = 1;
+		return currentPage;
 	}
 
 
@@ -477,34 +486,44 @@ int handleButtonClicked_aiSettingsWindow(SDL_Event e){
 }
 
 int navigatToPage(char* pageName){
-	removeCurrentPage();
-	if (strcmp(pageName, "mainMenu") == 0){
-		currentPage = createMainMenuPage();
-		if (currentPage.isError == 1){
-			// ERROR
+	int isSuccess = 1;
+	isSuccess = removeCurrentPage();
+	if (isSuccess == 1){
+		if (strcmp(pageName, "mainMenu") == 0){
+			currentPage = createMainMenuPage();
+			if (currentPage.isError == 1){
+				// ERROR
+				isSuccess = 0;
+			}
+		}
+		else if (strcmp(pageName, "selectionWindow") == 0){
+			currentPage = createSelecetionPage();
+			if (currentPage.isError == 1){
+				// ERROR
+				isSuccess = 0;
+			}
+		}
+		else if (strcmp(pageName, "loadSlotWindow") == 0){
+			currentPage = createLoadFromSlotPage();
+			if (currentPage.isError == 1){
+				// ERROR
+				isSuccess = 0;
+			}
+		}
+		else if (strcmp(pageName, "aiSettingsWindow") == 0){
+			currentPage = createAiSettingsPage();
+			if (currentPage.isError == 1){
+				// ERROR
+				isSuccess = 0;
+			}
 		}
 	}
-	else if (strcmp(pageName, "selectionWindow") == 0){
-		currentPage = createSelecetionPage();
-		if (currentPage.isError == 1){
-			// ERROR
-		}
-	}
-	else if (strcmp(pageName, "loadSlotWindow") == 0){
-		currentPage = createLoadFromSlotPage();
-		if (currentPage.isError == 1){
-			// ERROR
-		}
-	}
-	else if (strcmp(pageName, "aiSettingsWindow") == 0){
-		currentPage = createAiSettingsPage();
-		if (currentPage.isError == 1){
-			// ERROR
-		}
-	}
+
+	return isSuccess;
 }
 
 int removeCurrentPage(){
+	int isSuccess = 1;
 	Button *lst = currentPage.btnList;
 	int len = currentPage.btnListLen;
 
@@ -527,7 +546,8 @@ int removeCurrentPage(){
 
 	// put white screen on top
 	SDL_FillRect(containerPage.page, &containerPage.page->clip_rect, SDL_MapRGB(containerPage.page->format, 0xFF, 0xFF, 0xFF));
-	updateSurface(containerPage.page);
+	isSuccess = updateSurface(containerPage.page);
+	return isSuccess;
 }
 
 void saveSettings(int isSelectionWinsow){

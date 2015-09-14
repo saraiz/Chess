@@ -41,7 +41,7 @@ Page currentPage;
 Page containerPage;
 extern UserGuiSettings userGuiSettings;// = { 1, 0, 0, 0 };
 
-void createMainContainer();
+int createMainContainer();
 Page createMainMenuPage();
 Page createSelecetionPage();
 Page createLoadFromSlotPage();
