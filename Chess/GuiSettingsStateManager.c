@@ -47,9 +47,6 @@ Page createMainMenuPage(){
 
 	addButtons(btnLst, 3, containerPage.page);
 
-	// set defaults
-	selectButton(REG_BTN_SELECTED_URL, newGameBtn);
-
 	return currentPage;
 }
 
@@ -102,6 +99,9 @@ Page createSelecetionPage(){
 	selectButton(REG_BTN_SELECTED_URL, game_mode_2PlayersMode);
 	selectButton(REG_BTN_SELECTED_URL, next_player_white);
 	selectButton(REG_BTN_SELECTED_URL, set_board_no);
+	userGuiSettings.gameMode = TWO_PLAYERS;
+	userGuiSettings.isNextPlayerBlack = 0;
+	userGuiSettings.isSetBoard = 0;
 
 	updateSurface(containerPage.page);
 
@@ -135,8 +135,8 @@ Page createAiSettingsPage(){
 		btnLst[i - 1] = difficulty;
 	}
 
-	Button userColor_black = createButton(REG_BTN_URL, 3, 150, 42, 45, 230);
-	Button userColor_white = createButton(REG_BTN_URL, 4, 150, 42, userColor_black.buttonsDestRect.x + userColor_black.buttonsDestRect.w + SPACE, 230);
+	Button userColor_black = createButton(REG_BTN_URL, 6, 150, 42, 45, 230);
+	Button userColor_white = createButton(REG_BTN_URL, 7, 150, 42, userColor_black.buttonsDestRect.x + userColor_black.buttonsDestRect.w + SPACE, 230);
 	btnLst[5] = userColor_black;
 	btnLst[6] = userColor_white;
 
@@ -152,6 +152,13 @@ Page createAiSettingsPage(){
 	currentPage.id = 4;
 
 	addButtons(btnLst, 9, containerPage.page);
+
+	// set defaults 
+	selectButton(SLOT_BTN_SELECTED_URL, btnLst[0]);
+	selectButton(REG_BTN_SELECTED_URL, userColor_black);
+	userGuiSettings.difficulty = 1;
+	userGuiSettings.isUserColorBlack = 1;
+
 	updateSurface(containerPage.page);
 
 	return currentPage;
@@ -199,6 +206,7 @@ Page createLoadFromSlotPage(){
 
 	// set default
 	selectButton(SLOT_BTN_SELECTED_URL, btnLst[0]);
+	userGuiSettings.savedSlot = 1;
 
 	updateSurface(containerPage.page);
 
@@ -240,6 +248,9 @@ int handleButtonClicked(SDL_Event e){
 		break;
 	case 3:
 		quit = handleButtonClicked_loadFromSlotWindow(e);
+		break;
+	case 4:
+		quit = handleButtonClicked_aiSettingsWindow(e);
 		break;
 	}
 
@@ -336,7 +347,7 @@ int handleButtonClicked_selectionWindow(SDL_Event e){
 				break;
 			case 8:
 				// user choose to aplly settings and continue to next step
-				saveSettings();
+				saveSettings(1);
 				if (userGuiSettings.gameMode == PLAYER_VS_AI){
 					// navigate to AI settings window
 					navigatToPage("aiSettingsWindow");
@@ -408,6 +419,63 @@ int handleButtonClicked_loadFromSlotWindow(SDL_Event e){
 
 }
 
+int handleButtonClicked_aiSettingsWindow(SDL_Event e){
+	Button *lst = currentPage.btnList;
+	int len = currentPage.btnListLen;
+	Button curr;
+	int quit = 0;
+	Button prev;
+	for (int i = 0; i < len; i++){
+		curr = lst[i];
+		if (isClickInRect(e, curr.buttonsDestRect) == 1){
+			if (curr.id >= 1 && curr.id <= 5){
+				// a difficulty was chosen
+				int isSuccess = 1;
+				if (userGuiSettings.difficulty != 0){
+					// need to deselect the prevButton
+					Button prevChosenButton = getButtonAccordingToId(lst, len, userGuiSettings.difficulty);
+					isSuccess = deselectButton(" ", prevChosenButton);
+				}
+				if (isSuccess == 1){
+					userGuiSettings.difficulty = curr.id < 5 ? curr.id : BEST;
+					isSuccess = selectButton(SLOT_BTN_SELECTED_URL, curr);
+				}
+				quit = !isSuccess;
+			}
+			else{
+				switch (curr.id){
+				case 6:
+					userGuiSettings.isUserColorBlack = 1;
+					prev = getButtonAccordingToId(lst, len, 7);
+					deselectButton(REG_BTN_URL, prev);
+					selectButton(REG_BTN_SELECTED_URL, curr);
+					break;
+				case 7:
+					userGuiSettings.isUserColorBlack = 0;
+					prev = getButtonAccordingToId(lst, len, 6);
+					deselectButton(REG_BTN_URL, prev);
+					selectButton(REG_BTN_SELECTED_URL, curr);
+					break;
+				case 8:
+					navigatToPage("mainMenu");
+					break;
+				case 9:
+					saveSettings(0);
+					if (userGuiSettings.isSetBoard == 1){
+						// navigate to set board window
+					}
+					else{
+						// navigate to start game window
+					}
+					break;
+				}
+			}
+		}
+	}
+	return quit;
+
+}
+
 int navigatToPage(char* pageName){
 	removeCurrentPage();
 	if (strcmp(pageName, "mainMenu") == 0){
@@ -462,9 +530,15 @@ int removeCurrentPage(){
 	updateSurface(containerPage.page);
 }
 
-void saveSettings(){
-	settings.gameMode = userGuiSettings.gameMode;
-	game_board.isBlackTurn = userGuiSettings.isNextPlayerBlack;
+void saveSettings(int isSelectionWinsow){
+	if (isSelectionWinsow){
+		settings.gameMode = userGuiSettings.gameMode;
+		game_board.isBlackTurn = userGuiSettings.isNextPlayerBlack;
+	}
+	else{
+		settings.isUserBlack = userGuiSettings.isUserColorBlack;
+		settings.minmax_depth = userGuiSettings.difficulty;
+	}
 }
 
 int selectButton(char *url, Button button){

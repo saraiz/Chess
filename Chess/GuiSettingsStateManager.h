@@ -33,6 +33,8 @@ typedef struct UserGuiSettings{
 	int isNextPlayerBlack;
 	int isSetBoard;
 	int savedSlot;
+	int difficulty;
+	int isUserColorBlack;
 }UserGuiSettings;
 
 Page currentPage;
@@ -51,9 +53,10 @@ int handleButtonClicked_mainMenu(SDL_Event e);
 int handleButtonClicked_selectionWindow(SDL_Event e);
 int navigatToPage(char* pageName);
 int removeCurrentPage();
-void saveSettings();
+void saveSettings(int isSelectionWinsow);
 int selectButton(char *url, Button button);
 int deselectButton(char *url, Button button);
 Button getButtonAccordingToId(Button list[], int len, int id);
+int handleButtonClicked_aiSettingsWindow(SDL_Event e);
 
 #endif
