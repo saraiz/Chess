@@ -20,5 +20,7 @@ SDL_Surface* loadImage(char* url);
 SDL_Surface* createSurface(int width, int height);
 int updateSurface(SDL_Surface *surface);
 int isClickInRect(SDL_Event e, SDL_Rect buttonRect);
+Button createButton(char *imgUrl, int id, int width, int height, int x, int y);
+int addButtons(Button list[], int len, SDL_Surface *surface);
 
 #endif

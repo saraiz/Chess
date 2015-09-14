@@ -47,3 +47,46 @@ int isClickInRect(SDL_Event e, SDL_Rect buttonRect){
 
 	return 0;
 }
+
+Button createButton(char *imgUrl, int id, int width, int height, int x, int y){
+	Button newGameBtn = { { 0, 0, 0, 0 }, NULL };
+	newGameBtn.id = id;
+	SDL_Rect newGameBtnDestRect;
+	newGameBtnDestRect.x = x;
+	newGameBtnDestRect.y = y;
+	newGameBtnDestRect.w = width;
+	newGameBtnDestRect.h = height;
+
+	SDL_Rect newGameBtnOriginRect = { 0, 0, 0, 0 };
+	newGameBtnOriginRect.w = width;
+	newGameBtnOriginRect.h = height;
+	//newGameBtnOriginRect.x = 2;
+	//newGameBtnOriginRect.y = 2;
+
+	newGameBtn.img = loadImage(imgUrl);
+	if (newGameBtn.img == NULL){
+		return newGameBtn;
+	}
+
+	newGameBtn.buttonsDestRect = newGameBtnDestRect;
+	newGameBtn.buttonsOriginRect = newGameBtnOriginRect;
+
+	return newGameBtn;
+}
+
+int addButtons(Button *list, int len, SDL_Surface *surface){
+	int isSuceess = 1;
+	for (int i = 0; i < len; i++){
+		isSuceess = addImageToSurface(list[i].img, &list[i].buttonsOriginRect, surface, &list[i].buttonsDestRect);
+		if (!isSuceess){
+			break;
+		}
+	}
+
+	if (isSuceess){
+		isSuceess = updateSurface(surface);
+	}
+
+	// TBD - if there is an error I need to free al the buttons before
+	return isSuceess;
+}

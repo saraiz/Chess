@@ -32,8 +32,6 @@ Page createMainMenuPage();
 Page createSelecetionPage();
 Page createLoadFromSlotPage();
 Page createAiSettingsPage();
-Button createButton(char *imgUrl, int id, int width, int height, int x, int y);
-int addButtons(Button list[], int len, SDL_Surface *surface);
 int buildSettingsWindow();
 int handleEvents();
 int handleButtonClicked(SDL_Event e);
