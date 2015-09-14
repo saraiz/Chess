@@ -254,13 +254,27 @@ actionSummery checkForLoad(char *input){
 			gameData.gameMode == -1 && 
 			gameData.isNextBlack == -1 && 
 			gameData.isUserColorBlack == -1){
-			// ERROR
+			/*// ERROR
+
+			// No need to exit the game in such case. Only print a message
 
 			summery.isError = 1;
 			strcpy(summery.failedFunc, "fopen");
 
+			return summery;*/
+			print_message(WRONG_FILE_NAME);
 			return summery;
 		}
+
+		// the board data was saved in function loadGame. The rest should be saved by me
+		settings.gameMode = gameData.gameMode;
+		game_board.isBlackTurn = gameData.isNextBlack;
+		if (settings.gameMode == PLAYER_VS_AI){
+			settings.minmax_depth = gameData.difficulty;
+			settings.isUserBlack = gameData.isUserColorBlack;
+		}
+
+		print_board(game_board.board);
 	}
 
 	return summery;

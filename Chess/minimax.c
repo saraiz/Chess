@@ -1,6 +1,6 @@
 #include "minimax.h"
 
-int getBoardScore(int isBlack){
+int getBoardScoreOld(int isBlack){
 	if (isMate(isBlack, 0) == 1){
 		return LOSSING_SCORE;
 	}
@@ -8,7 +8,7 @@ int getBoardScore(int isBlack){
 		// The opponent is lossing, therfore I'm winning
 		return WINNING_SCORE;
 	}
-	else if (isTie(isBlack, 0)==1){
+	else if (isTie(1-isBlack, 0)==1){
 		return TIE_SCORE;
 	}
 	else{
@@ -39,6 +39,45 @@ int getBoardScore(int isBlack){
 	}
 }
 
+int getBoardScore(int isCurrentPlayerBlack, int isMinmaxForBlack){
+	if (isMate(isMinmaxForBlack, 0) == 1){
+		return LOSSING_SCORE;
+	}
+	else if (isMate(1 - isMinmaxForBlack, 0) == 1){
+		// The opponent is lossing, therfore I'm winning
+		return WINNING_SCORE;
+	}
+	else if (isTie(1 - isCurrentPlayerBlack, 0) == 1){
+		return TIE_SCORE;
+	}
+	else{
+		int currentUserScore = PAWN_SCORE * game_board.numOfBlackPawns +
+			KNIGHT_SCORE * game_board.numOfBlackKnights +
+			BISHOP_SCORE * game_board.numOfBlackBishops +
+			ROOK_SCORE * game_board.numOfBlackRooks +
+			QUEEN_SCORE * game_board.numOfBlackQueens +
+			KING_SCORE * game_board.numOfBlackKings;
+
+		int opponentUserScore = PAWN_SCORE * game_board.numOfWhitePawns +
+			KNIGHT_SCORE * game_board.numOfWhiteKnights +
+			BISHOP_SCORE * game_board.numOfWhiteBishops +
+			ROOK_SCORE * game_board.numOfWhiteRooks +
+			QUEEN_SCORE * game_board.numOfWhiteQueens +
+			KING_SCORE * game_board.numOfWhiteKings;
+
+		if (!isMinmaxForBlack){
+			// The current User is white
+			int temp = currentUserScore;
+			currentUserScore = opponentUserScore;
+			opponentUserScore = temp;
+		}
+
+		int finalScore = currentUserScore - opponentUserScore;
+
+		return finalScore;
+	}
+}
+
 /* for get_score the minmax function will change the allPossibleMoves to be a list of one move (the wanted move)
 for get_best_move the minmax function is returning a list of steps and not 1 step
 */
@@ -49,9 +88,7 @@ minmaxValue minmax(gameBoard backup,
 					int betha, 
 					int isMinMaxForBlack, 
 					int isGetScore, 
-					moveList move, 
-					int isGetBest, 
-					int isFirstIteration){
+					moveList move){
 	// if isMaximizingPlayer == 1- its the computer turn. the color is the oposit than the user's color
 	int isBlack = isMinMaxForBlack;
 	if (isMaximizingPlayer == 0){
@@ -71,12 +108,11 @@ minmaxValue minmax(gameBoard backup,
 	int isListEmpty = isEmptyMoveList(allPossibleMoves);
 	int bestValue;
 	moveList bestMove;
-	moveList *bestMovesList;
-	int isBestMovesListEmpty = 1;
 
 	if (depth == 0 || isListEmpty){
 		minmaxValue value;
-		value.score = getBoardScore(isMinMaxForBlack);
+		// For the isCurrPlayerBlack I send 1-isBlack because the player that did the last step is the not the current one.
+		value.score = getBoardScore(1-isBlack, isMinMaxForBlack); 
 		value.bestMove.origin.row = value.bestMove.origin.column = value.bestMove.destination.row = value.bestMove.destination.column = -1;
 		freeAllMoveList(allPossibleMoves);
 		return value;
@@ -88,26 +124,10 @@ minmaxValue minmax(gameBoard backup,
 
 		while (current != NULL){
 			moveUser(*current, isMinMaxForBlack);
-			minmaxValue result = minmax(getCurrentBoardData(), depth - 1, 0, alpha, betha, isMinMaxForBlack, isGetScore, move, isGetBest, 0);
+			minmaxValue result = minmax(getCurrentBoardData(), depth - 1, 0, alpha, betha, isMinMaxForBlack, isGetScore, move);
 			if (result.score > bestValue){
 				bestValue = result.score;
 				bestMove = *current;
-
-				if (isGetBest == 1 && isFirstIteration == 1){
-					// This is the get_best_moves function
-					// need to init the best moves list with the current move 
-					if (!isBestMovesListEmpty){
-						freeAllMoveList(bestMovesList);
-					}
-
-					bestMovesList = createMoveListNode(createLocationNode(current->origin.column, current->origin.row), createLocationNode(current->destination.column, current->destination.row), current->soldierToPromoteTo);
-					isBestMovesListEmpty = 0;
-				}
-			}
-			else if (result.score == bestValue && isGetBest == 1 && isFirstIteration == 1){
-				// This is the get_best_moves function
-				// need to add the current move to the best moves list
-				bestMovesList->next = createMoveListNode(createLocationNode(current->origin.column, current->origin.row), createLocationNode(current->destination.column, current->destination.row), current->soldierToPromoteTo);
 			}
 
 			//alpha = max(alpha, bestValue);
@@ -115,26 +135,21 @@ minmaxValue minmax(gameBoard backup,
 				alpha = bestValue;
 			}
 
+			// delete last changes
+			restorBoardData(backup);
+
 			if (betha <= alpha){
 				// PRUNING
 				break;
 			}
-
-			// delete last changes
-			restorBoardData(backup);
 
 			current = current->next;
 		}
 
 
 		finalResult.bestMove = bestMove;
-		if (isGetBest == 1&& isFirstIteration == 1){
-			finalResult.bestMovesList = bestMovesList;
-		}
-		
 		finalResult.score = bestValue;
 		freeAllMoveList(allPossibleMoves);
-		//freeAllMoveList(bestMovesList);
 
 		return finalResult;
 	}
@@ -143,7 +158,7 @@ minmaxValue minmax(gameBoard backup,
 
 		while (current != NULL){
 			moveUser(*current, 1-isMinMaxForBlack);
-			minmaxValue result = minmax(getCurrentBoardData(), depth - 1, 1, alpha, betha, isMinMaxForBlack, isGetScore, move, isGetBest, 0);
+			minmaxValue result = minmax(getCurrentBoardData(), depth - 1, 1, alpha, betha, isMinMaxForBlack, isGetScore, move);
 			if (result.score < bestValue){
 				bestValue = result.score;
 				bestMove = *current;
@@ -153,13 +168,13 @@ minmaxValue minmax(gameBoard backup,
 				betha = bestValue;
 			}
 
+			// delete last changes
+			restorBoardData(backup);
+
 			if (betha <= alpha){
 				// PRUNING
 				break;
 			}
-
-			// delete last changes
-			restorBoardData(backup);
 
 			current = current->next;
 		}
@@ -221,5 +236,46 @@ void restorBoardData(gameBoard backUp){
 	game_board.numOfWhiteRooks = backUp.numOfWhiteRooks;
 
 }
+
+int getBestDepth(){
+	int maxPawnSteps = 12;
+	int maxBishopSteps = 13;
+	int maxRookSteps = 14;
+	int maxKnightSteps = 8;
+	int maxQueenSteps = 27;
+	int maxKingSteps = 8;
+
+	int maxChildrenInFirstLevel_white = game_board.numOfWhitePawns * maxPawnSteps +
+										game_board.numOfWhiteBishops * maxBishopSteps +
+										game_board.numOfWhiteRooks * maxRookSteps +
+										game_board.numOfWhiteKnights * maxKnightSteps +
+										game_board.numOfWhiteQueens * maxQueenSteps +
+										game_board.numOfWhiteKings * maxKingSteps;
+
+	int maxChildrenInFirstLevel_black = game_board.numOfBlackPawns * maxPawnSteps +
+										game_board.numOfBlackBishops * maxBishopSteps +
+										game_board.numOfBlackRooks * maxRookSteps +
+										game_board.numOfBlackKnights * maxKnightSteps +
+										game_board.numOfBlackQueens * maxQueenSteps +
+										game_board.numOfBlackKings * maxKingSteps;
+
+	int maxChildren = maxChildrenInFirstLevel_white > maxChildrenInFirstLevel_black ? maxChildrenInFirstLevel_white : maxChildrenInFirstLevel_black;
+	// in height = 1 the maximum amount of children (possible steps) is maxChildren. 
+	// for height > 1 the number of soldiers can only decrease therefore the maxChildren can only decrease. 
+	// So we can use this as an upper bound.
+	int numOfBoards = 1;
+	int childrenInLastHeight = 1;
+	int depth = 0;
+
+	while (numOfBoards < MAX_BOARDS){
+		++depth;
+		numOfBoards += childrenInLastHeight * maxChildren;
+		childrenInLastHeight = childrenInLastHeight * maxChildren;
+	}
+
+
+	return depth;
+}
+
 
 

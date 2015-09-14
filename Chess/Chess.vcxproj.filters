@@ -36,6 +36,12 @@
     <ClInclude Include="IO.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="GuiSettingsStateManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="guiUtils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="utils.c">
@@ -57,6 +63,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="IO.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GuiSettingsStateManager.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="guiUtils.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
