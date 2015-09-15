@@ -7,9 +7,12 @@ int buildSettingsWindow(){
 	if (isSuccess == 1){
 		isSuccess = navigatToPage("mainMenu");
 		if (isSuccess == 1){
-			handleEvents();	
+			isSuccess = handleEvents();	
 		}
 	}
+
+	removeCurrentPage();
+	SDL_FreeSurface(containerPage.page);
 
 	return isSuccess;
 }
@@ -29,7 +32,6 @@ int createMainContainer(){
 }
 
 Page createMainMenuPage(){
-	Page emptyPage;
 
 	//Add Background
 	SDL_Surface *bkg = loadImage(MAIN_MENU_BKG);
@@ -60,7 +62,6 @@ Page createMainMenuPage(){
 }
 
 Page createSelecetionPage(){
-	Page emptyPage;
 
 	//Add Background
 	SDL_Surface *bkg = loadImage(SELECTION_WINDOW_BKG);
@@ -85,8 +86,8 @@ Page createSelecetionPage(){
 	
 	Button *btnLst = (Button*)malloc(sizeof(Button) * 8);
 	if (btnLst == NULL){
-		emptyPage.isError = 1;
-		return emptyPage;
+		currentPage.isError = 1;
+		return currentPage;
 	}
 
 	btnLst[0] = game_mode_2PlayersMode;
@@ -105,20 +106,30 @@ Page createSelecetionPage(){
 	addButtons(btnLst, 8, containerPage.page);
 
 	// set defaults
-	selectButton(REG_BTN_SELECTED_URL, game_mode_2PlayersMode);
-	selectButton(REG_BTN_SELECTED_URL, next_player_white);
-	selectButton(REG_BTN_SELECTED_URL, set_board_no);
-	userGuiSettings.gameMode = TWO_PLAYERS;
-	userGuiSettings.isNextPlayerBlack = 0;
-	userGuiSettings.isSetBoard = 0;
-
+	int isSuccess = selectButton(REG_BTN_SELECTED_URL, game_mode_2PlayersMode);
+	if (isSuccess == 1){
+		userGuiSettings.gameMode = TWO_PLAYERS;
+		isSuccess = selectButton(REG_BTN_SELECTED_URL, next_player_white);
+		if (isSuccess == 1){
+			userGuiSettings.isNextPlayerBlack = 0;
+			isSuccess = selectButton(REG_BTN_SELECTED_URL, set_board_no);
+			if (isSuccess == 1){
+				userGuiSettings.isSetBoard = 0;
+			}
+		}
+	}
+	
+	if (!isSuccess){
+		currentPage.isError = 1;
+		return currentPage;
+	}
+	
 	updateSurface(containerPage.page);
 
 	return currentPage;
 }
 
 Page createAiSettingsPage(){
-	Page emptyPage;
 
 	//Add Background
 	SDL_Surface *bkg = loadImage(AI_SETTINGS_WINDOW);
@@ -174,7 +185,6 @@ Page createAiSettingsPage(){
 }
 
 Page createLoadFromSlotPage(){
-	Page emptyPage;
 
 	//Add Background
 	SDL_Surface *bkg = loadImage(LOAD_FROM_SLOT_WINDOW);
@@ -187,8 +197,8 @@ Page createLoadFromSlotPage(){
 	Button *btnLst = (Button*)malloc(sizeof(Button) * (NUM_OF_SLOTS + 2));
 	if (btnLst == NULL){
 		// TBD - free all images in current page
-		emptyPage.isError = 1;
-		return emptyPage;
+		currentPage.isError = 1;
+		return currentPage;
 	}
 
 
@@ -224,7 +234,8 @@ Page createLoadFromSlotPage(){
 
 int handleEvents(){
 	SDL_Event e;
-	int quit = 0;
+	int quit = 0; // When user asks to quit or there was an error
+
 	while (!quit){
 		while (SDL_PollEvent(&e) != 0){
 			switch (e.type) {
@@ -271,6 +282,7 @@ int handleButtonClicked_mainMenu(SDL_Event e){
 	int len = currentPage.btnListLen;
 	Button curr;
 	int quit = 0;
+	int isSuccess = 1;
 
 	for (int i = 0; i < len; i++){
 		curr = lst[i];
@@ -279,11 +291,11 @@ int handleButtonClicked_mainMenu(SDL_Event e){
 			{
 			case 1:
 				// Go To selection window
-				navigatToPage("selectionWindow");
+				isSuccess = navigatToPage("selectionWindow");
 				break;
 			case 2:
 				// Go to load game screen
-				navigatToPage("loadSlotWindow");
+				isSuccess = navigatToPage("loadSlotWindow");
 				break;
 			case 3:
 				quit = 1;
@@ -291,6 +303,11 @@ int handleButtonClicked_mainMenu(SDL_Event e){
 			}
 		}
 	}
+
+	if (!isSuccess){
+		quit = 1;
+	}
+	
 	return quit;
 	
 }
@@ -299,8 +316,9 @@ int handleButtonClicked_selectionWindow(SDL_Event e){
 	Button *lst = currentPage.btnList;
 	int len = currentPage.btnListLen;
 	Button curr;
-	int quit = 0;
 	Button prev;
+	int quit = 0;
+	int isSuccess = 1;
 
 	for (int i = 0; i < len; i++){
 		curr = lst[i];
@@ -311,55 +329,49 @@ int handleButtonClicked_selectionWindow(SDL_Event e){
 				// user choose player vs. player
 				userGuiSettings.gameMode = TWO_PLAYERS;
 				prev = getButtonAccordingToId(lst, len, 2);
-				deselectButton(REG_BTN_URL, prev);
-				selectButton(REG_BTN_SELECTED_URL, curr);
+				isSuccess = toggleButtons(prev, curr, REG_BTN_URL, REG_BTN_SELECTED_URL);
 
 				break;
 			case 2:
 				// user choose player vs. AI
 				userGuiSettings.gameMode = PLAYER_VS_AI;
 				prev = getButtonAccordingToId(lst, len, 1);
-				deselectButton(REG_BTN_URL, prev);
-				selectButton(REG_BTN_SELECTED_URL, curr);
+				isSuccess = toggleButtons(prev, curr, REG_BTN_URL, REG_BTN_SELECTED_URL);
 				break;
 			case 3:
 				// user choose next player black
 				userGuiSettings.isNextPlayerBlack = 1;
 				prev = getButtonAccordingToId(lst, len, 4);
-				deselectButton(REG_BTN_URL, prev);
-				selectButton(REG_BTN_SELECTED_URL, curr);
+				isSuccess = toggleButtons(prev, curr, REG_BTN_URL, REG_BTN_SELECTED_URL);
 				break;
 			case 4:
 				// user choose next player white
 				userGuiSettings.isNextPlayerBlack = 0;
 				prev = getButtonAccordingToId(lst, len, 3);
-				deselectButton(REG_BTN_URL, prev);
-				selectButton(REG_BTN_SELECTED_URL, curr);
+				isSuccess = toggleButtons(prev, curr, REG_BTN_URL, REG_BTN_SELECTED_URL);
 				break;
 			case 5:
 				// user choose to set board
 				userGuiSettings.isSetBoard = 1;
 				prev = getButtonAccordingToId(lst, len, 6);
-				deselectButton(REG_BTN_URL, prev);
-				selectButton(REG_BTN_SELECTED_URL, curr);
+				isSuccess = toggleButtons(prev, curr, REG_BTN_URL, REG_BTN_SELECTED_URL);
 				break;
 			case 6:
 				// user choose not to set board
 				userGuiSettings.isSetBoard = 0;
 				prev = getButtonAccordingToId(lst, len, 5);
-				deselectButton(REG_BTN_URL, prev);
-				selectButton(REG_BTN_SELECTED_URL, curr);
+				isSuccess = toggleButtons(prev, curr, REG_BTN_URL, REG_BTN_SELECTED_URL);
 				break;
 			case 7:
 				// user choose to cancel and return to the main menu
-				navigatToPage("mainMenu");
+				isSuccess = navigatToPage("mainMenu");
 				break;
 			case 8:
 				// user choose to aplly settings and continue to next step
 				saveSettings(1);
 				if (userGuiSettings.gameMode == PLAYER_VS_AI){
 					// navigate to AI settings window
-					navigatToPage("aiSettingsWindow");
+					isSuccess = navigatToPage("aiSettingsWindow");
 				}
 				else if(userGuiSettings.isSetBoard){
 					// navigate to set board window
@@ -371,6 +383,8 @@ int handleButtonClicked_selectionWindow(SDL_Event e){
 			}
 		}
 	}
+
+	quit = !isSuccess;
 	return quit;
 
 }
@@ -380,29 +394,29 @@ int handleButtonClicked_loadFromSlotWindow(SDL_Event e){
 	int len = currentPage.btnListLen;
 	Button curr;
 	int quit = 0;
+	int isSuccess = 1;
 
 	for (int i = 0; i < len; i++){
 		curr = lst[i];
 		if (isClickInRect(e, curr.buttonsDestRect) == 1){
 			if (curr.id >=1 && curr.id <=NUM_OF_SLOTS){
 				// a slot was chosen - load from slot
-				int isSuccess = 1;
+				
 				if (userGuiSettings.savedSlot != 0){
 					// need to deselect the prevButton
 					Button prevChosenButton = getButtonAccordingToId(lst, len, userGuiSettings.savedSlot);
-					isSuccess = deselectButton(" ", prevChosenButton);
+					isSuccess = deselectButton(SLOT_BTN_URL, prevChosenButton);
 				}
 				if (isSuccess == 1){
 					userGuiSettings.savedSlot = curr.id;
 					isSuccess = selectButton(SLOT_BTN_SELECTED_URL, curr);
 				}
-				quit = !isSuccess;
 			}
 			else{
 				switch (curr.id)
 				{
 				case NUM_OF_SLOTS+1:
-					navigatToPage("mainMenu");
+					isSuccess = navigatToPage("mainMenu");
 					break;
 				case NUM_OF_SLOTS+2:
 					// load from chosen slot
@@ -414,7 +428,7 @@ int handleButtonClicked_loadFromSlotWindow(SDL_Event e){
 						char *xmlStr = ".xml";
 						sprintf(path, "%s%d%s", slot, userGuiSettings.savedSlot, xmlStr);
 						fileData data = loadGame(path);
-						int isSuccess = saveLoadedData(data, 0);
+						isSuccess = saveLoadedData(data, 0);
 						if (!isSuccess){
 							// TBD - what do we need to do? Show a dialog?
 						}
@@ -424,6 +438,8 @@ int handleButtonClicked_loadFromSlotWindow(SDL_Event e){
 			}
 		}
 	}
+
+	quit = !isSuccess;
 	return quit;
 
 }
@@ -432,8 +448,10 @@ int handleButtonClicked_aiSettingsWindow(SDL_Event e){
 	Button *lst = currentPage.btnList;
 	int len = currentPage.btnListLen;
 	Button curr;
-	int quit = 0;
 	Button prev;
+	int quit = 0;
+	int isSuccess = 1;
+
 	for (int i = 0; i < len; i++){
 		curr = lst[i];
 		if (isClickInRect(e, curr.buttonsDestRect) == 1){
@@ -456,17 +474,15 @@ int handleButtonClicked_aiSettingsWindow(SDL_Event e){
 				case 6:
 					userGuiSettings.isUserColorBlack = 1;
 					prev = getButtonAccordingToId(lst, len, 7);
-					deselectButton(REG_BTN_URL, prev);
-					selectButton(REG_BTN_SELECTED_URL, curr);
+					isSuccess = toggleButtons(prev, curr, REG_BTN_URL, REG_BTN_SELECTED_URL);
 					break;
 				case 7:
 					userGuiSettings.isUserColorBlack = 0;
 					prev = getButtonAccordingToId(lst, len, 6);
-					deselectButton(REG_BTN_URL, prev);
-					selectButton(REG_BTN_SELECTED_URL, curr);
+					isSuccess = toggleButtons(prev, curr, REG_BTN_URL, REG_BTN_SELECTED_URL);
 					break;
 				case 8:
-					navigatToPage("mainMenu");
+					isSuccess = navigatToPage("mainMenu");
 					break;
 				case 9:
 					saveSettings(0);
@@ -481,6 +497,8 @@ int handleButtonClicked_aiSettingsWindow(SDL_Event e){
 			}
 		}
 	}
+
+	quit = !isSuccess;
 	return quit;
 
 }
@@ -535,9 +553,6 @@ int removeCurrentPage(){
 		if (lst[i].selectedImg != NULL){
 			SDL_FreeSurface(lst[i].selectedImg);
 		}
-
-		//lst[i].buttonsOriginRect.h = 0;
-		//lst[i].buttonsOriginRect.w = 0;
 	}
 
 	myFree(lst);
@@ -604,7 +619,14 @@ Button getButtonAccordingToId(Button list[], int len, int id){
 	return curr;
 }
 
-//SDL_Surface
+int toggleButtons(Button prev, Button curr, char *prevSkin, char *currSkin){
+	int isSuccess = deselectButton(prevSkin, prev);
+	if (isSuccess == 1){
+		selectButton(currSkin, curr);
+	}
+
+	return isSuccess;
+}
 
 
 
