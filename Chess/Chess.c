@@ -1,6 +1,7 @@
 #include "Chess.h"
 #include <SDL.h>
 #include <SDL_video.h>
+//#include "guiBoard.h"
 
 #define WIN_W 800
 #define WIN_H 600
@@ -33,6 +34,8 @@ int main(int argc, char* argv[])
 			handleGUI();
 		}
 	}
+	getchar();  //TODO delete
+
 	return 1;
 }
 
@@ -75,7 +78,7 @@ void handleConsole(){
 	getchar(); //TODO delete
 }
 
-void handleGUI2(){
+int handleGUI2(){
 	//SDL_WM_SetCaption("title1", "title2");
 	SDL_Event e;
 	SDL_Rect rect = { 0, 0, 400, 400 };
@@ -176,24 +179,18 @@ void handleGUI2(){
 	}
 
 	SDL_FreeSurface(img);
+	return 0;
 }
 
 void handleGUI(){
 	if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
 		printf("ERROR: unable to init SDL: %s\n", SDL_GetError());
-		return 1;
+//		return 1;
 	}
 	atexit(SDL_Quit);
 
-	buildSettingsWindow();
+	haim_main(); //TODO delete
+	//buildSettingsWindow();
 	
 	
 }
-
-
-
-
-
-
-
-

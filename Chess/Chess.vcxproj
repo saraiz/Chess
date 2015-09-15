@@ -73,15 +73,21 @@
     <ClCompile Include="Chess.c" />
     <ClCompile Include="ChessLogic.c" />
     <ClCompile Include="gameStateManager.c" />
+    <ClCompile Include="GuiSettingsStateManager.c" />
+    <ClCompile Include="guiUtils.c" />
     <ClCompile Include="IO.c" />
     <ClCompile Include="minimax.c" />
     <ClCompile Include="settingsStateManager.c" />
+    <ClCompile Include="guiBoard.c" />
     <ClCompile Include="utils.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Chess.h" />
     <ClInclude Include="ChessLogic.h" />
     <ClInclude Include="gameStateManager.h" />
+    <ClInclude Include="guiBoard.h" />
+    <ClInclude Include="GuiSettingsStateManager.h" />
+    <ClInclude Include="guiUtils.h" />
     <ClInclude Include="IO.h" />
     <ClInclude Include="minimax.h" />
     <ClInclude Include="settingsStateManager.h" />
