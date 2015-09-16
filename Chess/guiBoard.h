@@ -1,5 +1,11 @@
 #ifndef GUI_BOARD
 #define GUI_BOARD
+
+#include "guiUtils.h"
+#include "utils.h"
+#include "ChessLogic.h"
+#include "gameStateManager.h"
+
 #define GUI_black 0
 #define GUI_white 1
 #define GUI_b 0
@@ -11,10 +17,9 @@
 
 char colors[] = { 'b', 'w' };
 char pice_types[] = { 'b', 'k', 'm', 'n', 'q', 'r' };
+int pageID ; //-1- quit, 0- user need to chose what to move, 1- user need to chose where to move, 
+locationNode origin;
 
-#include "guiUtils.h"
-#include "utils.h"
-#include "ChessLogic.h"
 SDL_Surface* picess [6][2][2][2]; // [b/k/m/n/q/r][pice color b/w][bkg color b/w][isColored]
 SDL_Surface* emptys[2][2]; //[bkg color b/w][isColored]
 SDL_Surface *surface;
@@ -27,5 +32,9 @@ int createBoard();
 int handleBoardEvents();
 int handleBoardButtonClicked(SDL_Event e);
 int colorSquers(moveList* move, locationNode origin);
+int colorASquere(locationNode loc);
+int eventHendelPage1(SDL_Event e);
+
+
 
 #endif

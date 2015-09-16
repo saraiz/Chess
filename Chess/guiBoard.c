@@ -8,15 +8,21 @@ void haim_main(){
 	if (SDL_FillRect(surface, &rect, SDL_MapRGB(surface->format, 0, 0, 0)) != 0) {
 		printf("ERROR: failed to draw rect: %s\n", SDL_GetError());
 	}
-	load_all_pices();
-	int isQuit = 0;
-	if (settings.gameMode == TWO_PLAYERS){
-		while (!isQuit){
-			createPlayPage();
-			updateSurface(surface);
-			handleBoardEvents(); //chose a pice
 
-			//TODO update game_board.turn
+	createPlayPage();
+	load_all_pices();
+	if (settings.gameMode == TWO_PLAYERS){
+		while (pageID != -1){
+			switch (pageID)
+			{
+			case 0:
+				pageID0();
+				break;
+			case 1:
+				pageID1();
+				break;
+
+			}
 		}
 	}
 	else{
@@ -28,7 +34,7 @@ void haim_main(){
 int createPlayPage( ){
 	SDL_Surface *bkg = loadImage("./images/settings/bkg/mainMenu_bkg.bmp");
 	addImageToSurface(bkg, NULL, surface, NULL);
-	createBoard(surface);
+
 }
 
 int createBoard(){
@@ -137,22 +143,34 @@ int handleBoardEvents(){
 }
 
 int handleBoardButtonClicked(SDL_Event e){
+	switch (pageID)
+	{
+	case 0:
+		return eventHendelPage0(e);
+	case 1:
+		return eventHendelPage1(e);
+
+	}
+}
+
+int eventHendelPage0(SDL_Event e){
 	int quit = 0;
 	if (e.button.x > 75*BOARD_SIZE){
 		//TODO -butten
 	}
 	else {
-		locationNode location = whichSquerWasClicked(e);
-		if (isSameColorAsMe(location, game_board.isBlackTurn)){
-			moveList* moves =  getValidMovesForLocation(location, 0);
+		origin = whichSquerWasClicked(e);
+		if (isSameColorAsMe(origin, game_board.isBlackTurn)){
+			moveList* moves = getValidMovesForLocation(origin, 0);
 			if (moves == NULL){
 				//freeAllImages()
 				//return ERROR;
 			}
-			colorSquers( moves, location);
+			colorSquers(moves, origin);
 			//TODO is error?
 			freeAllMoveList(moves);
-
+			pageID = 1;
+			quit = 1;
 		}
 	}
 
@@ -160,7 +178,35 @@ int handleBoardButtonClicked(SDL_Event e){
 
 }
 
-int colorSquere(locationNode loc){
+int eventHendelPage1(SDL_Event e){
+	int quit = 0;
+	if (e.button.x > 75 * BOARD_SIZE){
+		//TODO -butten
+	}
+	else {
+		locationNode clickedLoc = whichSquerWasClicked(e);
+		moveList move;
+		move.origin = origin;
+		move.destination = clickedLoc; 
+		move.soldierToPromoteTo = EMPTY;
+		int isMoveValid = isValidMove(move, game_board.isBlackTurn, 0);
+		if (isMoveValid){
+			moveUser(move, game_board.isBlackTurn);
+			pageID = 0;
+			game_board.isBlackTurn = game_board.isBlackTurn ? 0 : 1;
+			quit = 1;
+		}
+		else{
+			origin.column = -1;
+			origin.row = -1;
+			pageID = 0;
+			quit = 1;
+		}
+		return quit;
+	}
+}
+
+int colorASquere(locationNode loc){
 	//x,y are gui base
 	int x = loc.column * 75;
 	int y = (BOARD_SIZE-1- loc.row) * 75;
@@ -176,9 +222,22 @@ int colorSquers(moveList* move,locationNode origin){
 		if (!isEmptyMoveList(move)){
 			moveList* cur = move;
 			for (; cur != NULL; cur = cur->next){
-				colorSquere(cur->destination);
+				colorASquere(cur->destination);
 			}
 		}
-		colorSquere(origin);
+		colorASquere(origin);
 		updateSurface(surface);
 	}
+
+int pageID0(){
+	createBoard(surface);
+	updateSurface(surface);
+	handleBoardEvents();
+	return 1;
+}
+
+int pageID1(){
+	handleBoardEvents();
+	createBoard(surface);
+	updateSurface(surface);
+}
