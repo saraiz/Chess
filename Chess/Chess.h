@@ -5,10 +5,11 @@
 #include "gameStateManager.h"
 #include "ChessLogic.h"
 #include "GuiSettingsStateManager.h"
+#include "guiBoard.h"
 
 void handleConsole();
 void handleGUI();
-
+int handleGUI2();
 
 #endif
 

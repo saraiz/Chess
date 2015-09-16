@@ -1,8 +1,7 @@
 all: chessprog
 
 clean:
-	-rm utils settingsStateManager minimax IO gameStateManager ChessLogic Chess
-	-rm utils.o settingsStateManager.o minimax.o IO.o gameStateManager.o ChessLogic.o Chess.o
+	-rm utils.o settingsStateManager.o minimax.o IO.o ChessLogic.o Chess.o gameStateManager.o guiUtils.o guiBoard.o GuiSettingsStateManager.o chessprog
 
 
 Chess.o: Chess.c utils.c settingsStateManager.c gameStateManager.c ChessLogic.c
@@ -23,9 +22,19 @@ IO.o: IO.c utils.c utils.c  ChessLogic.c
 gameStateManager.o: gameStateManager.c utils.c ChessLogic.c minimax.c IO.c
 	gcc  -std=c99 -pedantic-errors -c -Wall -g -lm gameStateManager.c `sdl-config --cflags`
 
-ChessLogic.o: ChessLogic.c utils.c gameStateManager.c
+ChessLogic.o: ChessLogic.c ChessLogic.c utils.c gameStateManager.c
 	gcc  -std=c99 -pedantic-errors -c -Wall -g -lm ChessLogic.c `sdl-config --cflags`
 
+guiBoard.o: guiBoard.c ChessLogic.c utils.c gameStateManager.c guiUtils.c
+	gcc  -std=c99 -pedantic-errors -c -Wall -g -lm guiBoard.c `sdl-config --cflags`
 
-chessprog : utils.o settingsStateManager.o minimax.o IO.o ChessLogic.o Chess.o gameStateManager.o
-	gcc  -o chessprog -lm -std=c99 -pedantic-errors -g `sdl-config --libs` utils.o settingsStateManager.o minimax.o IO.o ChessLogic.o Chess.o gameStateManager.o
+guiUtils.o: guiUtils.c utils.c
+	gcc  -std=c99 -pedantic-errors -c -Wall -g -lm guiUtils.c `sdl-config --cflags`
+
+GuiSettingsStateManager.o: GuiSettingsStateManager.c utils.c ChessLogic.c IO.c ChessLogic.c minimax.o
+	gcc  -std=c99 -pedantic-errors -c -Wall -g -lm GuiSettingsStateManager.c `sdl-config --cflags`
+
+
+
+chessprog : utils.o settingsStateManager.o minimax.o IO.o ChessLogic.o Chess.o gameStateManager.o guiUtils.o guiBoard.o GuiSettingsStateManager.o
+	gcc  -o chessprog -lm -std=c99 -pedantic-errors -g `sdl-config --libs` utils.o settingsStateManager.o minimax.o IO.o ChessLogic.o Chess.o gameStateManager.o guiUtils.o guiBoard.o GuiSettingsStateManager.o

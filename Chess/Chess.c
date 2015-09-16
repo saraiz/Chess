@@ -1,7 +1,7 @@
 #include "Chess.h"
 #include <SDL.h>
 #include <SDL_video.h>
-//#include "guiBoard.h"
+
 
 #define WIN_W 800
 #define WIN_H 600
@@ -189,7 +189,7 @@ void handleGUI(){
 	}
 	atexit(SDL_Quit);
 
-	haim_main(); //TODO delete
+	GuiBoardStart(); //TODO delete
 	//buildSettingsWindow();
 	
 	

@@ -133,9 +133,6 @@ typedef struct {
 	//char board[BOARD_SIZE][BOARD_SIZE];
 }fileData;
 
-
-
-
 extern gameSettings settings; //= { 1, COLOR_WHITE, 0, 0, TWO_PLAYERS };
 extern gameBoard game_board;// = { 0, 0, 0, 0, 0 };
 

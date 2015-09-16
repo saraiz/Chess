@@ -15,17 +15,20 @@
 #define GUI_q 4
 #define GUI_r 5
 
-char colors[] = { 'b', 'w' };
-char pice_types[] = { 'b', 'k', 'm', 'n', 'q', 'r' };
-int pageID ; //-1- quit, 0- user need to chose what to move, 1- user need to chose where to move, 
-locationNode origin;
 
-SDL_Surface* picess [6][2][2][2]; // [b/k/m/n/q/r][pice color b/w][bkg color b/w][isColored]
-SDL_Surface* emptys[2][2]; //[bkg color b/w][isColored]
-SDL_Surface *surface;
+
+typedef struct {
+	int pageID; //-1- quit, 0- user need to chose what to move, 1- user need to chose where to move, 
+	locationNode origin;
+	SDL_Surface* picess[6][2][2][2]; // [b/k/m/n/q/r][pice color b/w][bkg color b/w][isColored]
+	SDL_Surface* emptys[2][2]; //[bkg color b/w][isColored]
+	SDL_Surface *surface;
+}GuiBoardData;
+
+GuiBoardData GuiBData;
 
 int load_all_pices();
-void haim_main();
+void GuiBoardStart();
 int createPlayPage();
 SDL_Surface* getPiceImage(int x, int y, int isColored);
 int createBoard();
@@ -34,7 +37,7 @@ int handleBoardButtonClicked(SDL_Event e);
 int colorSquers(moveList* move, locationNode origin);
 int colorASquere(locationNode loc);
 int eventHendelPage1(SDL_Event e);
-
+int free_all_pices();
 
 
 #endif
