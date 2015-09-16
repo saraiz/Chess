@@ -29,7 +29,6 @@ GuiBoardData GuiBData;
 
 int load_all_pices();
 void GuiBoardStart();
-int createPlayPage();
 SDL_Surface* getPiceImage(int x, int y, int isColored);
 int createBoard();
 int handleBoardEvents();
@@ -37,7 +36,10 @@ int handleBoardButtonClicked(SDL_Event e);
 int colorSquers(moveList* move, locationNode origin);
 int colorASquere(locationNode loc);
 int eventHendelPage1(SDL_Event e);
+int eventHendelPage0(SDL_Event e);
 int free_all_pices();
 
+int pageID1();
+int pageID0();
 
 #endif

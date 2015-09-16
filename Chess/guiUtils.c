@@ -49,7 +49,11 @@ int isClickInRect(SDL_Event e, SDL_Rect buttonRect){
 }
 
 Button createButton(char *imgUrl, int id, int width, int height, int x, int y){
-	Button newGameBtn = { { 0, 0, 0, 0 }, NULL };
+	Button newGameBtn; //= { { 0, 0, 0, 0 }, NULL, 0 };
+	newGameBtn.selectedImg = NULL;
+	SDL_Rect emptyRect = { 0, 0, 0, 0 };
+	newGameBtn.buttonsDestRect = newGameBtn.buttonsOriginRect = emptyRect;
+
 	newGameBtn.id = id;
 	SDL_Rect newGameBtnDestRect;
 	newGameBtnDestRect.x = x;

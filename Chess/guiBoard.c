@@ -14,7 +14,6 @@ void GuiBoardStart(){
 		printf("ERROR: failed to draw rect: %s\n", SDL_GetError());
 	}
 
-	createPlayPage();
 	load_all_pices();
 	if (settings.gameMode == TWO_PLAYERS){
 		while (GuiBData.pageID != -1){
@@ -37,11 +36,6 @@ void GuiBoardStart(){
 	SDL_FreeSurface(GuiBData.surface);
 }
 
-int createPlayPage( ){
-	SDL_Surface *bkg = loadImage("./images/settings/bkg/mainMenu_bkg.bmp");
-	addImageToSurface(bkg, NULL, GuiBData.surface, NULL);
-
-}
 
 int createBoard(){
 	SDL_Rect rOrigin = { 0, 0, 75, 75 };
@@ -241,7 +235,7 @@ int pageID1(){
 }
 
 int free_all_pices(){
-	int pice, color, bkg, isColored;
+	int pice, color, bkg, isColored ; 
 	for (pice = 0; pice < 6; pice++){
 		for (color = 0; color < 2; color++){
 			for (bkg = 0; bkg < 2; bkg++){
