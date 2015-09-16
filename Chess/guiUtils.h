@@ -12,6 +12,7 @@ typedef struct Button{
 	SDL_Rect buttonsDestRect;
 	SDL_Rect buttonsOriginRect;
 	SDL_Surface *img;
+	SDL_Surface *selectedImg;
 	int id;
 }Button;
 

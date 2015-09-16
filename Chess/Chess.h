@@ -8,8 +8,8 @@
 #include "guiBoard.h"
 
 void handleConsole();
-void handleGUI();
-int handleGUI2();
+int handleGUI();
+
 
 #endif
 

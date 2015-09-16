@@ -27,7 +27,7 @@ actionSummery readGameActions(){
 			
 			// enter here if its a 2 player game OR we play against the computer, we are player color X and it's color X turn
 
-			char *msg = (game_board.isBlackTurn ? "black player - enter your move!\n" : "white player - enter your move!\n");
+			char *msg = (game_board.isBlackTurn ? "Black player - enter your move:\n" : "White player - enter your move:\n");
 			print_message(msg);
 
 			getInput(&input);
@@ -551,7 +551,7 @@ int isMate(int isBlack, int isShowMessage){
 	
 	if (isShowMessage == 1 && isMate){
 		// if the black player has mate, the white player wins and the opposit. 
-		char *msg = (isBlack ? "Mate! white player wins the game\n" : "Mate! black player wins the game\n");
+		char *msg = (isBlack ? "Mate! White player wins the game\n" : "Mate! Black player wins the game\n");
 		print_message(msg);
 	}
 

@@ -20,5 +20,6 @@ actionSummery checkForPrint(char* input);
 actionSummery checkForStart(char* input);
 void setSettings(char* input);
 char* getNextLine(char* input);
+int saveLoadedData(fileData gameData, int isShowMessage);
 
 #endif

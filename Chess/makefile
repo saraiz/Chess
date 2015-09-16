@@ -4,7 +4,8 @@ clean:
 	-rm utils.o settingsStateManager.o minimax.o IO.o ChessLogic.o Chess.o gameStateManager.o guiUtils.o guiBoard.o GuiSettingsStateManager.o chessprog
 
 
-Chess.o: Chess.c utils.c settingsStateManager.c gameStateManager.c ChessLogic.c
+
+Chess.o: Chess.c utils.c settingsStateManager.c gameStateManager.c ChessLogic.c GuiSettingsStateManager.c guiUtils.c
 	gcc  -std=c99 -pedantic-errors -c -Wall -g -lm Chess.c `sdl-config --cflags`
 
 utils.o: utils.c Chess.c
