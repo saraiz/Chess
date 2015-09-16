@@ -39,8 +39,8 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>D:\First Degree\Year B\Semester B\Computer science\פרוייקט תוכנה\assignments\project\SDL-devel-1.2.15-VC\SDL-1.2.15\include;$(IncludePath)</IncludePath>
-    <LibraryPath>D:\First Degree\Year B\Semester B\Computer science\פרוייקט תוכנה\assignments\project\SDL-devel-1.2.15-VC\SDL-1.2.15\lib\x86;$(LibraryPath)</LibraryPath>
+    <IncludePath>C:\Users\haimsa\Documents\Visual Studio 2013\sdl\SDL-1.2.15\include;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Users\haimsa\Documents\Visual Studio 2013\sdl\SDL-1.2.15\lib\x86;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -78,12 +78,14 @@
     <ClCompile Include="IO.c" />
     <ClCompile Include="minimax.c" />
     <ClCompile Include="settingsStateManager.c" />
+    <ClCompile Include="guiBoard.c" />
     <ClCompile Include="utils.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Chess.h" />
     <ClInclude Include="ChessLogic.h" />
     <ClInclude Include="gameStateManager.h" />
+    <ClInclude Include="guiBoard.h" />
     <ClInclude Include="GuiSettingsStateManager.h" />
     <ClInclude Include="guiUtils.h" />
     <ClInclude Include="IO.h" />

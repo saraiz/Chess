@@ -8,6 +8,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <ctype.h>
+#include <SDL.h>
 
 #define WHITE_P 'm'
 #define WHITE_B 'b'
@@ -131,9 +132,6 @@ typedef struct {
 	int isUserColorBlack; //gameMode == 1 not saved
 	//char board[BOARD_SIZE][BOARD_SIZE];
 }fileData;
-
-
-
 
 extern gameSettings settings; //= { 1, COLOR_WHITE, 0, 0, TWO_PLAYERS };
 extern gameBoard game_board;// = { 0, 0, 0, 0, 0 };

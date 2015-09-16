@@ -42,6 +42,9 @@
     <ClInclude Include="guiUtils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="guiBoard.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="utils.c">
@@ -69,6 +72,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="guiUtils.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="guiBoard.c">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
