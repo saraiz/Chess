@@ -79,8 +79,6 @@ Page createAiSettingsPage();
 int buildSettingsWindow();
 int handleEvents();
 int handleButtonClicked(SDL_Event e);
-int handleButtonClicked_mainMenu(SDL_Event e);
-int handleButtonClicked_selectionWindow(SDL_Event e);
 int navigatToPage(char* pageName);
 int removeCurrentPage();
 void saveSettings(int isSelectionWinsow);
@@ -88,5 +86,10 @@ int selectButton(char *url, Button button);
 int deselectButton(char *url, Button button);
 Button getButtonAccordingToId(Button list[], int len, int id);
 int handleButtonClicked_aiSettingsWindow(SDL_Event e);
+int handleButtonClicked_mainMenu(SDL_Event e);
+int handleButtonClicked_selectionWindow(SDL_Event e);
+
+int handleButtonClicked_loadFromSlotWindow(SDL_Event e);
+int toggleButtons(Button prev, Button curr, char *prevSkin, char *currSkin);
 
 #endif

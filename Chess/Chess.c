@@ -2,6 +2,7 @@
 #include <SDL.h>
 #include <SDL_video.h>
 
+
 #define WIN_W 800
 #define WIN_H 600
 #define IMG_W 240
@@ -83,16 +84,8 @@ int handleGUI(){
 	}
 	atexit(SDL_Quit);
 
-	buildSettingsWindow();
+	GuiBoardStart(); //TODO delete
+	//buildSettingsWindow();
 	
-	return 1;
 	
 }
-
-
-
-
-
-
-
-

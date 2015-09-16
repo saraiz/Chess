@@ -49,7 +49,11 @@ int isClickInRect(SDL_Event e, SDL_Rect buttonRect){
 }
 
 Button createButton(char *imgUrl, int id, int width, int height, int x, int y){
-	Button newGameBtn = { { 0, 0, 0, 0 }, NULL };
+	Button newGameBtn; //= { { 0, 0, 0, 0 }, NULL, 0 };
+	newGameBtn.selectedImg = NULL;
+	SDL_Rect emptyRect = { 0, 0, 0, 0 };
+	newGameBtn.buttonsDestRect = newGameBtn.buttonsOriginRect = emptyRect;
+
 	newGameBtn.id = id;
 	SDL_Rect newGameBtnDestRect;
 	newGameBtnDestRect.x = x;
@@ -89,4 +93,12 @@ int addButtons(Button *list, int len, SDL_Surface *surface){
 
 	// TBD - if there is an error I need to free al the buttons before
 	return isSuceess;
+}
+
+locationNode whichSquerWasClicked(SDL_Event e){
+	//x,y are gui base
+	int x = (int) e.button.x / 75;
+	int y = (int)e.button.y / 75;
+	return createLocationNode(x, BOARD_SIZE - 1 - y);
+
 }
