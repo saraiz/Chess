@@ -15,10 +15,14 @@
 #define GUI_q 4
 #define GUI_r 5
 
+#define MATE1 1
+#define CHECK1 2
+#define TIE1 3
+
 
 
 typedef struct {
-	int pageID; //-1- quit, 0- user need to chose what to move, 1- user need to chose where to move, 
+	int pageID; //-1- quit, 0- user need to chose what to move, 1- user need to chose where to move, 2- computer turn
 	locationNode origin;
 	SDL_Surface* picess[6][2][2][2]; // [b/k/m/n/q/r][pice color b/w][bkg color b/w][isColored]
 	SDL_Surface* emptys[2][2]; //[bkg color b/w][isColored]
@@ -37,8 +41,11 @@ int colorSquers(moveList* move, locationNode origin);
 int colorASquere(locationNode loc);
 int eventHendelPage1(SDL_Event e);
 int eventHendelPage0(SDL_Event e);
-int free_all_pices();
+void free_all_pices();
+int Mate_Tie_Check();
+int print_messege(int Mate_Tie_Check);
 
+int pageID2();
 int pageID1();
 int pageID0();
 
