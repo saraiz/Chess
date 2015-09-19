@@ -169,9 +169,10 @@ actionSummery checkForBestMoves(char *input){
 		emptyMove.soldierToPromoteTo = EMPTY;
 		emptyMove.next = NULL;
 
-		minmaxValue result = minmax(getCurrentBoardData(), depth, 1, -99999, 99999, game_board.isBlackTurn, 0, emptyMove);
+		minmaxValue result = minmax(getCurrentBoardData(), depth, 1, -99999, 99999, game_board.isBlackTurn, 0, emptyMove, 1, 1);
+		moveList *bestMoves = result.bestMovesList;
 		// all possible moves
-		moveList *bestMoves = getBestMoves(game_board.isBlackTurn, depth, result.score);
+		/*moveList *bestMoves = getBestMoves(game_board.isBlackTurn, depth, result.score);
 		if(bestMoves == NULL){
 			// ERROR 
 			
@@ -179,8 +180,16 @@ actionSummery checkForBestMoves(char *input){
 			strcpy(summery.failedFunc, "calloc");
 
 			return summery;
-		}
+		}*/
 
+		if (bestMoves == NULL){
+			// ERROR
+
+			summery.isError = 1;
+			strcpy(summery.failedFunc, "calloc");
+
+			return summery;
+		}
 
 		int isSuccess = printAllPossibleMoves(bestMoves);
 		freeAllMoveList(bestMoves);
@@ -755,7 +764,7 @@ void computerTurn(int isToPrint){
 		depth = getBestDepth();
 	}
 
-	minmaxValue result = minmax(getCurrentBoardData(), depth , 1, -99999, 99999, 1 - settings.isUserBlack, 0, emptyMove);
+	minmaxValue result = minmax(getCurrentBoardData(), depth , 1, -99999, 99999, 1 - settings.isUserBlack, 0, emptyMove, 0, 1);
 	if (result.bestMove.destination.row != -1 && result.bestMove.destination.column != -1){
 		moveUser(result.bestMove, 1 - settings.isUserBlack);
 
@@ -826,7 +835,7 @@ moveList* getBestMoves(int isBlack, int depth, int bestMoveScore){
 }
 
 int getScore(moveList move, int depth){
-	minmaxValue result = minmax(getCurrentBoardData(), depth, 1, -99999, 99999, game_board.isBlackTurn, 1, move);
+	minmaxValue result = minmax(getCurrentBoardData(), depth, 1, -99999, 99999, game_board.isBlackTurn, 1, move, 0, 1);
 
 	return result.score;
 }
