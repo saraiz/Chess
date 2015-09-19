@@ -78,6 +78,19 @@ void handleConsole(){
 
 
 int handleGUI(){
+	/*setSettings("clear");
+	setSettings("game_mode 1");
+	setSettings("next_player white");
+	setSettings("set <a,1> black king");
+	setSettings("set <a,2> black pawn");
+	setSettings("set <b,1> black pawn");
+	setSettings("set <b,2> black pawn");
+	setSettings("set <e,7> white queen");
+	setSettings("set <d,6> white knight");
+	//setSettings("set <b,6> white knight");
+	setSettings("set <h,1> white king");
+	*/
+
 	if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
 		printf("ERROR: unable to init SDL: %s\n", SDL_GetError());
 		return 1;

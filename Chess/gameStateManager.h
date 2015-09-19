@@ -24,7 +24,7 @@ int isCheck(int isBlack, int isShowMessage);
 locationNode getKingLocation(int isBlack);
 char* convertSoldierTypeToSoldierName(char type);
 char convertSoldierNameToSoldierType(char *name, int isBlack);
-void computerTurn();
+void computerTurn(int isToPrint);
 char getSoldierTypeByColor(char type, int isBlack);
 void moveUser(moveList userMove, int isBlack);
 void checkForMate_Tie_Check(int isBlack, int *isError, int *isGameMate, int *isGameTie);
