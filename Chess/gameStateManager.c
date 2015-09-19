@@ -47,7 +47,7 @@ actionSummery readGameActions(){
 		}
 		else{
 			// it's the computer move
-			computerTurn();
+			computerTurn(1);
 			print_board(game_board.board);
 			
 			checkForMate_Tie_Check(game_board.isBlackTurn, &isError, &isGameMate, &isGameTie);
@@ -241,7 +241,6 @@ actionSummery checkForGetScore(char *input){
 	return summery;
 }
 
-
 actionSummery checkForSave(char *input){
 	char *loc = strstr(input, "save");
 	actionSummery summery = createEmptySummery();
@@ -277,7 +276,6 @@ actionSummery checkForSave(char *input){
 
 	return summery;
 }
-
 
 actionSummery checkForMove(char *input){
 	char *loc = strstr(input, "move");
@@ -521,6 +519,7 @@ int printOneMove(moveList move){
 }
 
 int isCheck(int isBlack, int isShowMessage){
+	//coppied to Mate_Tie_Check in guiBoard
 	int isKingThreated = amIThreatened(isBlack);
 
 	if (isKingThreated == 2){
@@ -536,7 +535,7 @@ int isCheck(int isBlack, int isShowMessage){
 }
 
 int isMate(int isBlack, int isShowMessage){
-
+	//coppied to Mate_Tie_Check in guiBoard
 	int isCheck = amIThreatened(isBlack) == 1;
 
 	if (isCheck == 2){
@@ -568,6 +567,7 @@ int isMate(int isBlack, int isShowMessage){
 }
 
 int isTie(int isBlack, int isShowMessage){
+	//coppied to Mate_Tie_Check in guiBoard
 	// There is a tie if my king is not threatened and I don't have where to move
 	int isCheck = amIThreatened(isBlack) == 1;
 
@@ -750,7 +750,7 @@ char getSoldierTypeByColor(char type, int isBlack){
 	return typeByColor;
 }
 
-void computerTurn(){
+void computerTurn(int isToPrint){
 	// TBD handle best difficulty
 	moveList emptyMove;
 	emptyMove.origin = createLocationNode(-1, -1);
@@ -767,8 +767,10 @@ void computerTurn(){
 	if (result.bestMove.destination.row != -1 && result.bestMove.destination.column != -1){
 		moveUser(result.bestMove, 1 - settings.isUserBlack);
 
-		printf("Computer: move ");
-		printOneMove(result.bestMove);
+		if (isToPrint){
+			printf("Computer: move ");
+			printOneMove(result.bestMove);
+		}
 	}
 
 	//freeAllMoveList(result.bestMovesList);
