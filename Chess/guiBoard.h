@@ -2,7 +2,6 @@
 #define GUI_BOARD
 
 #include "guiUtils.h"
-#include "utils.h"
 #include "ChessLogic.h"
 #include "gameStateManager.h"
 
