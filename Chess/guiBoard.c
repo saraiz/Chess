@@ -17,7 +17,7 @@ void GuiBoardStart(){
 	}
 
 	load_all_pices();
-	int quit = 0;
+	//int quit = 0;
 	while (GuiBData.pageID != -1){
 		switch (GuiBData.pageID)
 		{
@@ -33,7 +33,7 @@ void GuiBoardStart(){
 
 
 		case -1:
-			quit = pageIDMinus1();
+			//quit = pageIDMinus1();
 			break;
 		}
 	
@@ -150,11 +150,14 @@ int handleBoardEvents(){
 			}
 		}
 	}
+
+	return 1;
 }
 
 int handleBoardButtonClicked(SDL_Event e){
 	if (e.button.x > 75 * BOARD_SIZE){
 		//TODO -butten
+		return 1;
 	}
 	else {
 		switch (GuiBData.pageID)
@@ -165,6 +168,8 @@ int handleBoardButtonClicked(SDL_Event e){
 			return eventHendelPage1(e);
 		}
 	}
+
+	return 1;
 }
 
 int eventHendelPage0(SDL_Event e){
@@ -180,6 +185,8 @@ int eventHendelPage0(SDL_Event e){
 		freeAllMoveList(moves);
 		GuiBData.pageID = 1;
 	}
+
+	return 1;
 }
 
 int eventHendelPage1(SDL_Event e){
@@ -204,6 +211,8 @@ int eventHendelPage1(SDL_Event e){
 			GuiBData.pageID = 0;
 		}
 	}
+
+	return 1;
 }
 
 int colorASquere(locationNode loc){
@@ -223,15 +232,17 @@ int colorASquere(locationNode loc){
 }
 
 int colorSquers(moveList* move,locationNode origin){
-		if (!isEmptyMoveList(move)){
-			moveList* cur = move;
-			for (; cur != NULL; cur = cur->next){
-				colorASquere(cur->destination);
-			}
-		colorASquere(origin);
-		updateSurface(GuiBData.surface);
+	if (!isEmptyMoveList(move)){
+		moveList* cur = move;
+		for (; cur != NULL; cur = cur->next){
+			colorASquere(cur->destination);
 		}
+	colorASquere(origin);
+	updateSurface(GuiBData.surface);
 	}
+
+	return 1;
+}
 
 int pageID0(){
 	//ret: -1 error, 0 ok
@@ -255,6 +266,8 @@ int pageID1(){
 	handleBoardEvents();
 	createBoard(GuiBData.surface);
 	updateSurface(GuiBData.surface);
+
+	return 1;
 }
 
 int pageID2(){
@@ -275,10 +288,13 @@ int pageID2(){
 	game_board.isBlackTurn = game_board.isBlackTurn ? 0 : 1;
 	createBoard(GuiBData.surface);
 	updateSurface(GuiBData.surface);
+
+	return 1;
 }
 
 int pageIDMinus1(){
 	//TODO write
+	return 0;
 }
 
 void free_all_pices(){

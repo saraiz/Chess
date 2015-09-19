@@ -1,6 +1,4 @@
 #include "Chess.h"
-#include <SDL.h>
-#include <SDL_video.h>
 
 
 #define WIN_W 800
@@ -77,14 +75,13 @@ void handleConsole(){
 
 
 void handleGUI(){
-	/*if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
+	if (SDL_Init(SDL_INIT_EVERYTHING) < 0) {
 		printf("ERROR: unable to init SDL: %s\n", SDL_GetError());
-		return 1;
+		return;
 	}
 	atexit(SDL_Quit);
 
 	GuiBoardStart(); //TODO delete
 	//buildSettingsWindow();
 	
-	return 1;*/
 }

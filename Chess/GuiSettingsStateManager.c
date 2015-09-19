@@ -273,6 +273,8 @@ int handleEvents(){
 			}
 		}
 	}
+
+	return 1;
 }
 
 int handleButtonClicked(SDL_Event e){

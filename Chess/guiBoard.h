@@ -48,5 +48,6 @@ int print_messege(int Mate_Tie_Check);
 int pageID2();
 int pageID1();
 int pageID0();
+int pageIDMinus1();
 
 #endif

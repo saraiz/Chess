@@ -38,4 +38,4 @@ GuiSettingsStateManager.o: GuiSettingsStateManager.c guiUtils.c  IO.c  settingsS
 
 
 chessprog : utils.o settingsStateManager.o minimax.o IO.o ChessLogic.o Chess.o gameStateManager.o guiUtils.o guiBoard.o GuiSettingsStateManager.o
-	gcc  -o chessprog -lm -std=c99 -pedantic-errors -g `sdl-config --libs` utils.o settingsStateManager.o minimax.o IO.o ChessLogic.o Chess.o gameStateManager.o guiUtils.o guiBoard.o GuiSettingsStateManager.o
+	gcc  -o chessprog -lm -std=c99 -pedantic-errors -g `sdl-config --libs` utils.o settingsStateManager.o minimax.o IO.o ChessLogic.o Chess.o gameStateManager.o guiUtils.o guiBoard.o GuiSettingsStateManager.o -lSDL
