@@ -18,22 +18,37 @@ void GuiBoardStart(){
 
 	load_all_pices();
 	int quit = 0;
-	while (GuiBData.pageID != -1){
+	while (!quit){
 		switch (GuiBData.pageID)
 		{
 		case 0:
-			pageID0();
+			if (!pageID0()){
+				quit = 1;
+				break;
+			}
 			break;
 		case 1:
-			pageID1();
+			if (!pageID1()){
+				quit = 1;
+				break;
+			}
 			break;
 		case 2:
-			pageID2();
+			if (!pageID2()){
+				quit = 1;
+				break;
+			}
+			break;
+		case 3:
+			if (!pageID3()){
+				quit = 1;
+				break;
+			}
 			break;
 
-
 		case -1:
-			quit = pageIDMinus1();
+			pageIDMinus1();
+			quit = 1;
 			break;
 		}
 	
@@ -129,6 +144,7 @@ SDL_Surface* getPiceImage(int x, int y, int isColored){ //x,y are GUI base
 }
 
 int handleBoardEvents(){
+	//ret 0 error 1 sababa
 	SDL_Event e;
 	int quit = 0;
 	while (!quit){
@@ -142,17 +158,21 @@ int handleBoardEvents(){
 				//if (e.key.keysym.sym == SDLK_ESCAPE) quit = 1;
 				break;
 			case (SDL_MOUSEBUTTONUP) :
-				handleBoardButtonClicked(e);
-				quit = 1;
+				if (!handleBoardButtonClicked(e)){
+					return 0;
+				}
+					quit = 1;
 				break;
 			default:
 				break;
 			}
 		}
 	}
+	return 1;
 }
 
 int handleBoardButtonClicked(SDL_Event e){
+	//return 0 erroe, 1 sababa
 	if (e.button.x > 75 * BOARD_SIZE){
 		//TODO -butten
 	}
@@ -163,23 +183,32 @@ int handleBoardButtonClicked(SDL_Event e){
 			return eventHendelPage0(e);
 		case 1:
 			return eventHendelPage1(e);
+		case 3:
+			while (!eventHendelPage3(e));
+		case -1:
+			return 1;
 		}
 	}
 }
 
 int eventHendelPage0(SDL_Event e){
-	GuiBData.origin = whichSquerWasClicked(e);
-	if (isSameColorAsMe(GuiBData.origin, game_board.isBlackTurn)){
-		moveList* moves = getValidMovesForLocation(GuiBData.origin, 0);
+	// 0 error, 1 sababa
+	GuiBData.moveToDo.origin = whichSquerWasClicked(e);
+	if (isSameColorAsMe(GuiBData.moveToDo.origin, game_board.isBlackTurn)){
+		moveList* moves = getValidMovesForLocation(GuiBData.moveToDo.origin, 0);
 		if (moves == NULL){
-			free_all_pices();
+			return 0;
 			//return ERROR;
 		}
-		colorSquers(moves, GuiBData.origin);
+		if (!colorSquers(moves, GuiBData.moveToDo.origin)){
+			freeAllMoveList(moves);
+			return 0;
+		}
 		//TODO is error?
 		freeAllMoveList(moves);
 		GuiBData.pageID = 1;
 	}
+	return 1;
 }
 
 int eventHendelPage1(SDL_Event e){
@@ -188,26 +217,83 @@ int eventHendelPage1(SDL_Event e){
 	}
 	else {
 		locationNode clickedLoc = whichSquerWasClicked(e);
-		moveList move;
-		move.origin = GuiBData.origin;
-		move.destination = clickedLoc; 
-		move.soldierToPromoteTo = EMPTY;
-		int isMoveValid = isValidMove(move, game_board.isBlackTurn, 0);
-		if (isMoveValid){
-			moveUser(move, game_board.isBlackTurn);
-			GuiBData.pageID = settings.gameMode == TWO_PLAYERS? 0:2;
-			game_board.isBlackTurn = game_board.isBlackTurn ? 0 : 1;
+		//moveList move;
+
+		GuiBData.moveToDo.destination = clickedLoc;
+		GuiBData.moveToDo.soldierToPromoteTo = EMPTY;
+
+		if (isPromotion(GuiBData.moveToDo)){
+			GuiBData.moveToDo.soldierToPromoteTo = 0;
+			GuiBData.pageID = 3;
 		}
 		else{
-			GuiBData.origin.column = -1;
-			GuiBData.origin.row = -1;
-			GuiBData.pageID = 0;
+			GuiBData.moveToDo.soldierToPromoteTo = EMPTY;
+			if (!do_usr_move()){
+				//ERROR
+			}
+			GuiBData.moveToDo.origin = GuiBData.moveToDo.destination = createLocationNode(-1, -1);
+			GuiBData.moveToDo.soldierToPromoteTo = EMPTY;
+			GuiBData.moveToDo.next = NULL;
+			return 1;
 		}
+
 	}
+}
+
+int eventHendelPage3(SDL_Event e){
+	//x,y are sdl base
+	//ret 1 sababa 0 noting was pressed
+	int wAndh = 74;
+	int space = 21;
+	int xStart = 120;
+	int yStart = 284;
+
+	SDL_Rect bRect;;
+	SDL_Rect qRect;
+	SDL_Rect nRect;
+	SDL_Rect rRect;
+
+	bRect.x = xStart;
+	bRect.y = yStart;
+	bRect.w = bRect.h = wAndh;
+
+	rRect.x = bRect.x + bRect.w + space;
+	rRect.y = yStart;
+	rRect.w = rRect.h = wAndh;
+
+	nRect.x = rRect.x + rRect.w + space;
+	nRect.y = yStart;
+	nRect.w = nRect.h = wAndh;
+
+	qRect.x = nRect.x + nRect.w + space;
+	qRect.y = yStart;
+	qRect.w = qRect.h = wAndh;
+
+
+	if (isClickInRect(e, bRect)){
+		GuiBData.moveToDo.soldierToPromoteTo = WHITE_B;
+		return 1;
+	}
+	if (isClickInRect(e, qRect)){
+		GuiBData.moveToDo.soldierToPromoteTo = WHITE_Q;
+		return 1;
+	}
+	if (isClickInRect(e, nRect)){
+		GuiBData.moveToDo.soldierToPromoteTo = WHITE_N;
+		return 1;
+	}
+	if (isClickInRect(e, rRect)){
+		GuiBData.moveToDo.soldierToPromoteTo = WHITE_R;
+		return 1;
+	}
+
+	return 0;
+	
 }
 
 int colorASquere(locationNode loc){
 	//x,y are gui base
+	//return 0 if error, 1 sababa
 	int x = loc.column * 75;
 	int y = (BOARD_SIZE-1- loc.row) * 75;
 	SDL_Rect rOrigin = { 0, 0, 75, 75 };
@@ -216,69 +302,124 @@ int colorASquere(locationNode loc){
 	rDest.y = y;
 	SDL_Surface* img = getPiceImage(loc.column, BOARD_SIZE - 1 - loc.row, 1);
 	if (!addImageToSurface(img, &rOrigin, GuiBData.surface, &rDest)){
-		free_all_pices();
 		return 0;
 	}
 	return 1;
 }
 
 int colorSquers(moveList* move,locationNode origin){
-		if (!isEmptyMoveList(move)){
-			moveList* cur = move;
-			for (; cur != NULL; cur = cur->next){
-				colorASquere(cur->destination);
+	//ret 0 error, 1 sababa
+	if (!isEmptyMoveList(move)){
+		moveList* cur = move;
+		for (; cur != NULL; cur = cur->next){
+			if (!colorASquere(cur->destination)){
+				return 0;
 			}
-		colorASquere(origin);
-		updateSurface(GuiBData.surface);
 		}
-	}
-
-int pageID0(){
-	//ret: -1 error, 0 ok
-	int MateTieCheck = Mate_Tie_Check();
-	if (MateTieCheck != 0){
-		if (MateTieCheck == -1 || -1 == print_messege(MateTieCheck)){
-			return -1;
+		if (!colorASquere(origin)){
+			return 0;
 		}
-		if (MateTieCheck == MATE1 || MateTieCheck ==TIE1 ){
-			GuiBData.pageID = -1;
+		if (!updateSurface(GuiBData.surface)){
 			return 0;
 		}
 	}
+	return 1;
+}
+
+int pageID0(){
+	//ret: 0 error, 1 ok
+	int MateTieCheck = Mate_Tie_Check();
+	if (MateTieCheck != 0){
+		if (MateTieCheck == -1 || ! print_messege(MateTieCheck)){
+			return 0;
+		}
+		if (MateTieCheck == MATE1 || MateTieCheck ==TIE1 ){
+			GuiBData.pageID = -1;
+			return 1;
+		}
+	}
 	createBoard(GuiBData.surface);
-	updateSurface(GuiBData.surface);
+	if (!updateSurface(GuiBData.surface)){
+		return 0;
+	}
 	handleBoardEvents();
-	return 0;
+	return 1;
 }
 
 int pageID1(){
+	// ret 0 error, 1 sababa
 	handleBoardEvents();
 	createBoard(GuiBData.surface);
-	updateSurface(GuiBData.surface);
+	if (!updateSurface(GuiBData.surface)){
+		return 0;
+	}
+	return 1;
 }
 
 int pageID2(){
 	//TODO messege- wait
-	//ret: -1 error, 0 ok
+	//ret: 0 error, 1 ok
 	int MateTieCheck = Mate_Tie_Check();
 	if (MateTieCheck != 0){
-		if (MateTieCheck == -1 ||-1 == print_messege(MateTieCheck)){
-			return -1;
+		if (MateTieCheck == -1 || !print_messege(MateTieCheck)){
+			return 0;
 		}
 		if (MateTieCheck == MATE1 || MateTieCheck == TIE1){
 			GuiBData.pageID = -1;
-			return 0;
+			return 1;
 		}
 	}
 	computerTurn(0);
 	GuiBData.pageID = 0;
 	game_board.isBlackTurn = game_board.isBlackTurn ? 0 : 1;
 	createBoard(GuiBData.surface);
-	updateSurface(GuiBData.surface);
+	if (!updateSurface(GuiBData.surface)){
+		return 0;
+	}
+	return 1;
+}
+
+int pageID3(){
+	//return: 0 error, 1 sababa
+	char path[100];
+	sprintf(path, "./images/popupsAndButtons/promotion_popup_%c.bmp", game_board.isBlackTurn ? 'b' : 'w');
+	SDL_Surface* promotionScreen = loadImage(path);
+	if (promotionScreen == NULL){
+		return 0;
+	}
+	SDL_Rect rOrigin = { 0, 0, 400, 200 };
+	SDL_Rect rDest = { 100, 200, 400, 200 };
+
+	if (!addImageToSurface(promotionScreen, &rOrigin, GuiBData.surface, &rDest)){
+		SDL_FreeSurface(promotionScreen);
+		return 0;
+	}
+	SDL_FreeSurface(promotionScreen);
+
+	if (!updateSurface(GuiBData.surface)){
+		return 0;
+	}
+
+	handleBoardEvents();
+
+	if (!do_usr_move()){
+		return 0;
+	}
+	createBoard(GuiBData.surface);
+	if (!updateSurface(GuiBData.surface)){
+		return 0;
+	}
+	return 1;
 }
 
 int pageIDMinus1(){
-	//TODO write
+	createBoard(GuiBData.surface);
+	if (!updateSurface(GuiBData.surface)){
+		return 0;
+	}
+	handleBoardEvents();
+
+	return 1;
 }
 
 void free_all_pices(){
@@ -340,9 +481,39 @@ int Mate_Tie_Check(){
 
 int print_messege(int Mate_Tie_Check){
 	//TODO - print status
-	//ret -1 if error, 0 SABABA
+	//ret 0 if error, 1 SABABA
 	printf("Mate_Tie_Check = %d", Mate_Tie_Check);
-	return 0;
+	return 1;
 
 }
 
+int isPromotion(moveList moveToDo){
+	// moveToDo is the move you wish to test
+	int is_man = tolower(getPice(moveToDo.origin)) == WHITE_P;
+	int isDest = moveToDo.destination.row == (game_board.isBlackTurn ? 0 : 7);
+	int isOri = moveToDo.origin.row == (game_board.isBlackTurn ? 1 : 6);
+	int isCol = moveToDo.origin.column == moveToDo.destination.column;
+
+	int is_to_promote = isDest && isOri&& isCol;
+	return is_man && is_to_promote;
+}
+
+int do_usr_move(){
+	//ret 0 error, 1 sababa
+	moveList move = GuiBData.moveToDo;
+	int isMoveValid = isValidMove(move, game_board.isBlackTurn, 0);
+	if (isMoveValid==2){
+		return 0;
+	}
+	if (isMoveValid){
+		moveUser(move, game_board.isBlackTurn);
+		GuiBData.pageID = settings.gameMode == TWO_PLAYERS ? 0 : 2;
+		game_board.isBlackTurn = game_board.isBlackTurn ? 0 : 1;
+	}
+	else{
+
+		GuiBData.pageID = 0;
+	}
+
+	return 1;	
+}

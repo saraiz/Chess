@@ -22,11 +22,16 @@
 
 
 typedef struct {
-	int pageID; //-1- quit, 0- user need to chose what to move, 1- user need to chose where to move, 2- computer turn
-	locationNode origin;
+	int pageID; 
+	//-1- quit, 0- user need to chose what to move,
+	//1- user need to chose where to move, 2- computer turn
+	//3- promotion
+	//locationNode origin;
 	SDL_Surface* picess[6][2][2][2]; // [b/k/m/n/q/r][pice color b/w][bkg color b/w][isColored]
 	SDL_Surface* emptys[2][2]; //[bkg color b/w][isColored]
 	SDL_Surface *surface;
+	moveList moveToDo;
+	int quit;
 }GuiBoardData;
 
 GuiBoardData GuiBData;
@@ -41,12 +46,16 @@ int colorSquers(moveList* move, locationNode origin);
 int colorASquere(locationNode loc);
 int eventHendelPage1(SDL_Event e);
 int eventHendelPage0(SDL_Event e);
+int eventHendelPage3(SDL_Event e);
 void free_all_pices();
 int Mate_Tie_Check();
 int print_messege(int Mate_Tie_Check);
+int isPromotion(moveList moveToDo);
+int do_usr_move();
 
 int pageID2();
 int pageID1();
 int pageID0();
+int pageID3();
 
 #endif
