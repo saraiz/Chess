@@ -57,5 +57,6 @@ int pageID2();
 int pageID1();
 int pageID0();
 int pageID3();
+int pageIDMinus1();
 
 #endif
