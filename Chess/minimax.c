@@ -40,11 +40,13 @@ int getBoardScoreOld(int isBlack){
 }
 
 int getBoardScore(int isCurrentPlayerBlack, int isMinmaxForBlack){
-	if (isMate(isMinmaxForBlack, 0) == 1){
+	if ((isMinmaxForBlack != isCurrentPlayerBlack) && isMate(isMinmaxForBlack, 0) == 1){
+		// if it's the turn of the user whom the minmax is for, there is no need to check for loose. 
 		return LOSSING_SCORE;
 	}
-	else if (isMate(1 - isMinmaxForBlack, 0) == 1){
+	else if ((isMinmaxForBlack == isCurrentPlayerBlack) && isMate(1 - isMinmaxForBlack, 0) == 1){
 		// The opponent is lossing, therfore I'm winning
+		// if it's the opponent turn there is no need to check for winning. 
 		return WINNING_SCORE;
 	}
 	else if (isTie(1 - isCurrentPlayerBlack, 0) == 1){
@@ -307,11 +309,17 @@ int getBestDepth(){
 	int numOfBoards = 1;
 	int childrenInLastHeight = 1;
 	int depth = 0;
+	int isNeedToContinue = 1;
 
-	while (numOfBoards < MAX_BOARDS){
-		++depth;
-		numOfBoards += childrenInLastHeight * maxChildren;
-		childrenInLastHeight = childrenInLastHeight * maxChildren;
+	while (isNeedToContinue){
+		if (numOfBoards + (childrenInLastHeight * maxChildren) < MAX_BOARDS){
+			++depth;	
+			numOfBoards += childrenInLastHeight * maxChildren;
+			childrenInLastHeight = childrenInLastHeight * maxChildren;
+		}
+		else{
+			isNeedToContinue = 0;
+		}
 	}
 
 
