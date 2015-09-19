@@ -11,13 +11,14 @@
 #define KING_SCORE 400
 #define LOSSING_SCORE -600
 #define WINNING_SCORE 600
-#define TIE_SCORE -500
+#define TIE_SCORE -599
 
 #define MAX_BOARDS 1000000
 
 typedef struct minmaxValue{
 	int score;
 	moveList bestMove;
+	moveList *bestMovesList;
 }minmaxValue;
 
 int getBoardScoreOld(int isBlack);
@@ -29,7 +30,8 @@ minmaxValue minmax(gameBoard backup,
 	int betha,
 	int isMinMaxForBlack,
 	int isGetScore,
-	moveList move);
+	moveList move,
+	int isGetBest, int isFirstIteration);
 gameBoard getCurrentBoardData();
 void restorBoardData(gameBoard backUp);
 int getBestDepth();

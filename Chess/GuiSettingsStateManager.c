@@ -273,6 +273,8 @@ int handleEvents(){
 			}
 		}
 	}
+
+	return 1;
 }
 
 int handleButtonClicked(SDL_Event e){
@@ -488,7 +490,7 @@ int handleButtonClicked_aiSettingsWindow(SDL_Event e){
 					// need to deselect the prevButton
 					int difficulty = userGuiSettings.difficulty == BEST ? 5 : userGuiSettings.difficulty;
 					Button prevChosenButton = getButtonAccordingToId(lst, len, difficulty);
-					sprintf(path, SLOT_BTN_URL, difficulty, "_btn");
+					sprintf(path, "%s%d%s", SLOT_BTN_URL, difficulty, "_btn.bmp");
 					isSuccess = deselectButton(path, prevChosenButton);
 				}
 				if (isSuccess == 1){

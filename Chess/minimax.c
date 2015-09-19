@@ -88,7 +88,8 @@ minmaxValue minmax(gameBoard backup,
 					int betha, 
 					int isMinMaxForBlack, 
 					int isGetScore, 
-					moveList move){
+					moveList move, 
+					int isGetBest, int isFirstIteration){
 	// if isMaximizingPlayer == 1- its the computer turn. the color is the oposit than the user's color
 	int isBlack = isMinMaxForBlack;
 	if (isMaximizingPlayer == 0){
@@ -96,25 +97,34 @@ minmaxValue minmax(gameBoard backup,
 	}
 
 	moveList* allPossibleMoves;
-	if (isGetScore == 1){
-		// this is the get_score function 
-		isGetScore = 0;
-		allPossibleMoves = createMoveListNode(createLocationNode(move.origin.column, move.origin.row), createLocationNode(move.destination.column, move.destination.row), move.soldierToPromoteTo);
-	}
-	else{
-		allPossibleMoves = getAllValidMoves(isBlack, 0);
+	int isListEmpty = 0;
+	if (depth != 0){
+		// Not asking for possible moves if the depth is 0 because the recursion will stop now
+		if (isGetScore == 1){
+			// this is the get_score function 
+			isGetScore = 0;
+			allPossibleMoves = createMoveListNode(createLocationNode(move.origin.column, move.origin.row), createLocationNode(move.destination.column, move.destination.row), move.soldierToPromoteTo);
+		}
+		else{
+			allPossibleMoves = getAllValidMoves(isBlack, 0);
+		}
+		 isListEmpty = isEmptyMoveList(allPossibleMoves);
 	}
 	
-	int isListEmpty = isEmptyMoveList(allPossibleMoves);
 	int bestValue;
 	moveList bestMove;
+	moveList *bestMovesHeadList;
+	moveList *bestMovesTailList;
+	int isMovesListEmpty = 1;
 
 	if (depth == 0 || isListEmpty){
 		minmaxValue value;
 		// For the isCurrPlayerBlack I send 1-isBlack because the player that did the last step is the not the current one.
 		value.score = getBoardScore(1-isBlack, isMinMaxForBlack); 
 		value.bestMove.origin.row = value.bestMove.origin.column = value.bestMove.destination.row = value.bestMove.destination.column = -1;
-		freeAllMoveList(allPossibleMoves);
+		if (depth != 0){
+			freeAllMoveList(allPossibleMoves);
+		}
 		return value;
 	}
 	moveList* current = allPossibleMoves;
@@ -124,10 +134,37 @@ minmaxValue minmax(gameBoard backup,
 
 		while (current != NULL){
 			moveUser(*current, isMinMaxForBlack);
-			minmaxValue result = minmax(getCurrentBoardData(), depth - 1, 0, alpha, betha, isMinMaxForBlack, isGetScore, move);
+			minmaxValue result = minmax(getCurrentBoardData(), depth - 1, 0, alpha, betha, isMinMaxForBlack, isGetScore, move, isGetBest, 0);
 			if (result.score > bestValue){
 				bestValue = result.score;
 				bestMove = *current;
+
+				if (isGetBest && isFirstIteration){
+					// need to free the best moves arr
+					if (!isMovesListEmpty){
+						freeAllMoveList(bestMovesHeadList);
+					}
+
+					bestMovesHeadList = createMoveListNode(createLocationNode(current->origin.column, current->origin.row), createLocationNode(current->destination.column, current->destination.row), current->soldierToPromoteTo);
+					isMovesListEmpty = 0;
+					if (bestMovesHeadList == NULL){
+						finalResult.bestMovesList = NULL;
+						return finalResult;
+					}
+
+					bestMovesTailList = bestMovesHeadList;
+				}
+			}
+			else if (isGetBest && isFirstIteration &&  result.score == bestValue){
+				// need to add the move to the best moves list
+				bestMovesTailList->next = createMoveListNode(createLocationNode(current->origin.column, current->origin.row), createLocationNode(current->destination.column, current->destination.row), current->soldierToPromoteTo);
+				if (bestMovesTailList->next == NULL){
+					finalResult.bestMovesList = NULL;
+					return finalResult;
+				}
+				
+				bestMovesTailList = bestMovesTailList->next;
+				bestMovesTailList->next = NULL;
 			}
 
 			//alpha = max(alpha, bestValue);
@@ -138,7 +175,7 @@ minmaxValue minmax(gameBoard backup,
 			// delete last changes
 			restorBoardData(backup);
 
-			if (betha <= alpha){
+			if (betha < alpha){
 				// PRUNING
 				break;
 			}
@@ -148,6 +185,10 @@ minmaxValue minmax(gameBoard backup,
 
 
 		finalResult.bestMove = bestMove;
+		if (isGetBest && isFirstIteration){
+			finalResult.bestMovesList = bestMovesHeadList;
+		}
+
 		finalResult.score = bestValue;
 		freeAllMoveList(allPossibleMoves);
 
@@ -158,7 +199,7 @@ minmaxValue minmax(gameBoard backup,
 
 		while (current != NULL){
 			moveUser(*current, 1-isMinMaxForBlack);
-			minmaxValue result = minmax(getCurrentBoardData(), depth - 1, 1, alpha, betha, isMinMaxForBlack, isGetScore, move);
+			minmaxValue result = minmax(getCurrentBoardData(), depth - 1, 1, alpha, betha, isMinMaxForBlack, isGetScore, move, isGetBest, 0);
 			if (result.score < bestValue){
 				bestValue = result.score;
 				bestMove = *current;
@@ -171,7 +212,7 @@ minmaxValue minmax(gameBoard backup,
 			// delete last changes
 			restorBoardData(backup);
 
-			if (betha <= alpha){
+			if (betha < alpha){
 				// PRUNING
 				break;
 			}
