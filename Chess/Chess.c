@@ -18,7 +18,7 @@ int main(int argc, char* argv[])
 
 	// If you run your code in nova you should put this lines in comment
 	argc = 2;
-	argv[1] = "console";
+	argv[1] = "gui";
 	////////////////////////////////////////////////////////////////////
 
 	init_board(game_board.board);
@@ -29,6 +29,7 @@ int main(int argc, char* argv[])
 			handleConsole();
 		}
 		else if (strcmp(mode, "gui") == 0){
+			settings.isGUI = 1; // TBD - check if we need this
 			handleGUI();
 		}
 	}
@@ -37,12 +38,12 @@ int main(int argc, char* argv[])
 
 void handleConsole(){
 
-	setSettings("clear");
+	/*setSettings("clear");
 	setSettings("game_mode 1");
 	setSettings("set <a,1> white king");
 	setSettings("set <b,1> black rook");
 	setSettings("set <h,1> black king");
-	setSettings("set <b,3> black queen");
+	setSettings("set <b,3> black queen");*/
 
 	// Don't delete me. We need to print the board in the begining og the game according to the instructions. 
 	print_board(game_board.board);
@@ -80,7 +81,7 @@ void handleGUI(){
 	}
 	atexit(SDL_Quit);
 
-	GuiBoardStart(); //TODO delete
-	//buildSettingsWindow();
+	//GuiBoardStart(); //TODO delete
+	buildSettingsWindow();
 	
 }

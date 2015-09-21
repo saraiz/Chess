@@ -14,6 +14,14 @@ int buildSettingsWindow(){
 	removeCurrentPage();
 	SDL_FreeSurface(containerPage.page);
 
+	if (isSuccess == 2){
+		// navigate to start game
+		GuiBoardStart();
+	}
+	else if (isSuccess == 3){
+		// navigate to set board
+	}
+
 	return isSuccess;
 }
 
@@ -274,7 +282,7 @@ int handleEvents(){
 		}
 	}
 
-	return 1;
+	return quit;
 }
 
 int handleButtonClicked(SDL_Event e){
@@ -524,9 +532,11 @@ int handleButtonClicked_aiSettingsWindow(SDL_Event e){
 					saveSettings(0);
 					if (userGuiSettings.isSetBoard == 1){
 						// navigate to set board window
+						quit = 3;
 					}
 					else{
 						// navigate to start game window
+						quit = 2;
 					}
 					break;
 				}
@@ -534,7 +544,7 @@ int handleButtonClicked_aiSettingsWindow(SDL_Event e){
 		}
 	}
 
-	quit = !isSuccess;
+	quit = quit != 0 ? quit : !isSuccess;
 	return quit;
 
 }
