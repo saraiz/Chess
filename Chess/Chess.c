@@ -17,8 +17,8 @@ int main(int argc, char* argv[])
 	//SDL_Quit();
 
 	// If you run your code in nova you should put this lines in comment
-	//argc = 2;
-	//argv[1] = "console";
+	argc = 2;
+	argv[1] = "gui";
 	////////////////////////////////////////////////////////////////////
 
 	init_board(game_board.board);

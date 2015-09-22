@@ -2,7 +2,6 @@
 #define GUI_BOARD
 
 #include "guiUtils.h"
-#include "utils.h"
 #include "ChessLogic.h"
 #include "gameStateManager.h"
 
@@ -22,32 +21,43 @@
 
 
 typedef struct {
-	int pageID; //-1- quit, 0- user need to chose what to move, 1- user need to chose where to move, 2- computer turn
-	locationNode origin;
+	int pageID; 
+	//-1- quit, 0- user need to chose what to move,
+	//1- user need to chose where to move,
+	//2- computer turn
+	//3- promotion
+	//locationNode origin;
 	SDL_Surface* picess[6][2][2][2]; // [b/k/m/n/q/r][pice color b/w][bkg color b/w][isColored]
 	SDL_Surface* emptys[2][2]; //[bkg color b/w][isColored]
+	//SDL_Surface* buttensImg[4];
+	Button boardBtn[4]; // main menu, get best move, save game, quit
 	SDL_Surface *surface;
+	moveList moveToDo;
+	//int quit;
 }GuiBoardData;
 
-GuiBoardData GuiBData;
-
 int load_all_pices();
+int createButtens();
 void GuiBoardStart();
 SDL_Surface* getPiceImage(int x, int y, int isColored);
-int createBoard();
+int createButtens();
 int handleBoardEvents();
 int handleBoardButtonClicked(SDL_Event e);
 int colorSquers(moveList* move, locationNode origin);
 int colorASquere(locationNode loc);
 int eventHendelPage1(SDL_Event e);
 int eventHendelPage0(SDL_Event e);
+int eventHendelPage3(SDL_Event e);
 void free_all_pices();
 int Mate_Tie_Check();
 int print_messege(int Mate_Tie_Check);
+int isPromotion(moveList moveToDo);
+int do_usr_move();
 
 int pageID2();
 int pageID1();
 int pageID0();
+int pageID3();
 int pageIDMinus1();
 
 #endif
