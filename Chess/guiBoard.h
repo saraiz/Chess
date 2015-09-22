@@ -23,22 +23,24 @@
 typedef struct {
 	int pageID; 
 	//-1- quit, 0- user need to chose what to move,
-	//1- user need to chose where to move, 2- computer turn
+	//1- user need to chose where to move,
+	//2- computer turn
 	//3- promotion
 	//locationNode origin;
 	SDL_Surface* picess[6][2][2][2]; // [b/k/m/n/q/r][pice color b/w][bkg color b/w][isColored]
 	SDL_Surface* emptys[2][2]; //[bkg color b/w][isColored]
+	//SDL_Surface* buttensImg[4];
+	Button boardBtn[4]; // main menu, get best move, save game, quit
 	SDL_Surface *surface;
 	moveList moveToDo;
-	int quit;
+	//int quit;
 }GuiBoardData;
 
-GuiBoardData GuiBData;
-
 int load_all_pices();
+int createButtens();
 void GuiBoardStart();
 SDL_Surface* getPiceImage(int x, int y, int isColored);
-int createBoard();
+int createButtens();
 int handleBoardEvents();
 int handleBoardButtonClicked(SDL_Event e);
 int colorSquers(moveList* move, locationNode origin);

@@ -3,11 +3,13 @@
 
 char colors[] = { 'b', 'w' };
 char pice_types[] = { 'b', 'k', 'm', 'n', 'q', 'r' };
+GuiBoardData GuiBData;
 
 
 void GuiBoardStart(){
 	
-	//settings.gameMode = 0; //TODO delete
+	//settings.gameMode = PLAYER_VS_AI; //TODO delete
+	//settings.isUserBlack = 1;
 	SDL_Rect rect = { 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT };
 	GuiBData.surface = createSurface(SCREEN_WIDTH, SCREEN_HEIGHT);
 
@@ -15,8 +17,11 @@ void GuiBoardStart(){
 	if (SDL_FillRect(GuiBData.surface, &rect, SDL_MapRGB(GuiBData.surface->format, 0, 0, 0)) != 0) {
 		printf("ERROR: failed to draw rect: %s\n", SDL_GetError());
 	}
-
 	load_all_pices();
+	createButtens();
+	int isPVC = settings.gameMode == PLAYER_VS_AI;
+	int isCompFirst = settings.isUserBlack != game_board.isBlackTurn;
+	GuiBData.pageID = isPVC &&  isCompFirst ? 2 : 0;
 	int quit = 0;
 	while (!quit){
 		switch (GuiBData.pageID)
@@ -57,6 +62,22 @@ void GuiBoardStart(){
 	free_all_pices();
 }
 
+int createButtens(){
+	//return 0 error, 1 sababa
+	SDL_Rect rOrigin = { 0, 0, 150, 42 };
+	int btnNum;
+	for (btnNum = 0; btnNum < 4; btnNum++){
+		char path[500];
+		sprintf( path,"./images/popupsAndButtons/btn%d.bmp", btnNum);
+		GuiBData.boardBtn[btnNum] =  createButton(path, btnNum, 150, 42, 625, btnNum* 47);
+
+	}
+	if (!addButtons(GuiBData.boardBtn, 4, GuiBData.surface)){
+		return 0;
+	}
+	return 1;
+}
+
 int createBoard(){ //0 if fail, 1 if ok
 	SDL_Rect rOrigin = { 0, 0, 75, 75 };
 	SDL_Rect rDest = { 0, 0, 75, 75 };
@@ -76,7 +97,7 @@ int createBoard(){ //0 if fail, 1 if ok
 }
 
 int load_all_pices(){
-	//ret: -1 error, else 0
+	//ret: 0 error, else 1
 	int pice, color, bkg, isColored;
 	for (pice = 0; pice < 6; pice++){
 		for (color = 0; color < 2; color++){
@@ -86,7 +107,7 @@ int load_all_pices(){
 					sprintf(path, "./images/board/%c_%c_%c_%d.bmp", pice_types[pice], colors[color], colors[bkg],isColored);
 					GuiBData.picess[pice][color][bkg][isColored] = loadImage(path);
 					if (GuiBData.picess[pice][color][bkg] == NULL){
-						return -1;
+						return 0;
 					}
 				}
 			}
@@ -99,11 +120,11 @@ int load_all_pices(){
 			sprintf(path, "./images/board/blank_%c_%d.bmp", colors[bkg], isColored);
 			GuiBData.emptys[bkg][isColored] = loadImage(path);
 			if (GuiBData.emptys[bkg] == NULL){
-				return -1;
+				return 0;
 			}
 		}
 	}
-	return 0;
+	return 1;
 }
 
 SDL_Surface* getPiceImage(int x, int y, int isColored){ //x,y are GUI base
@@ -328,6 +349,10 @@ int colorSquers(moveList* move,locationNode origin){
 
 int pageID0(){
 	//ret: 0 error, 1 ok
+	createBoard(GuiBData.surface);
+	if (!updateSurface(GuiBData.surface)){
+		return 0;
+	}
 	int MateTieCheck = Mate_Tie_Check();
 	if (MateTieCheck != 0){
 		if (MateTieCheck == -1 || ! print_messege(MateTieCheck)){
@@ -337,10 +362,6 @@ int pageID0(){
 			GuiBData.pageID = -1;
 			return 1;
 		}
-	}
-	createBoard(GuiBData.surface);
-	if (!updateSurface(GuiBData.surface)){
-		return 0;
 	}
 	handleBoardEvents();
 	return 1;
@@ -440,6 +461,10 @@ void free_all_pices(){
 		for (isColored = 0; isColored < 2; isColored++){
 			SDL_FreeSurface(GuiBData.emptys[bkg][isColored]);
 		}
+	}
+	int btnNum;
+	for (btnNum = 0; btnNum < 4; btnNum++){
+		SDL_FreeSurface(GuiBData.boardBtn[btnNum].img);
 	}
 }
 
