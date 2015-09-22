@@ -405,8 +405,9 @@ int isValidMove(moveList soldierMove, int isBlack, int isShowMessage){
 	//(2)
 	if (isPositionContainUserPiece(isBlack, soldierMove.origin, 0) == 0){
 		// The soldier in that we try to move is not ours (or empty)!
-
+		if (isShowMessage){
 		print_message(NO_DICS);
+		}
 		return 0;
 	}
 
@@ -436,7 +437,7 @@ int isValidMove(moveList soldierMove, int isBlack, int isShowMessage){
 
 	freeAllMoveList(list);
 
-	if (isValid == 0){
+	if (isValid == 0 && isShowMessage){
 		print_message(ILLEGAL_MOVE);
 	}
 	return isValid;
