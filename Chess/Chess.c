@@ -18,7 +18,7 @@ int main(int argc, char* argv[])
 
 	// If you run your code in nova you should put this lines in comment
 	argc = 2;
-	argv[1] = "console";
+	argv[1] = "gui";
 	////////////////////////////////////////////////////////////////////
 
 	init_board(game_board.board);
@@ -38,12 +38,12 @@ int main(int argc, char* argv[])
 
 void handleConsole(){
 
-	setSettings("clear\n");
+	/*setSettings("clear\n");
 	setSettings("set <b,8> black king");
 	setSettings("set <e,7> white queen");
 	setSettings("set <b,6> white rook");
 	setSettings("set <d,6> white knight");
-	setSettings("set <h,1> white king");
+	setSettings("set <h,1> white king");*/
 	
 
 	// Don't delete me. We need to print the board in the begining og the game according to the instructions. 

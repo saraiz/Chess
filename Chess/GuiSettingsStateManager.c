@@ -408,13 +408,14 @@ int handleButtonClicked_selectionWindow(SDL_Event e){
 				}
 				else{
 					// navigate to start game window
+					quit = 2;
 				}
 				break;
 			}
 		}
 	}
 
-	quit = !isSuccess;
+	quit = quit != 0 ? quit : !isSuccess;
 	return quit;
 
 }
