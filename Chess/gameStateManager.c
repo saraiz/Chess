@@ -172,8 +172,8 @@ actionSummery checkForBestMoves(char *input){
 		minmaxValue result = minmax(getCurrentBoardData(), depth, 1, -99999, 99999, game_board.isBlackTurn, 0, emptyMove, 1, 1);
 		moveList *bestMoves = result.bestMovesList;
 		// all possible moves
-		/*moveList *bestMoves = getBestMoves(game_board.isBlackTurn, depth, result.score);
-		if(bestMoves == NULL){
+		//moveList *bestMoves = getBestMoves(game_board.isBlackTurn, depth, result.score);
+		/*if(bestMoves == NULL){
 			// ERROR 
 			
 			summery.isError = 1;

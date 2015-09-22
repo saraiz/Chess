@@ -198,15 +198,22 @@ minmaxValue minmax(gameBoard backup,
 	}
 	else{
 		bestValue = 99999;
+		int hasSeenTie = 0;
+		moveList tieMove;
 
 		while (current != NULL){
 			moveUser(*current, 1-isMinMaxForBlack);
 			minmaxValue result = minmax(getCurrentBoardData(), depth - 1, 1, alpha, betha, isMinMaxForBlack, isGetScore, move, isGetBest, 0);
-			if (result.score < bestValue){
+			// Check if the result is a tie
+			if (result.score == TIE_SCORE){
+				hasSeenTie = 1;
+				tieMove = *current;
+			}
+			else if (result.score < bestValue){
 				bestValue = result.score;
 				bestMove = *current;
 			}
-			//betha = min(betha, bestValue);
+
 			if (bestValue < betha){
 				betha = bestValue;
 			}
@@ -222,10 +229,21 @@ minmaxValue minmax(gameBoard backup,
 			current = current->next;
 		}
 
-
 		finalResult.bestMove = bestMove;
 		finalResult.score = bestValue;
+
+		if (finalResult.score == WINNING_SCORE){
+			// if the best move for the opponent is to lose (user win->opponent lose)
+			// we need to choose tie if exist
+			if (hasSeenTie){
+				finalResult.bestMove = tieMove;
+				finalResult.score = TIE_SCORE;
+			}
+		}
+
+
 		freeAllMoveList(allPossibleMoves);
+
 		return finalResult;
 	}
 }
