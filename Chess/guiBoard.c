@@ -134,6 +134,19 @@ int load_all_pices(){
 			}
 		}
 	}
+
+	char* pathStart = "./images/popupsAndButtons/%s.bmp";
+	char path[200];
+	sprintf(path, pathStart, "Check");
+	GuiBData.sideBar[0] = loadImage(path);
+	sprintf(path, pathStart, "tie");
+	GuiBData.sideBar[1] = loadImage(path);
+	sprintf(path, pathStart, "mate_b");
+	GuiBData.sideBar[2] = loadImage(path);
+	sprintf(path, pathStart, "mate_w");
+	GuiBData.sideBar[3] = loadImage(path);
+	sprintf(path, pathStart, "empty");
+	GuiBData.sideBar[4] = loadImage(path);
 	return 1;
 }
 
@@ -359,19 +372,21 @@ int colorSquers(moveList* move,locationNode origin){
 
 int pageID0(){
 	//ret: 0 error, 1 ok
+
+	int MateTieCheck = Mate_Tie_Check();
+
+	if (MateTieCheck == -1 || !print_side_bar(MateTieCheck)){
+		return 0;
+	}
+
+	if (MateTieCheck == MATE1 || MateTieCheck ==TIE1 ){
+		GuiBData.pageID = -1;
+		return 1;
+	}
+	
 	createBoard(GuiBData.surface);
 	if (!updateSurface(GuiBData.surface)){
 		return 0;
-	}
-	int MateTieCheck = Mate_Tie_Check();
-	if (MateTieCheck != 0){
-		if (MateTieCheck == -1 || ! print_messege(MateTieCheck)){
-			return 0;
-		}
-		if (MateTieCheck == MATE1 || MateTieCheck ==TIE1 ){
-			GuiBData.pageID = -1;
-			return 1;
-		}
 	}
 	handleBoardEvents();
 	return 1;
@@ -391,18 +406,22 @@ int pageID2(){
 	//TODO messege- wait
 	//ret: 0 error, 1 ok
 	int MateTieCheck = Mate_Tie_Check();
-	if (MateTieCheck != 0){
-		if (MateTieCheck == -1 || !print_messege(MateTieCheck)){
-			return 0;
-		}
-		if (MateTieCheck == MATE1 || MateTieCheck == TIE1){
-			GuiBData.pageID = -1;
-			return 1;
-		}
+
+	if (MateTieCheck == -1 || !print_side_bar(MateTieCheck)){
+		return 0;
+	}
+	if (MateTieCheck == MATE1 || MateTieCheck == TIE1){
+		GuiBData.pageID = -1;
+		return 1;
+	}
+
+	if (!updateSurface(GuiBData.surface)){
+		return 0;
 	}
 	computerTurn(0);
 	GuiBData.pageID = 0;
 	game_board.isBlackTurn = game_board.isBlackTurn ? 0 : 1;
+
 	createBoard(GuiBData.surface);
 	if (!updateSurface(GuiBData.surface)){
 		return 0;
@@ -449,7 +468,6 @@ int pageIDMinus1(){
 		return 0;
 	}
 	handleBoardEvents();
-
 	return 1;
 }
 
@@ -459,22 +477,25 @@ void free_all_pices(){
 		for (color = 0; color < 2; color++){
 			for (bkg = 0; bkg < 2; bkg++){
 				for (isColored = 0; isColored < 2; isColored++){
-					SDL_Surface* toFree = GuiBData.picess[pice][color][bkg][isColored];
-					if (toFree != NULL){
-						SDL_FreeSurface(toFree);
-					}
+						my_sdl_free( GuiBData.picess[pice][color][bkg][isColored]);
+					
 				}
 			}
 		}
 	}
 	for (bkg = 0; bkg < 2; bkg++){
 		for (isColored = 0; isColored < 2; isColored++){
-			SDL_FreeSurface(GuiBData.emptys[bkg][isColored]);
+			my_sdl_free(GuiBData.emptys[bkg][isColored]);
 		}
 	}
 	int btnNum;
 	for (btnNum = 0; btnNum < 4; btnNum++){
-		SDL_FreeSurface(GuiBData.boardBtn[btnNum].img);
+		my_sdl_free(GuiBData.boardBtn[btnNum].img);
+	}
+
+	int side;
+	for (side = 0; side < 5; side++){
+		my_sdl_free(GuiBData.sideBar[side]);
 	}
 }
 
@@ -497,27 +518,50 @@ int Mate_Tie_Check(){
 	freeAllMoveList(list);
 
 
-
+	int toreturn = 0;
 	if (isCheck && isListEmpty){
 		// MATE
-		return 1;
+		toreturn = 1;
 	}
 
 	if (isCheck && !isListEmpty){
 		// CHECK
-		return 2;
+		toreturn = 2;
 	}
 	if (!isCheck && isListEmpty){
 		// TIE
-		return 3;
+		toreturn = 3;
 	}
-	return 0;
+
+	return toreturn;
 }
 
-int print_messege(int Mate_Tie_Check){
+int print_side_bar(int Mate_Tie_Check){
 	//TODO - print status
 	//ret 0 if error, 1 SABABA
-	printf("Mate_Tie_Check = %d", Mate_Tie_Check);
+	// Mate_Tie_Check = 0 noting, 1 mate, 2 cheack, 3 tie
+	SDL_Rect rDest= {620 ,401 , 160, 180 };
+	SDL_Rect rOrigin = { 0, 0, 160, 180 };
+	SDL_Surface* image;
+	switch (Mate_Tie_Check)
+	{
+	case 0:
+		image = GuiBData.sideBar[4];
+		break;
+	case 1:
+		image =game_board.isBlackTurn? GuiBData.sideBar[3] : GuiBData.sideBar[2];
+		break;
+	case 2:
+		image =  GuiBData.sideBar[0];
+		break;
+	case 3:
+		image = GuiBData.sideBar[1] ;
+		break;
+
+	}
+	if (!addImageToSurface(image, &rOrigin, GuiBData.surface, &rDest)){
+		return 0;
+	}
 	return 1;
 
 }
