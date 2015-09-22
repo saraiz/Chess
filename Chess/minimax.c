@@ -40,11 +40,13 @@ int getBoardScoreOld(int isBlack){
 }
 
 int getBoardScore(int isCurrentPlayerBlack, int isMinmaxForBlack){
-	if (isMate(isMinmaxForBlack, 0) == 1){
+	if ((isMinmaxForBlack != isCurrentPlayerBlack) && isMate(isMinmaxForBlack, 0) == 1){
+		// if it's the turn of the user whom the minmax is for, there is no need to check for loose. 
 		return LOSSING_SCORE;
 	}
-	else if (isMate(1 - isMinmaxForBlack, 0) == 1){
+	else if ((isMinmaxForBlack == isCurrentPlayerBlack) && isMate(1 - isMinmaxForBlack, 0) == 1){
 		// The opponent is lossing, therfore I'm winning
+		// if it's the opponent turn there is no need to check for winning. 
 		return WINNING_SCORE;
 	}
 	else if (isTie(1 - isCurrentPlayerBlack, 0) == 1){
@@ -196,15 +198,22 @@ minmaxValue minmax(gameBoard backup,
 	}
 	else{
 		bestValue = 99999;
+		int hasSeenTie = 0;
+		moveList tieMove;
 
 		while (current != NULL){
 			moveUser(*current, 1-isMinMaxForBlack);
 			minmaxValue result = minmax(getCurrentBoardData(), depth - 1, 1, alpha, betha, isMinMaxForBlack, isGetScore, move, isGetBest, 0);
-			if (result.score < bestValue){
+			// Check if the result is a tie
+			if (result.score == TIE_SCORE){
+				hasSeenTie = 1;
+				tieMove = *current;
+			}
+			else if (result.score < bestValue){
 				bestValue = result.score;
 				bestMove = *current;
 			}
-			//betha = min(betha, bestValue);
+
 			if (bestValue < betha){
 				betha = bestValue;
 			}
@@ -220,10 +229,21 @@ minmaxValue minmax(gameBoard backup,
 			current = current->next;
 		}
 
-
 		finalResult.bestMove = bestMove;
 		finalResult.score = bestValue;
+
+		if (finalResult.score == WINNING_SCORE){
+			// if the best move for the opponent is to lose (user win->opponent lose)
+			// we need to choose tie if exist
+			if (hasSeenTie){
+				finalResult.bestMove = tieMove;
+				finalResult.score = TIE_SCORE;
+			}
+		}
+
+
 		freeAllMoveList(allPossibleMoves);
+
 		return finalResult;
 	}
 }
@@ -307,11 +327,17 @@ int getBestDepth(){
 	int numOfBoards = 1;
 	int childrenInLastHeight = 1;
 	int depth = 0;
+	int isNeedToContinue = 1;
 
-	while (numOfBoards < MAX_BOARDS){
-		++depth;
-		numOfBoards += childrenInLastHeight * maxChildren;
-		childrenInLastHeight = childrenInLastHeight * maxChildren;
+	while (isNeedToContinue){
+		if (numOfBoards + (childrenInLastHeight * maxChildren) < MAX_BOARDS){
+			++depth;	
+			numOfBoards += childrenInLastHeight * maxChildren;
+			childrenInLastHeight = childrenInLastHeight * maxChildren;
+		}
+		else{
+			isNeedToContinue = 0;
+		}
 	}
 
 

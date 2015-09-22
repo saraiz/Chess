@@ -29,6 +29,7 @@ int main(int argc, char* argv[])
 			handleConsole();
 		}
 		else if (strcmp(mode, "gui") == 0){
+			settings.isGUI = 1; // TBD - check if we need this
 			handleGUI();
 		}
 	}
@@ -37,13 +38,13 @@ int main(int argc, char* argv[])
 
 void handleConsole(){
 
-	setSettings("clear\n");
+	/*setSettings("clear\n");
 	setSettings("set <b,8> black king");
 	setSettings("set <e,7> white queen");
 	setSettings("set <b,6> white rook");
 	setSettings("set <d,6> white knight");
-	setSettings("set <h,1> white king");
-	setSettings("game_mode 1");
+	setSettings("set <h,1> white king");*/
+	
 
 	// Don't delete me. We need to print the board in the begining og the game according to the instructions. 
 	print_board(game_board.board);
@@ -81,7 +82,7 @@ void handleGUI(){
 	}
 	atexit(SDL_Quit);
 
-	GuiBoardStart(); //TODO delete
-	//buildSettingsWindow();
+	//GuiBoardStart(); //TODO delete
+	buildSettingsWindow();
 	
 }

@@ -14,9 +14,17 @@ void GuiBoardStart(){
 	GuiBData.surface = createSurface(SCREEN_WIDTH, SCREEN_HEIGHT);
 
 
-	if (SDL_FillRect(GuiBData.surface, &rect, SDL_MapRGB(GuiBData.surface->format, 0, 0, 0)) != 0) {
+	
+	if (SDL_FillRect(GuiBData.surface, &rect, SDL_MapRGB(GuiBData.surface->format, 244, 208, 159)) != 0) {
 		printf("ERROR: failed to draw rect: %s\n", SDL_GetError());
 	}
+
+	SDL_Rect rect2 = { 600, 0, 3, 600 };
+
+	if (SDL_FillRect(GuiBData.surface, &rect2, SDL_MapRGB(GuiBData.surface->format, 185, 122, 87)) != 0) {
+		printf("ERROR: failed to draw rect: %s\n", SDL_GetError());
+	}
+
 	load_all_pices();
 	createButtens();
 	int isPVC = settings.gameMode == PLAYER_VS_AI;
@@ -66,10 +74,12 @@ int createButtens(){
 	//return 0 error, 1 sababa
 	SDL_Rect rOrigin = { 0, 0, 150, 42 };
 	int btnNum;
+	int startY = 30;
+
 	for (btnNum = 0; btnNum < 4; btnNum++){
 		char path[500];
 		sprintf( path,"./images/popupsAndButtons/btn%d.bmp", btnNum);
-		GuiBData.boardBtn[btnNum] =  createButton(path, btnNum, 150, 42, 625, btnNum* 47);
+		GuiBData.boardBtn[btnNum] =  createButton(path, btnNum, 150, 42, 625, btnNum* 47 + startY);
 
 	}
 	if (!addButtons(GuiBData.boardBtn, 4, GuiBData.surface)){
