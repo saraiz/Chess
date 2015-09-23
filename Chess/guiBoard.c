@@ -27,41 +27,54 @@ void GuiBoardStart(){
 
 	load_all_pices();
 	createButtens();
+	createBoard();
 	int isPVC = settings.gameMode == PLAYER_VS_AI;
 	int isCompFirst = settings.isUserBlack != game_board.isBlackTurn;
 	GuiBData.pageID = isPVC &&  isCompFirst ? 2 : 0;
-	int quit = 0;
-	while (!quit){
+	GuiBData.main_quit = 0;
+	while (!GuiBData.main_quit){
 		switch (GuiBData.pageID)
 		{
 		case 0:
 			if (!pageID0()){
-				quit = 1;
+				GuiBData.main_quit = 1;
 				break;
 			}
 			break;
 		case 1:
 			if (!pageID1()){
-				quit = 1;
+				GuiBData.main_quit = 1;
 				break;
 			}
 			break;
 		case 2:
 			if (!pageID2()){
-				quit = 1;
+				GuiBData.main_quit = 1;
 				break;
 			}
 			break;
 		case 3:
 			if (!pageID3()){
-				quit = 1;
+				GuiBData.main_quit = 1;
+				break;
+			}
+			break;
+		case 4:
+			if (!pageID4()){
+				GuiBData.main_quit = 1;
+				break;
+			}
+			break;
+		case 5:
+			if (!pageID5()){
+				GuiBData.main_quit = 1;
 				break;
 			}
 			break;
 
 		case -1:
 			pageIDMinus1();
-			quit = 1;
+			GuiBData.main_quit = 1;
 			break;
 		}
 	
@@ -72,7 +85,6 @@ void GuiBoardStart(){
 
 int createButtens(){
 	//return 0 error, 1 sababa
-	SDL_Rect rOrigin = { 0, 0, 150, 42 };
 	int btnNum;
 	int startY = 30;
 
@@ -103,7 +115,21 @@ int createBoard(){ //0 if fail, 1 if ok
 		}
 		
 	}
-	return 0;
+	return 1;
+}
+
+int createSave(){
+	// 0 eroor, 1 sabba
+	SDL_Surface* img = loadImage("./images/popupsAndButtons/saveGame.bmp");
+	SDL_Rect rOrigin = { 0, 0, 400, 200 };
+	SDL_Rect rDest = { 100, 200, 400, 200 };
+	if (!addImageToSurface(img, &rOrigin, GuiBData.surface, &rDest)){
+		return 0;
+	}
+
+
+	my_sdl_free(img);
+	return 1;
 }
 
 int load_all_pices(){
@@ -218,7 +244,35 @@ int handleBoardEvents(){
 int handleBoardButtonClicked(SDL_Event e){
 	//return 0 erroe, 1 sababa
 	if (e.button.x > 75 * BOARD_SIZE){
-		//TODO -butten
+		int i,btnID = -1;
+		for (i = 0; i < 4; i++){
+			if (isClickInRect(e, GuiBData.boardBtn[i].buttonsDestRect)){
+				btnID = GuiBData.boardBtn[i].id;
+				break;
+			}
+		}
+		switch (btnID){
+		case 0: //main menu
+			free_all_pices(); //TODO bug???
+			buildSettingsWindow();
+			GuiBData.main_quit = 1;
+			return 1;
+		case 1: //best moves
+			if (GuiBData.pageID == 0 || GuiBData.pageID == 1){
+				GuiBData.pageID = 4;
+			}
+			break;
+		case 2: //save
+			if (GuiBData.pageID == 0 || GuiBData.pageID == 1){
+				GuiBData.pageID = 5;
+			}
+			break;
+		case 3: //quit
+			GuiBData.main_quit = 1;
+			return 1;
+		case -1: //empty
+			break;
+		}
 	}
 	else {
 		switch (GuiBData.pageID)
@@ -229,6 +283,8 @@ int handleBoardButtonClicked(SDL_Event e){
 			return eventHendelPage1(e);
 		case 3:
 			while (!eventHendelPage3(e));
+		case 5:
+			while (!eventHendelPage5(e));
 		case -1:
 			return 1;
 		}
@@ -335,6 +391,46 @@ int eventHendelPage3(SDL_Event e){
 	
 }
 
+int eventHendelPage5(SDL_Event e){
+	//ret 1 sababa 0 noting was pressed 2 ERROR
+	int y = e.button.y;
+	int x = e.button.x;
+	SDL_Rect rSlot = { 88 ,276 , 44, 40 };
+	int slotNum;
+	int clickedSlot = -1;
+	for (slotNum = 1; slotNum < 8; slotNum++){
+		rSlot.x = rSlot.x + 44 + 7;
+		if (isClickInRect(e, rSlot)){
+			clickedSlot = slotNum;
+			break;
+		}
+	}
+	if (clickedSlot != -1){
+		char path[200] = "./slots/slot%d.xml";
+		sprintf(path, path, clickedSlot);
+		fileData data;
+		data.difficulty = settings.minmax_depth;
+		data.gameMode = settings.gameMode;
+		data.isNextBlack = game_board.isBlackTurn;
+		data.isUserColorBlack = settings.isUserBlack;
+		if (1 == saveGame(data, path)){
+			print_message(WRONG_FILE_NAME);
+			GuiBData.main_quit = 1;
+			return 1;
+		}
+
+		return 1;
+	}
+	else{
+		SDL_Rect rCancel = { 367, 358, 114, 29 };
+		if (isClickInRect(e, rCancel)){
+
+			return 1;
+		}
+	}
+	return 0;
+}
+
 int colorASquere(locationNode loc){
 	//x,y are gui base
 	//return 0 if error, 1 sababa
@@ -384,7 +480,6 @@ int pageID0(){
 		return 1;
 	}
 	
-	createBoard(GuiBData.surface);
 	if (!updateSurface(GuiBData.surface)){
 		return 0;
 	}
@@ -462,6 +557,35 @@ int pageID3(){
 	return 1;
 }
 
+int pageID4(){
+	//return: 0 error, 1 sababa
+	createBoard(GuiBData.surface);
+
+	// TODO get best move and color squere
+	colorASquere(createLocationNode(0,0));
+	if (!updateSurface(GuiBData.surface)){
+		return 0;
+	}
+	GuiBData.pageID = 0;
+
+}
+
+int pageID5(){
+	if (!createSave()){
+		return 0;
+	}
+	if (!updateSurface(GuiBData.surface)){
+		return 0;
+	}
+	handleBoardEvents();
+	GuiBData.pageID = 0;
+	createBoard();
+	if (!updateSurface(GuiBData.surface)){
+		return 0;
+	}
+	return 1;
+}
+
 int pageIDMinus1(){
 	createBoard(GuiBData.surface);
 	if (!updateSurface(GuiBData.surface)){
@@ -478,6 +602,7 @@ void free_all_pices(){
 			for (bkg = 0; bkg < 2; bkg++){
 				for (isColored = 0; isColored < 2; isColored++){
 						my_sdl_free( GuiBData.picess[pice][color][bkg][isColored]);
+						GuiBData.picess[pice][color][bkg][isColored] = NULL;
 					
 				}
 			}
@@ -486,16 +611,19 @@ void free_all_pices(){
 	for (bkg = 0; bkg < 2; bkg++){
 		for (isColored = 0; isColored < 2; isColored++){
 			my_sdl_free(GuiBData.emptys[bkg][isColored]);
+			GuiBData.emptys[bkg][isColored] = NULL;
 		}
 	}
 	int btnNum;
 	for (btnNum = 0; btnNum < 4; btnNum++){
 		my_sdl_free(GuiBData.boardBtn[btnNum].img);
+		GuiBData.boardBtn[btnNum].img = NULL;
 	}
 
 	int side;
 	for (side = 0; side < 5; side++){
 		my_sdl_free(GuiBData.sideBar[side]);
+		GuiBData.sideBar[side] = NULL;
 	}
 }
 
