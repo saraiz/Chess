@@ -222,6 +222,7 @@ int handleBoardEvents(){
 			switch (e.type) {
 			case (SDL_QUIT) :
 				quit = 1;
+				GuiBData.main_quit = 1;
 				GuiBData.pageID = -1;
 				break;
 			case (SDL_KEYUP) :
