@@ -12,7 +12,7 @@ int buildSettingsWindow(){
 	}
 
 	removeCurrentPage();
-	SDL_FreeSurface(containerPage.page);
+	my_sdl_free(containerPage.page);
 
 	if (isSuccess == 2){
 		// navigate to start game
@@ -65,6 +65,8 @@ Page createMainMenuPage(){
 	currentPage.id = 1;
 
 	addButtons(btnLst, 3, containerPage.page);
+
+	restorDefaultSettings();
 
 	return currentPage;
 }
@@ -609,17 +611,23 @@ int removeCurrentPage(){
 
 	for (int i = 0; i < len; i++){
 		if (lst[i].img != NULL){
-			SDL_FreeSurface(lst[i].img);
+			my_sdl_free(lst[i].img);
+			lst[i].img = NULL;
 		}
 
 		if (lst[i].selectedImg != NULL){
-			SDL_FreeSurface(lst[i].selectedImg);
+			my_sdl_free(lst[i].selectedImg);
+			lst[i].selectedImg = NULL;
 		}
 	}
 
-	myFree(lst);
+	currentPage.btnListLen = 0;
 
-	SDL_FreeSurface(currentPage.bkg);
+	myFree(lst);
+	currentPage.btnList = NULL;
+
+	my_sdl_free(currentPage.bkg);
+	currentPage.bkg = NULL;
 
 	// put white screen on top
 	SDL_FillRect(containerPage.page, &containerPage.page->clip_rect, SDL_MapRGB(containerPage.page->format, 0xFF, 0xFF, 0xFF));
@@ -636,6 +644,13 @@ void saveSettings(int isSelectionWinsow){
 		settings.isUserBlack = userGuiSettings.isUserColorBlack;
 		settings.minmax_depth = userGuiSettings.difficulty;
 	}
+}
+
+void restorDefaultSettings(){
+	userGuiSettings.gameMode = TWO_PLAYERS;
+	game_board.isBlackTurn = 0;
+	settings.isUserBlack = 0;
+	settings.minmax_depth = 1;
 }
 
 int selectButton(char *url, Button button){

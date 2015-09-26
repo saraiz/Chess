@@ -83,6 +83,7 @@ int handleButtonClicked(SDL_Event e);
 int navigatToPage(char* pageName);
 int removeCurrentPage();
 void saveSettings(int isSelectionWinsow);
+void restorDefaultSettings();
 int selectButton(char *url, Button button);
 int deselectButton(char *url, Button button);
 Button getButtonAccordingToId(Button list[], int len, int id);
