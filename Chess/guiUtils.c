@@ -102,3 +102,9 @@ locationNode whichSquerWasClicked(SDL_Event e){
 	return createLocationNode(x, BOARD_SIZE - 1 - y);
 
 }
+
+void my_sdl_free(SDL_Surface* toFree){
+	if (toFree != NULL){
+		SDL_FreeSurface(toFree);
+	}
+}

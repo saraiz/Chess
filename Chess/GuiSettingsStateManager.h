@@ -4,6 +4,7 @@
 #include "guiUtils.h"
 #include "IO.h"
 #include "settingsStateManager.h"
+#include "guiBoard.h"
 
 #define SPACE 45
 #define NUM_OF_SLOTS 7
