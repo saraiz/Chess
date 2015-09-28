@@ -18,7 +18,7 @@ int main(int argc, char* argv[])
 
 	// If you run your code in nova you should put this lines in comment
 	argc = 2;
-	argv[1] = "gui";
+	argv[1] = "console";
 	////////////////////////////////////////////////////////////////////
 
 	init_board(game_board.board);
@@ -69,8 +69,8 @@ void handleConsole(){
 
 		}
 	}
-	//int extern countAlloc;//TODO delete
-	//printf("%d", countAlloc);//TODO delete
+	int extern countAlloc;//TODO delete
+	printf("%d", countAlloc);//TODO delete
 	getchar(); //TODO delete
 }
 

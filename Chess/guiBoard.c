@@ -394,8 +394,8 @@ int eventHendelPage3(SDL_Event e){
 
 int eventHendelPage5(SDL_Event e){
 	//ret 1 sababa 0 noting was pressed 2 ERROR
-	int y = e.button.y;
-	int x = e.button.x;
+	//int y = e.button.y;
+	//int x = e.button.x;
 	SDL_Rect rSlot = { 88 ,276 , 44, 40 };
 	int slotNum;
 	int clickedSlot = -1;

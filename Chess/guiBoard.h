@@ -2,6 +2,7 @@
 #define GUI_BOARD
 
 #include "guiUtils.h"
+#include "GuiSettingsStateManager.h"
 #include "ChessLogic.h"
 #include "gameStateManager.h"
 #include "IO.h"
@@ -46,6 +47,7 @@ int createButtens();
 void GuiBoardStart();
 SDL_Surface* getPiceImage(int x, int y, int isColored);
 int createButtens();
+int createBoard();
 int colorSquers(moveList* move, locationNode origin);
 int colorASquere(locationNode loc);
 void free_all_pices();
