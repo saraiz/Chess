@@ -16,7 +16,7 @@ int buildSettingsWindow(){
 
 	if (isSuccess == 2){
 		// navigate to start game
-		GuiBoardStart();
+		GuiBoardStart(1);
 	}
 	else if (isSuccess == 3){
 		// navigate to set board

@@ -35,8 +35,8 @@ int main(int argc, char* argv[])
 			handleGUI();
 		}
 	}
-	printf("%d", countAlloc); //TODO delete
-	getchar();
+	//printf("%d", countAlloc); //TODO delete
+	//getchar();
 	return 1;
 }
 

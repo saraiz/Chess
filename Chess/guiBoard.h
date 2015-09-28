@@ -31,36 +31,60 @@ typedef struct {
 	3- promotion
 	4- -best moves
 	5- save
+
+	6- set: select placr
+	7- set: select place
+	8- set: error
 	*/
+
+	moveList moveToDo;
+	int main_quit;
+	int set_quit;
+
+	SDL_Surface *surface;
 	SDL_Surface* picess[6][2][2][2]; // [b/k/m/n/q/r][pice color b/w][bkg color b/w][isColored]
 	SDL_Surface* emptys[2][2]; //[bkg color b/w][isColored]
 	Button boardBtn[4]; // main menu, get best move, save game, quit
-	SDL_Surface *surface;
-	moveList moveToDo;
 	SDL_Surface* sideBar[6]; //check, tie, mate b, mate w, empty, comp turn
-	int main_quit;
+
+	Button set_side_btn[2]; //next, cancel
+	Button set_popup_pices[6][2]; //[b/k/m/n/q/r][pice color b/w]
+	Button set_popup_btn[2]; //cancel, remove
+	SDL_Surface* set_popup;
+
 }GuiBoardData;
 
-int load_all_pices();
-int createButtens();
-void GuiBoardStart();
+void GuiBoardStart(int isSetBoard);
 SDL_Surface* getPiceImage(int x, int y, int isColored);
+int Mate_Tie_Check();
+int isPromotion(moveList moveToDo);
+int do_usr_move();
+int StartGame();
+
+int load_all_pices();
+void free_all_pices();
+
+int createButtens();
 int createButtens();
 int colorSquers(moveList* move, locationNode origin);
 int colorASquere(locationNode loc);
-void free_all_pices();
-int Mate_Tie_Check();
 int print_side_bar(int Mate_Tie_Check);
-int isPromotion(moveList moveToDo);
-int do_usr_move();
 int print_comp_turn(int is_comp_turn);
+int create_set_side();
+int create_set_popup();
+int print_set_popup();
 
 int handleBoardEvents();
 int handleBoardButtonClicked(SDL_Event e);
-int eventHendelPage1(SDL_Event e);
 int eventHendelPage0(SDL_Event e);
+int eventHendelPage1(SDL_Event e);
 int eventHendelPage3(SDL_Event e);
 int eventHendelPage5(SDL_Event e);
+int eventHendelPage6(SDL_Event e);
+int eventHendelPage7(SDL_Event e);
+int eventHendelPage8(SDL_Event e);
+int handleSetButtonClicked(SDL_Event e);
+
 
 int pageID2();
 int pageID1();
