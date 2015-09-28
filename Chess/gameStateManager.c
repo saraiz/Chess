@@ -626,7 +626,7 @@ locationNode getKingLocation(int isBlack){
 }
 
 char* convertSoldierTypeToSoldierName(char type){
-	char *name = (char*)calloc(7, sizeof(char));
+	char *name = (char*)myCalloc(7, sizeof(char));
 	if (name == NULL){
 		// ERROR
 		return NULL;
