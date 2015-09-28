@@ -306,8 +306,11 @@ int eventHendelPage0(SDL_Event e){
 			return 0;
 		}
 		//TODO is error?
+		if (!isEmptyMoveList(moves)){
+			GuiBData.pageID = 1;
+
+		}
 		freeAllMoveList(moves);
-		GuiBData.pageID = 1;
 	}
 	return 1;
 }
@@ -515,6 +518,8 @@ int pageID2(){
 		return 0;
 	}
 	computerTurn(0);
+	SDL_Event e;
+	while (SDL_PollEvent(&e) != 0); //TODO to remove?
 	GuiBData.pageID = 0;
 	game_board.isBlackTurn = game_board.isBlackTurn ? 0 : 1;
 
@@ -563,7 +568,9 @@ int pageID4(){
 	createBoard(GuiBData.surface);
 
 	// TODO get best move and color squere
-	colorASquere(createLocationNode(0,0));
+	moveList bestMove =  GuiGetBestMove();
+	bestMove.next = NULL;
+	colorSquers(&bestMove, bestMove.origin);
 	if (!updateSurface(GuiBData.surface)){
 		return 0;
 	}
