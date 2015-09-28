@@ -37,7 +37,7 @@ typedef struct {
 	Button boardBtn[4]; // main menu, get best move, save game, quit
 	SDL_Surface *surface;
 	moveList moveToDo;
-	SDL_Surface* sideBar[5]; //check, tie, mate b, mate w, empty
+	SDL_Surface* sideBar[6]; //check, tie, mate b, mate w, empty, comp turn
 	int main_quit;
 }GuiBoardData;
 
@@ -53,6 +53,7 @@ int Mate_Tie_Check();
 int print_side_bar(int Mate_Tie_Check);
 int isPromotion(moveList moveToDo);
 int do_usr_move();
+int print_comp_turn(int is_comp_turn);
 
 int handleBoardEvents();
 int handleBoardButtonClicked(SDL_Event e);
