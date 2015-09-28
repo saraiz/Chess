@@ -163,5 +163,4 @@ moveList* moveConcat(moveList* first, moveList* second);
 int isLocationValid(locationNode node, int isPrintMessage);
 actionSummery createEmptySummery();
 
-
 #endif

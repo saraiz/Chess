@@ -753,6 +753,7 @@ char getSoldierTypeByColor(char type, int isBlack){
 
 void computerTurn(int isToPrint){
 	// TBD handle best difficulty
+	// copyied to GuiGetBestMove
 	moveList emptyMove;
 	emptyMove.origin = createLocationNode(-1, -1);
 	emptyMove.destination = createLocationNode(-1, -1);
@@ -773,6 +774,25 @@ void computerTurn(int isToPrint){
 			printOneMove(result.bestMove);
 		}
 	}
+
+	//freeAllMoveList(result.bestMovesList);
+}
+
+moveList GuiGetBestMove(){
+	// TBD handle best difficulty
+	moveList emptyMove;
+	//emptyMove.origin = createLocationNode(-1, -1);
+	emptyMove.destination = createLocationNode(-1, -1);
+	emptyMove.soldierToPromoteTo = EMPTY;
+	emptyMove.next = NULL;
+
+	int depth = settings.minmax_depth;
+	if (depth == BEST){
+		depth = getBestDepth();
+	}
+
+	minmaxValue result = minmax(getCurrentBoardData(), depth, 1, -99999, 99999, game_board.isBlackTurn, 0, emptyMove, 0, 1);
+	return result.bestMove;
 
 	//freeAllMoveList(result.bestMovesList);
 }

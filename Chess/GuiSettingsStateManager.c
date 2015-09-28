@@ -50,7 +50,7 @@ Page createMainMenuPage(){
 	Button newGameBtn = createButton(NEW_GAME_BTN_URL, 1, 150, 42, SCREEN_WIDTH / 2 - 150 / 2, 200);
 	Button loadGameBtn = createButton(LOAD_GAME_BTN_URL, 2, 150, 42, SCREEN_WIDTH / 2 - 150 / 2, newGameBtn.buttonsDestRect.y + newGameBtn.buttonsDestRect.h + SPACE);
 	Button quitGameBtn = createButton(QUIT_GAME_BTN_URL, 3, 150, 42, SCREEN_WIDTH / 2 - 150 / 2, loadGameBtn.buttonsDestRect.y + loadGameBtn.buttonsDestRect.h + SPACE);
-	Button *btnLst = (Button*)malloc(sizeof(Button)*3);
+	Button *btnLst = (Button*)myMalloc(sizeof(Button)*3);
 	if (btnLst == NULL){
 		currentPage.isError = 1;
 		return currentPage;
@@ -94,7 +94,7 @@ Page createSelecetionPage(){
 	Button cancelButton = createButton(CANCEL_BTN_URL, 7, 150, 42, SCREEN_WIDTH - SPACE - 150, SCREEN_HEIGHT - 30 - 42);
 	Button okButton = createButton(NEXT_BTN_URL, 8, 150, 42, cancelButton.buttonsDestRect.x - 30 - cancelButton.buttonsDestRect.w, cancelButton.buttonsDestRect.y);
 	
-	Button *btnLst = (Button*)malloc(sizeof(Button) * 8);
+	Button *btnLst = (Button*)myMalloc(sizeof(Button) * 8);
 	if (btnLst == NULL){
 		currentPage.isError = 1;
 		return currentPage;
@@ -153,7 +153,7 @@ Page createAiSettingsPage(){
 	// create game mode section
 	int y = 50;
 	int x = 35;
-	Button *btnLst = (Button*)malloc(sizeof(Button) * 9);
+	Button *btnLst = (Button*)myMalloc(sizeof(Button) * 9);
 	if (btnLst == NULL){
 		// TBD - free all images in current page
 		currentPage.isError = 1;
@@ -235,7 +235,7 @@ Page createLoadFromSlotPage(){
 	// create game mode section
 	int y = 60;
 	int x = 35;
-	Button *btnLst = (Button*)malloc(sizeof(Button) * (NUM_OF_SLOTS + 2));
+	Button *btnLst = (Button*)myMalloc(sizeof(Button) * (NUM_OF_SLOTS + 2));
 	if (btnLst == NULL){
 		// TBD - free all images in current page
 		currentPage.isError = 1;

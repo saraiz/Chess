@@ -173,6 +173,9 @@ int load_all_pices(){
 	GuiBData.sideBar[3] = loadImage(path);
 	sprintf(path, pathStart, "empty");
 	GuiBData.sideBar[4] = loadImage(path);
+	sprintf(path, pathStart, "computerPlaying");
+	GuiBData.sideBar[5] = loadImage(path);
+
 	return 1;
 }
 
@@ -306,8 +309,11 @@ int eventHendelPage0(SDL_Event e){
 			return 0;
 		}
 		//TODO is error?
+		if (!isEmptyMoveList(moves)){
+			GuiBData.pageID = 1;
+
+		}
 		freeAllMoveList(moves);
-		GuiBData.pageID = 1;
 	}
 	return 1;
 }
@@ -481,6 +487,10 @@ int pageID0(){
 		return 1;
 	}
 	
+	if (!print_comp_turn(0)){
+		return 0;
+	}
+
 	if (!updateSurface(GuiBData.surface)){
 		return 0;
 	}
@@ -511,10 +521,16 @@ int pageID2(){
 		return 1;
 	}
 
+	if (!print_comp_turn(1)){
+		return 0;
+	}
+
 	if (!updateSurface(GuiBData.surface)){
 		return 0;
 	}
 	computerTurn(0);
+	SDL_Event e;
+	while (SDL_PollEvent(&e) != 0); //TODO to remove?
 	GuiBData.pageID = 0;
 	game_board.isBlackTurn = game_board.isBlackTurn ? 0 : 1;
 
@@ -563,7 +579,9 @@ int pageID4(){
 	createBoard(GuiBData.surface);
 
 	// TODO get best move and color squere
-	colorASquere(createLocationNode(0,0));
+	moveList bestMove =  GuiGetBestMove();
+	bestMove.next = NULL;
+	colorSquers(&bestMove, bestMove.origin);
 	if (!updateSurface(GuiBData.surface)){
 		return 0;
 	}
@@ -622,7 +640,7 @@ void free_all_pices(){
 	}
 
 	int side;
-	for (side = 0; side < 5; side++){
+	for (side = 0; side < 6; side++){
 		my_sdl_free(GuiBData.sideBar[side]);
 		GuiBData.sideBar[side] = NULL;
 	}
@@ -669,7 +687,7 @@ int print_side_bar(int Mate_Tie_Check){
 	//TODO - print status
 	//ret 0 if error, 1 SABABA
 	// Mate_Tie_Check = 0 noting, 1 mate, 2 cheack, 3 tie
-	SDL_Rect rDest= {620 ,401 , 160, 180 };
+	SDL_Rect rDest= {620 ,416 , 160, 180 };
 	SDL_Rect rOrigin = { 0, 0, 160, 180 };
 	SDL_Surface* image;
 	switch (Mate_Tie_Check)
@@ -688,6 +706,27 @@ int print_side_bar(int Mate_Tie_Check){
 		break;
 
 	}
+	if (!addImageToSurface(image, &rOrigin, GuiBData.surface, &rDest)){
+		return 0;
+	}
+	return 1;
+
+}
+
+int print_comp_turn(int is_comp_turn){
+	//TODO - print status
+	//ret 0 if error, 1 SABABA
+	SDL_Rect rDest = { 620, 220, 160, 180 };
+	SDL_Rect rOrigin = { 0, 0, 160, 180 };
+	SDL_Surface* image;
+
+	if (is_comp_turn){
+		image = GuiBData.sideBar[5];
+	}
+	else {
+		image = GuiBData.sideBar[4];
+	}
+
 	if (!addImageToSurface(image, &rOrigin, GuiBData.surface, &rDest)){
 		return 0;
 	}
