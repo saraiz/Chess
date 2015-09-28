@@ -12,7 +12,7 @@ int buildSettingsWindow(){
 	}
 
 	removeCurrentPage();
-	SDL_FreeSurface(containerPage.page);
+	my_sdl_free(containerPage.page);
 
 	if (isSuccess == 2){
 		// navigate to start game
@@ -66,6 +66,8 @@ Page createMainMenuPage(){
 
 	addButtons(btnLst, 3, containerPage.page);
 
+	restorDefaultSettings();
+
 	return currentPage;
 }
 
@@ -114,12 +116,16 @@ Page createSelecetionPage(){
 	addButtons(btnLst, 8, containerPage.page);
 
 	// set defaults
-	int isSuccess = selectButton(TWO_PLAYERS_SELECTED_BTN_URL, game_mode_2PlayersMode);
+	Button defaultGameModeBtn = settings.gameMode == TWO_PLAYERS ? game_mode_2PlayersMode : game_mode_playerVsAI;
+	char *defaultBtnSkin = settings.gameMode == TWO_PLAYERS ? TWO_PLAYERS_SELECTED_BTN_URL : AGAINS_COMPUTER_SELECTED_BTN_URL;
+	int isSuccess = selectButton(defaultBtnSkin, defaultGameModeBtn);
 	if (isSuccess == 1){
-		userGuiSettings.gameMode = TWO_PLAYERS;
-		isSuccess = selectButton(WHITE_SELECTED_BTN_URL, next_player_white);
+		userGuiSettings.gameMode = settings.gameMode;
+		Button defaultNextPlayer = game_board.isBlackTurn == 1 ? next_player_black : next_player_white;
+		defaultBtnSkin = game_board.isBlackTurn == 1 ? BLACK_SELECTED_BTN_URL : WHITE_SELECTED_BTN_URL;
+		isSuccess = selectButton(defaultBtnSkin, defaultNextPlayer);
 		if (isSuccess == 1){
-			userGuiSettings.isNextPlayerBlack = 0;
+			userGuiSettings.isNextPlayerBlack = game_board.isBlackTurn;
 			isSuccess = selectButton(NO_SELECTED_BTN_URL, set_board_no);
 			if (isSuccess == 1){
 				userGuiSettings.isSetBoard = 0;
@@ -197,11 +203,22 @@ Page createAiSettingsPage(){
 	addButtons(btnLst, 9, containerPage.page);
 
 	// set defaults 
-	sprintf(path, "%s%d%s", SLOT_SELECTED_BTN_URL, 1, btn);
-	selectButton(path, btnLst[0]);
-	selectButton(BLACK_SELECTED_BTN_URL, userColor_black);
-	userGuiSettings.difficulty = 1;
-	userGuiSettings.isUserColorBlack = 1;
+	unsigned int defaultDepth = settings.minmax_depth;
+	if (defaultDepth == BEST){
+		sprintf(path, "%s", BEST_SELECTED_BTN_URL);
+		selectButton(path, btnLst[4]);
+	}
+	else{
+		sprintf(path, "%s%d%s", SLOT_SELECTED_BTN_URL, defaultDepth, btn);
+		selectButton(path, btnLst[defaultDepth-1]);
+	}
+
+	Button defaultUserColorBtn = settings.isUserBlack == 1 ? userColor_black : userColor_white;
+	char *defaultBtnSkin = settings.isUserBlack == 1 ? BLACK_SELECTED_BTN_URL : WHITE_SELECTED_BTN_URL;
+
+	selectButton(defaultBtnSkin, defaultUserColorBtn);
+	userGuiSettings.difficulty = settings.minmax_depth;
+	userGuiSettings.isUserColorBlack = settings.isUserBlack;
 
 	updateSurface(containerPage.page);
 
@@ -594,17 +611,23 @@ int removeCurrentPage(){
 
 	for (int i = 0; i < len; i++){
 		if (lst[i].img != NULL){
-			SDL_FreeSurface(lst[i].img);
+			my_sdl_free(lst[i].img);
+			lst[i].img = NULL;
 		}
 
 		if (lst[i].selectedImg != NULL){
-			SDL_FreeSurface(lst[i].selectedImg);
+			my_sdl_free(lst[i].selectedImg);
+			lst[i].selectedImg = NULL;
 		}
 	}
 
-	myFree(lst);
+	currentPage.btnListLen = 0;
 
-	SDL_FreeSurface(currentPage.bkg);
+	myFree(lst);
+	currentPage.btnList = NULL;
+
+	my_sdl_free(currentPage.bkg);
+	currentPage.bkg = NULL;
 
 	// put white screen on top
 	SDL_FillRect(containerPage.page, &containerPage.page->clip_rect, SDL_MapRGB(containerPage.page->format, 0xFF, 0xFF, 0xFF));
@@ -621,6 +644,13 @@ void saveSettings(int isSelectionWinsow){
 		settings.isUserBlack = userGuiSettings.isUserColorBlack;
 		settings.minmax_depth = userGuiSettings.difficulty;
 	}
+}
+
+void restorDefaultSettings(){
+	userGuiSettings.gameMode = TWO_PLAYERS;
+	game_board.isBlackTurn = 0;
+	settings.isUserBlack = 0;
+	settings.minmax_depth = 1;
 }
 
 int selectButton(char *url, Button button){

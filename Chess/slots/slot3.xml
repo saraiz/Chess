@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <game>
-	<next_turn>White</next_turn>
+	<next_turn>Black</next_turn>
 	<game_mode>1</game_mode>
 	<difficulty></difficulty>
 	<user_color></user_color>
