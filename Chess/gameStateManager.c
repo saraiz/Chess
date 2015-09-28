@@ -467,12 +467,13 @@ int isLocationNodeEquale(locationNode node1, locationNode node2){
 int isPositionContainUserPiece(int isBlack, locationNode position, int isShowMessage){
 	int isValid = 1;
 	char soldierToMove = game_board.board[position.row][position.column];
-	if ((isBlack == 1 && (soldierToMove == WHITE_B || soldierToMove == WHITE_K || soldierToMove == WHITE_N || soldierToMove == WHITE_P || soldierToMove == WHITE_Q || soldierToMove == WHITE_R)) ||
+	if ((soldierToMove == EMPTY) ||
+		(isBlack == 1 && (soldierToMove == WHITE_B || soldierToMove == WHITE_K || soldierToMove == WHITE_N || soldierToMove == WHITE_P || soldierToMove == WHITE_Q || soldierToMove == WHITE_R)) ||
 		(isBlack == 0 && (soldierToMove == BLACK_B || soldierToMove == BLACK_K || soldierToMove == BLACK_N || soldierToMove == BLACK_P || soldierToMove == BLACK_Q || soldierToMove == BLACK_R))){
 		isValid = 0;
 	}
 
-	if (isValid == 0){
+	if (isValid == 0 && isShowMessage){
 		print_message(NO_DICS);
 	}
 
