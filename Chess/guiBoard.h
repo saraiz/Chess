@@ -5,6 +5,7 @@
 #include "ChessLogic.h"
 #include "gameStateManager.h"
 #include "IO.h"
+#include "settingsStateManager.h"
 
 #define GUI_black 0
 #define GUI_white 1
@@ -28,20 +29,22 @@ typedef struct {
 	0- user need to chose what to move,
 	1- user need to chose where to move,
 	2- computer turn
-	3- promotion
-	4- -best moves
-	5- save
+	3- PP promotion
+	4- best moves
+	5- PP save
 
 	6- set: select place
-	7- set: select pice
-	8- set: error
+	7- set: PP select pice
+	8- set: PP error
 	*/
 
 	moveList moveToDo;
 	int main_quit;
 	int set_quit;
+	int pull_quit;
 	locationNode wasClicked;
 	char toSet;
+	int set_which_error_to_print; //0 after set, 1 after start
 
 	SDL_Surface *surface;
 	SDL_Surface* picess[6][2][2][2]; // [b/k/m/n/q/r][pice color b/w][bkg color b/w][isColored]
@@ -62,6 +65,7 @@ int Mate_Tie_Check();
 int isPromotion(moveList moveToDo);
 int do_usr_move();
 int StartGame();
+char get_pice_char_from_set_btn_id(int btnID);
 
 int load_all_pices();
 void free_all_pices();

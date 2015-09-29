@@ -315,12 +315,12 @@ SDL_Surface* getPiceImage(int x, int y, int isColored){ //x,y are GUI base
 int handleBoardEvents(){
 	//ret 0 error 1 sababa
 	SDL_Event e;
-	int quit = 0;
-	while (!quit){
+	GuiBData.pull_quit = 0;
+	while (!GuiBData.pull_quit){
 		while (SDL_PollEvent(&e) != 0){
 			switch (e.type) {
 			case (SDL_QUIT) :
-				quit = 1;
+				GuiBData.pull_quit = 1;
 				GuiBData.main_quit = 1;
 				GuiBData.set_quit = 1;
 				GuiBData.pageID = -1;
@@ -339,7 +339,7 @@ int handleBoardEvents(){
 						return 0;
 					}
 				}
-					quit = 1;
+				//GuiBData.pull_quit = 1;
 				break;
 			default:
 				break;
@@ -351,7 +351,7 @@ int handleBoardEvents(){
 
 int handleBoardButtonClicked(SDL_Event e){
 	//return 0 erroe, 1 sababa
-	if (e.button.x > 75 * BOARD_SIZE){
+	if (e.button.x > 75 * BOARD_SIZE && GuiBData.pageID != 3 && GuiBData.pageID != 5){
 		int i,btnID = -1;
 		for (i = 0; i < 4; i++){
 			if (isClickInRect(e, GuiBData.boardBtn[i].buttonsDestRect)){
@@ -364,19 +364,23 @@ int handleBoardButtonClicked(SDL_Event e){
 			free_all_pices();
 			buildSettingsWindow();
 			GuiBData.main_quit = 1;
+			GuiBData.pull_quit = 1;
 			return 1;
 		case 1: //best moves
 			if (GuiBData.pageID == 0 || GuiBData.pageID == 1){
 				GuiBData.pageID = 4;
+				GuiBData.pull_quit = 1;
 			}
 			break;
 		case 2: //save
 			if (GuiBData.pageID == 0 || GuiBData.pageID == 1){
 				GuiBData.pageID = 5;
+				GuiBData.pull_quit = 1;
 			}
 			break;
 		case 3: //quit
 			GuiBData.main_quit = 1;
+			GuiBData.pull_quit = 1;
 			return 1;
 		case -1: //empty
 			break;
@@ -386,21 +390,22 @@ int handleBoardButtonClicked(SDL_Event e){
 		switch (GuiBData.pageID)
 		{
 		case 0:
-			return eventHendelPage0(e);
+			return GuiBData.pull_quit = eventHendelPage0(e);
 		case 1:
-			return eventHendelPage1(e);
+			return GuiBData.pull_quit = eventHendelPage1(e);
 		case 3:
-			while (!eventHendelPage3(e));
+			return GuiBData.pull_quit = eventHendelPage3(e);
 		case 5:
-			while (!eventHendelPage5(e));
+			return GuiBData.pull_quit = eventHendelPage5(e);
 		case -1:
 			return 1;
 		}
 	}
+	return 1;
 }
 
 int handleSetButtonClicked(SDL_Event e){
-	if (e.button.x > 75 * BOARD_SIZE){
+	if (e.button.x > 75 * BOARD_SIZE&& GuiBData.pageID != 7 && GuiBData.pageID != 8){
 		int i, btnID = -1;
 		for (i = 0; i < 2; i++){
 			if (isClickInRect(e, GuiBData.set_side_btn [i].buttonsDestRect)){
@@ -411,15 +416,16 @@ int handleSetButtonClicked(SDL_Event e){
 		switch (btnID){
 		case 0: //next
 			if (GuiBData.pageID = 6){
-				GuiBData.set_quit = 1;
+				GuiBData.set_quit = 1; 
+				GuiBData.pull_quit = 1;
 			}
 			break;
 		case 1: //cancel
-			//TODO--???
 			GuiBData.set_quit = 1;
 			free_all_pices();
 			buildSettingsWindow();
 			GuiBData.main_quit = 1;
+			GuiBData.pull_quit = 1;
 			break;
 		case -1: //empty
 			break;
@@ -429,13 +435,14 @@ int handleSetButtonClicked(SDL_Event e){
 		switch (GuiBData.pageID)
 		{
 		case 6:
-			return eventHendelPage6(e);
+			return GuiBData.pull_quit = eventHendelPage6(e);
 		case 7:
-			return eventHendelPage7(e);
+			return GuiBData.pull_quit = eventHendelPage7(e);
 		case 8:
-			return eventHendelPage8(e);
+			return GuiBData.pull_quit = eventHendelPage8(e);
 		}
 	}
+	return 1;
 }
 
 int eventHendelPage0(SDL_Event e){
@@ -462,32 +469,28 @@ int eventHendelPage0(SDL_Event e){
 }
 
 int eventHendelPage1(SDL_Event e){
-	if (e.button.x > 75 * BOARD_SIZE){
-		//TODO -butten
-	}
-	else {
-		locationNode clickedLoc = whichSquerWasClicked(e);
-		//moveList move;
 
-		GuiBData.moveToDo.destination = clickedLoc;
+	locationNode clickedLoc = whichSquerWasClicked(e);
+	//moveList move;
+
+	GuiBData.moveToDo.destination = clickedLoc;
+	GuiBData.moveToDo.soldierToPromoteTo = EMPTY;
+
+	if (isPromotion(GuiBData.moveToDo)){
+		GuiBData.moveToDo.soldierToPromoteTo = 0;
+		GuiBData.pageID = 3;
+	}
+	else{
 		GuiBData.moveToDo.soldierToPromoteTo = EMPTY;
-
-		if (isPromotion(GuiBData.moveToDo)){
-			GuiBData.moveToDo.soldierToPromoteTo = 0;
-			GuiBData.pageID = 3;
+		if (!do_usr_move()){
+			return 0;
 		}
-		else{
-			GuiBData.moveToDo.soldierToPromoteTo = EMPTY;
-			if (!do_usr_move()){
-				//ERROR
-			}
-			GuiBData.moveToDo.origin = GuiBData.moveToDo.destination = createLocationNode(-1, -1);
-			GuiBData.moveToDo.soldierToPromoteTo = EMPTY;
-			GuiBData.moveToDo.next = NULL;
-			return 1;
-		}
-
+		GuiBData.moveToDo.origin = GuiBData.moveToDo.destination = createLocationNode(-1, -1);
+		GuiBData.moveToDo.soldierToPromoteTo = EMPTY;
+		GuiBData.moveToDo.next = NULL;
 	}
+
+	return 1;
 }
 
 int eventHendelPage3(SDL_Event e){
@@ -588,7 +591,54 @@ int eventHendelPage6(SDL_Event e){
 }
 
 int eventHendelPage7(SDL_Event e){
+	int wasClicked = -1;
+	int color; //b,w
+	for (color = 0; color < 2; color++){
+		int pice; //[b / k / m / n / q / r]
+		for (pice = 0; pice < 6; pice++){
+			if (isClickInRect(e, GuiBData.set_popup_pices[pice][color].buttonsDestRect)){
+				wasClicked = GuiBData.set_popup_pices[pice][color].id;
+				break;
+			}
 
+		}
+	}
+	if (wasClicked != -1){
+		GuiBData.toSet = get_pice_char_from_set_btn_id(wasClicked);
+		return 1;
+	}
+	else{
+		int btnID;
+		for (btnID = 0; btnID < 2; btnID++){
+			if (isClickInRect(e, GuiBData.set_popup_btn[btnID].buttonsDestRect)){
+				wasClicked = GuiBData.set_popup_btn[btnID].id;
+				break;
+			}
+		}
+		if (wasClicked == 0){
+			GuiBData.toSet = -1;
+			return 1;
+		}
+		if (wasClicked == 1){
+			GuiBData.toSet = EMPTY;
+			return 1;
+		}
+		
+	}
+	return 0;
+}
+
+char get_pice_char_from_set_btn_id(int btnID){
+	int isBlack = btnID > 5 ? 0 : 1;
+	if (!isBlack){
+		btnID = btnID - 6;
+	}
+	char pice = pice_types[btnID];
+	
+	if (isBlack){
+		pice = toupper(pice);
+	}
+	return pice;
 }
 
 int eventHendelPage8(SDL_Event e){
@@ -780,11 +830,35 @@ int pageID7(){
 	if (!handleBoardEvents()){
 		return 0;
 	}
-	// TODO:
-	//if error
-	//set if not
-	//change page
+
+	if (GuiBData.toSet == -1){
+		GuiBData.pageID = 6;
+		return 1;
+	}
+	if (GuiBData.toSet != EMPTY){
+		char* color;
+		color = isupper(GuiBData.toSet) ? COLOR_BLACK : COLOR_WHITE;
+		char* pice = convertSoldierTypeToSoldierName(GuiBData.toSet);
+		if (isBoardValidAfterSet(pice, color, 0)){
+			removeUser(GuiBData.wasClicked);
+			addUser(GuiBData.wasClicked, color, pice);
+			GuiBData.pageID = 6;
+		}
+		else{
+			GuiBData.set_which_error_to_print = 0;
+			GuiBData.pageID = 7;
+			
+		}
+	myFree(pice);
+	}
+	else{
+		removeUser(GuiBData.wasClicked);
+		GuiBData.pageID = 6;
+	}
+	return 1;
 }
+
+
 
 int pageIDMinus1(){
 	createBoard(GuiBData.surface);
