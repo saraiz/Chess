@@ -32,14 +32,16 @@ typedef struct {
 	4- -best moves
 	5- save
 
-	6- set: select placr
-	7- set: select place
+	6- set: select place
+	7- set: select pice
 	8- set: error
 	*/
 
 	moveList moveToDo;
 	int main_quit;
 	int set_quit;
+	locationNode wasClicked;
+	char toSet;
 
 	SDL_Surface *surface;
 	SDL_Surface* picess[6][2][2][2]; // [b/k/m/n/q/r][pice color b/w][bkg color b/w][isColored]
@@ -92,6 +94,7 @@ int pageID0();
 int pageID3();
 int pageID4();
 int pageID5();
+int pageID6();
 int pageIDMinus1();
 
 #endif

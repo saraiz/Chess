@@ -31,6 +31,7 @@ int startGame(){
 	int isCompFirst = settings.isUserBlack != game_board.isBlackTurn;
 	GuiBData.pageID = isPVC &&  isCompFirst ? 2 : 0;
 	while (!GuiBData.main_quit){
+		printf("%d\n", GuiBData.pageID);
 		switch (GuiBData.pageID)
 		{
 		case 0:
@@ -91,18 +92,21 @@ int startSet(){
 
 	createBoard();
 	load_set_popup();
-	print_set_popup();
+
 	while (!GuiBData.set_quit){
-		/*
-		createBoard();
-		if (!updateSurface(GuiBData.surface)){
-			return 0;
+		printf("%d\n", GuiBData.pageID);
+		switch (GuiBData.pageID){
+		case 6:
+			pageID6();
+			break;
+		case 7:
+			pageID7();
+			break;
+		case 8:
+			break;
 		}
 		
-		if (!handleBoardEvents()){
-			return 0;
-		}
-		*/
+
 	}
 	return 1;
 }
@@ -179,11 +183,11 @@ int print_set_popup(){
 	SDL_Rect rDest = { 10, 165, 580, 270 };
 
 	addImageToSurface(GuiBData.set_popup, &rOrigin, GuiBData.surface, &rDest);
-	addButtons(GuiBData.set_popup_btn, 2, GuiBData.surface);
 	int pice;
 	for (pice = 0; pice < 6; pice++){
-		addButtons(GuiBData.set_popup_pices[pice], 6, GuiBData.surface);
+		addButtons(GuiBData.set_popup_pices[pice], 2, GuiBData.surface);
 	}
+	addButtons(GuiBData.set_popup_btn, 2, GuiBData.surface);
 	return 1;
 }
 
@@ -399,14 +403,16 @@ int handleSetButtonClicked(SDL_Event e){
 	if (e.button.x > 75 * BOARD_SIZE){
 		int i, btnID = -1;
 		for (i = 0; i < 2; i++){
-			if (isClickInRect(e, GuiBData.boardBtn[i].buttonsDestRect)){
+			if (isClickInRect(e, GuiBData.set_side_btn [i].buttonsDestRect)){
 				btnID = GuiBData.boardBtn[i].id;
 				break;
 			}
 		}
 		switch (btnID){
 		case 0: //next
-			GuiBData.set_quit = 1;
+			if (GuiBData.pageID = 6){
+				GuiBData.set_quit = 1;
+			}
 			break;
 		case 1: //cancel
 			//TODO--???
@@ -576,7 +582,7 @@ int eventHendelPage5(SDL_Event e){
 }
 
 int eventHendelPage6(SDL_Event e){
-	locationNode wasClicked = whichSquerWasClicked(e);
+	GuiBData.wasClicked = whichSquerWasClicked(e);
 	GuiBData.pageID = 7;
 	return 1;
 }
@@ -754,6 +760,30 @@ int pageID5(){
 		return 0;
 	}
 	return 1;
+}
+
+int pageID6(){
+	createBoard();
+	if (!updateSurface(GuiBData.surface)){
+		return 0;
+	}
+
+	if (!handleBoardEvents()){
+		return 0;
+	}
+	return 1;
+}
+
+int pageID7(){
+	print_set_popup();
+
+	if (!handleBoardEvents()){
+		return 0;
+	}
+	// TODO:
+	//if error
+	//set if not
+	//change page
 }
 
 int pageIDMinus1(){
