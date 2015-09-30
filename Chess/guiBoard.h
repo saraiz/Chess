@@ -50,13 +50,15 @@ typedef struct {
 	SDL_Surface *surface;
 	SDL_Surface* picess[6][2][2][2]; // [b/k/m/n/q/r][pice color b/w][bkg color b/w][isColored]
 	SDL_Surface* emptys[2][2]; //[bkg color b/w][isColored]
-	Button boardBtn[4]; // main menu, get best move, save game, quit
 	SDL_Surface* sideBar[6]; //check, tie, mate b, mate w, empty, comp turn
+	SDL_Surface* set_popup;
+	SDL_Surface* set_error[2]; // error0, error1
 
-	Button set_side_btn[2]; //next, cancel
+	Button boardBtn[4]; // main menu, get best move, save game, quit
+	Button set_side_btn[3]; //next,clear, cancel
 	Button set_popup_pices[6][2]; //[b/k/m/n/q/r][pice color b/w]
 	Button set_popup_btn[2]; //cancel, remove
-	SDL_Surface* set_popup;
+	Button set_ok;
 
 }GuiBoardData;
 
@@ -67,6 +69,7 @@ int isPromotion(moveList moveToDo);
 int do_usr_move();
 int StartGame();
 char get_pice_char_from_set_btn_id(int btnID);
+void rmAll();
 
 int load_all_pices();
 void free_all_pices();
@@ -101,6 +104,8 @@ int pageID3();
 int pageID4();
 int pageID5();
 int pageID6();
+int pageID7();
+int pageID8();
 int pageIDMinus1();
 
 #endif
