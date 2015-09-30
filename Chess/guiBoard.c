@@ -207,9 +207,9 @@ int handleBoardButtonClicked(SDL_Event e){
 int handleSetButtonClicked(SDL_Event e){
 	if (e.button.x > 75 * BOARD_SIZE&& GuiBData.pageID != 7 && GuiBData.pageID != 8){
 		int i, btnID = -1;
-		for (i = 0; i < 2; i++){
+		for (i = 0; i < 3; i++){
 			if (isClickInRect(e, GuiBData.set_side_btn [i].buttonsDestRect)){
-				btnID = GuiBData.boardBtn[i].id;
+				btnID = GuiBData.set_side_btn[i].id;
 				break;
 			}
 		}
@@ -223,10 +223,16 @@ int handleSetButtonClicked(SDL_Event e){
 				else {
 					GuiBData.set_which_error_to_print = 1;
 					GuiBData.pageID = 8;
+					GuiBData.pull_quit = 1;
 				}
 			}
 			break;
-		case 1: //cancel
+		case 1:
+			rmAll();
+			GuiBData.pageID = 6;
+			GuiBData.pull_quit = 1;
+			break;
+		case 2: //cancel
 			GuiBData.set_quit = 1;
 			free_all_pices();
 			buildSettingsWindow();
@@ -277,7 +283,7 @@ void free_all_pices(){
 		GuiBData.boardBtn[btnNum].img = NULL;
 	}
 
-	for (btnNum = 0; btnNum < 2; btnNum++){
+	for (btnNum = 0; btnNum < 3; btnNum++){
 		my_sdl_free(GuiBData.set_side_btn[btnNum].img);
 		GuiBData.set_side_btn[btnNum].img = NULL;
 	}
@@ -531,6 +537,17 @@ int do_usr_move(){
 	return 1;	
 }
 
+void rmAll(){
+	int i;
+	for (i = 0; i < BOARD_SIZE; i++){
+		int j;
+		for (j = 0; j < BOARD_SIZE; j++){
+			locationNode loc = createLocationNode(i, j);
+			removeUser(loc);
+		}
+	}
+}
+
 
 int createBoard(){ //0 if fail, 1 if ok
 	SDL_Rect rOrigin = { 0, 0, 75, 75 };
@@ -583,13 +600,13 @@ int create_set_side(){
 	int btnNum;
 	int startY = 30;
 
-	for (btnNum = 0; btnNum < 2; btnNum++){
+	for (btnNum = 0; btnNum < 3; btnNum++){
 		char path[500];
 		sprintf(path, "./images/popupsAndButtons/btnset%d.bmp", btnNum);
 		GuiBData.set_side_btn[btnNum] = createButton(path, btnNum, 115, 30, 642, btnNum * 47 + startY);
 
 	}
-	if (!addButtons(GuiBData.set_side_btn, 2, GuiBData.surface)){
+	if (!addButtons(GuiBData.set_side_btn, 3, GuiBData.surface)){
 		return 0;
 	}
 	return 1;

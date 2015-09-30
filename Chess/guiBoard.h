@@ -54,7 +54,7 @@ typedef struct {
 	SDL_Surface* set_error[2]; // error0, error1
 
 	Button boardBtn[4]; // main menu, get best move, save game, quit
-	Button set_side_btn[2]; //next, cancel
+	Button set_side_btn[3]; //next,clear, cancel
 	Button set_popup_pices[6][2]; //[b/k/m/n/q/r][pice color b/w]
 	Button set_popup_btn[2]; //cancel, remove
 	Button set_ok;
@@ -68,6 +68,7 @@ int isPromotion(moveList moveToDo);
 int do_usr_move();
 int StartGame();
 char get_pice_char_from_set_btn_id(int btnID);
+void rmAll();
 
 int load_all_pices();
 void free_all_pices();
