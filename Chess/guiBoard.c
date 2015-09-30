@@ -603,7 +603,7 @@ int create_set_side(){
 	for (btnNum = 0; btnNum < 3; btnNum++){
 		char path[500];
 		sprintf(path, "./images/popupsAndButtons/btnset%d.bmp", btnNum);
-		GuiBData.set_side_btn[btnNum] = createButton(path, btnNum, 115, 30, 642, btnNum * 47 + startY);
+		GuiBData.set_side_btn[btnNum] = createButton(path, btnNum, 150, 42, 625, btnNum * 47 + startY);
 
 	}
 	if (!addButtons(GuiBData.set_side_btn, 3, GuiBData.surface)){

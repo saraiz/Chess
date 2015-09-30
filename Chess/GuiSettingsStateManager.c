@@ -651,6 +651,8 @@ void restorDefaultSettings(){
 	game_board.isBlackTurn = 0;
 	settings.isUserBlack = 0;
 	settings.minmax_depth = 1;
+
+	init_board(game_board.board);
 }
 
 int selectButton(char *url, Button button){
