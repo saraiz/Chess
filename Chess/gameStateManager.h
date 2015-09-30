@@ -33,5 +33,6 @@ int isMovesEquale(moveList move1, moveList move2);
 int isLocationNodeEquale(locationNode node1, locationNode node2);
 moveList* getBestMoves(int isBlack, int depth, int bestMoveScore);
 int getScore(moveList move, int depth);
+moveList GuiGetBestMove();
 
 #endif

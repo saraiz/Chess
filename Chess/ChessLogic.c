@@ -85,7 +85,7 @@ moveList* getPossibleMovesRook(locationNode loc, int isBlack, int depth){
 		int isHorisontal; // 0 for vertical, 1 for horisontal
 		for (isHorisontal = 0; isHorisontal < 2; isHorisontal += 1){  
 			int numOfSteps = 1;
-			int isAdded;
+			int toContinu;
 			locationNode destenetion;
 			do
 			{
@@ -93,13 +93,13 @@ moveList* getPossibleMovesRook(locationNode loc, int isBlack, int depth){
 				int destRow = loc.row + Diff*(1-isHorisontal);
 				int destColumn = loc.column + Diff*(isHorisontal);
 				destenetion = createLocationNode(destColumn, destRow);
-				isAdded = CheackDeatenetionAndAdd(sentinal, loc, destenetion, isBlack, depth);
-				if (2 == isAdded){
+				toContinu = CheackDeatenetionAndAdd(sentinal, loc, destenetion, isBlack, depth);
+				if (2 == toContinu){
 					return NULL;
 				}
 
 				numOfSteps++;
-			} while (isAdded == 1 && getPice(destenetion) == EMPTY);
+			} while (toContinu == 1 && getPice(destenetion) == EMPTY);
 		}
 	}
 	moveList* toReturn = removeAndFreeSentinalIfNececery(sentinal);
@@ -146,20 +146,20 @@ moveList* getPossibleMovesBishop(locationNode loc, int isBlack, int depth){
 		int VerticalDiraction; //-1 down, 1 up
 		for (VerticalDiraction = -1; VerticalDiraction < 2; VerticalDiraction += 2){
 			int numOfSteps = 1;
-			int isAdded;
+			int toContinu;
 			locationNode destenetion;
 			do
 			{
 				int destRow = loc.row + numOfSteps*VerticalDiraction;
 				int destColumn = loc.column + numOfSteps*HorisontalDirection;
 				destenetion = createLocationNode(destColumn, destRow);
-				isAdded = CheackDeatenetionAndAdd(sentinal, loc, destenetion, isBlack, depth);
-				if (2 == isAdded){
+				toContinu = CheackDeatenetionAndAdd(sentinal, loc, destenetion, isBlack, depth);
+				if (2 == toContinu){
 					return NULL;
 				}
 
 				numOfSteps++;
-			} while (isAdded == 1 && getPice(destenetion) == EMPTY);
+			} while (toContinu == 1 && getPice(destenetion) == EMPTY);
 		}
 	}
 	moveList* toReturn = removeAndFreeSentinalIfNececery(sentinal);
@@ -236,7 +236,7 @@ int CheackDeatenetionAndAdd(moveList* sentinal,locationNode origen, locationNode
 			return 1;
 		}
 		else{
-			return 0;
+			return 1; //!!!!!!!!!!!!!!!!!1
 		}
 	}
 	return 0;

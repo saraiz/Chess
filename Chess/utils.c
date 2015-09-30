@@ -262,7 +262,7 @@ void* myCalloc(int x, int y){
 	void* alloc = calloc(x, y);
 	//myAssert(alloc != NULL, "calloc");
 	//numOfTotalAllocs++;
-	countAlloc++;
+	countAlloc++; //TODO delete
 	return alloc;
 }
 
@@ -271,7 +271,7 @@ void* myMalloc(int x){
 }
 
 void myFree(void* tofree){
-	countAlloc--;
+	countAlloc--; //TODO delete
 	free(tofree);
 }
 
