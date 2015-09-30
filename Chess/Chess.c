@@ -76,8 +76,8 @@ void handleConsole(){
 
 		}
 	}
-	//int extern countAlloc;//TODO delete
-	//printf("%d", countAlloc);//TODO delete
+	int extern countAlloc;//TODO delete
+	printf("%d", countAlloc);//TODO delete
 	getchar(); //TODO delete
 }
 

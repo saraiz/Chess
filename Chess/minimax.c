@@ -177,7 +177,7 @@ minmaxValue minmax(gameBoard backup,
 			// delete last changes
 			restorBoardData(backup);
 
-			if (betha < alpha){
+			if ((isGetBest && betha < alpha) || (!isGetBest && betha <= alpha)){
 				// PRUNING
 				break;
 			}
@@ -221,7 +221,7 @@ minmaxValue minmax(gameBoard backup,
 			// delete last changes
 			restorBoardData(backup);
 
-			if (betha < alpha){
+			if ((isGetBest && betha < alpha) || (!isGetBest && betha <= alpha)){
 				// PRUNING
 				break;
 			}

@@ -2,6 +2,7 @@
 #define GUI_BOARD
 
 #include "guiUtils.h"
+#include "GuiSettingsStateManager.h"
 #include "ChessLogic.h"
 #include "gameStateManager.h"
 #include "IO.h"
@@ -75,6 +76,7 @@ void free_all_pices();
 
 int createButtens();
 int createButtens();
+int createBoard();
 int colorSquers(moveList* move, locationNode origin);
 int colorASquere(locationNode loc);
 int print_side_bar(int Mate_Tie_Check);
