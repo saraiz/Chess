@@ -330,6 +330,10 @@ void free_all_pices(){
 
 	my_sdl_free(GuiBData.set_ok.img);
 	GuiBData.set_ok.img = NULL;
+
+	my_sdl_free(GuiBData.surface);
+	GuiBData.surface = NULL;
+
 }
 
 int load_all_pices(){
