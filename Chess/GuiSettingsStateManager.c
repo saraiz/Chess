@@ -180,7 +180,7 @@ Page createAiSettingsPage(){
 		Button difficulty = createButton(path, i, width, height, x, y);
 
 		//y = y + slot.buttonsDestRect.h + SPACE;
-		x = x + difficulty.buttonsDestRect.w + SPACE;
+		x = x + difficulty.buttonsDestRect.w + 24;
 		btnLst[i - 1] = difficulty;
 	}
 
@@ -648,7 +648,7 @@ void saveSettings(int isSelectionWinsow){
 }
 
 void restorDefaultSettings(){
-	userGuiSettings.gameMode = TWO_PLAYERS;
+	settings.gameMode = TWO_PLAYERS;
 	game_board.isBlackTurn = 0;
 	settings.isUserBlack = 0;
 	settings.minmax_depth = 1;

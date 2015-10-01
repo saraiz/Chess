@@ -11,6 +11,7 @@ gameSettings settings = { 1, COLOR_WHITE, 0, 0, TWO_PLAYERS };
 gameBoard game_board = { 0, 0, 0, 0, 0 };
 
 extern int countAlloc;
+extern int countSurface;
 
 int main(int argc, char* argv[])
 {
@@ -91,5 +92,9 @@ void handleGUI(){
 
 	//GuiBoardStart(); //TODO delete
 	buildSettingsWindow();
+
+	//int extern countAlloc;//TODO delete
+	printf("surface %d", countSurface);//TODO delete
+	getchar();
 	
 }
