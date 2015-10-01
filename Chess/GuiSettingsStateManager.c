@@ -180,7 +180,7 @@ Page createAiSettingsPage(){
 		Button difficulty = createButton(path, i, width, height, x, y);
 
 		//y = y + slot.buttonsDestRect.h + SPACE;
-		x = x + difficulty.buttonsDestRect.w + SPACE;
+		x = x + difficulty.buttonsDestRect.w + 24;
 		btnLst[i - 1] = difficulty;
 	}
 
