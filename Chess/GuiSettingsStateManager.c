@@ -16,10 +16,10 @@ int buildSettingsWindow(){
 
 	if (isSuccess == 2){
 		// navigate to start game
-		GuiBoardStart(1);
+		GuiBoardStart(0);
 	}
 	else if (isSuccess == 3){
-		// navigate to set board
+		GuiBoardStart(1);
 	}
 
 	return isSuccess;
@@ -399,13 +399,13 @@ int handleButtonClicked_selectionWindow(SDL_Event e){
 				break;
 			case 5:
 				// user choose to set board
-				userGuiSettings.isSetBoard = 1;
+				userGuiSettings.isSetBoard = 0;
 				prev = getButtonAccordingToId(lst, len, 6);
 				isSuccess = toggleButtons(prev, curr, YES_BTN_URL, NO_SELECTED_BTN_URL);
 				break;
 			case 6:
 				// user choose not to set board
-				userGuiSettings.isSetBoard = 0;
+				userGuiSettings.isSetBoard = 1;
 				prev = getButtonAccordingToId(lst, len, 5);
 				isSuccess = toggleButtons(prev, curr, NO_BTN_URL, YES_SELECTED_BTN_URL);
 				break;
@@ -421,7 +421,7 @@ int handleButtonClicked_selectionWindow(SDL_Event e){
 					isSuccess = navigatToPage("aiSettingsWindow");
 				}
 				else if(userGuiSettings.isSetBoard){
-					// navigate to set board window
+					quit = 3;
 				}
 				else{
 					// navigate to start game window
@@ -477,6 +477,7 @@ int handleButtonClicked_loadFromSlotWindow(SDL_Event e){
 						char *slot = "./slots/slot";
 						char *xmlStr = ".xml";
 						sprintf(path, "%s%d%s", slot, userGuiSettings.savedSlot, xmlStr);
+						clearBoard();
 						fileData data = loadGame(path);
 						isSuccess = saveLoadedData(data, 0);
 						if (!isSuccess){
@@ -651,6 +652,8 @@ void restorDefaultSettings(){
 	game_board.isBlackTurn = 0;
 	settings.isUserBlack = 0;
 	settings.minmax_depth = 1;
+
+	init_board(game_board.board);
 }
 
 int selectButton(char *url, Button button){
