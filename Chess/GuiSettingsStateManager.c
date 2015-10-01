@@ -477,6 +477,7 @@ int handleButtonClicked_loadFromSlotWindow(SDL_Event e){
 						char *slot = "./slots/slot";
 						char *xmlStr = ".xml";
 						sprintf(path, "%s%d%s", slot, userGuiSettings.savedSlot, xmlStr);
+						clearBoard();
 						fileData data = loadGame(path);
 						isSuccess = saveLoadedData(data, 0);
 						if (!isSuccess){

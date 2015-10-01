@@ -260,8 +260,6 @@ void clearBoard(){
 
 void* myCalloc(int x, int y){
 	void* alloc = calloc(x, y);
-	//myAssert(alloc != NULL, "calloc");
-	//numOfTotalAllocs++;
 	countAlloc++; //TODO delete
 	return alloc;
 }
@@ -278,7 +276,6 @@ void myFree(void* tofree){
 void* myRealloc(void* point, int x){
 
 	void* new = realloc(point, x);
-	//myAssert(new != NULL, "reallloc");
 	return new;
 }
 
