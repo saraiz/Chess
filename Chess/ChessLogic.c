@@ -2,6 +2,7 @@
 
 //int counter = 0;
 moveList* getAllValidMoves(int isBlack, int depth){ 
+	//depth == to cheack if moves will create cheack
 	//printf("%d ",++counter);
 	moveList* toReturn = EMPTYMOVELIST;
 	if (toReturn == NULL){
@@ -43,6 +44,8 @@ moveList* getValidMovesForLocation(locationNode loc, int depth){
 		}
 }
 
+
+// return possible moves for pice in loc location
 moveList* getPossibleMovesKing(locationNode loc, int isBlack, int depth){
 	moveList* sentinal = EMPTYMOVELIST;
 	if (sentinal == NULL){
@@ -52,7 +55,7 @@ moveList* getPossibleMovesKing(locationNode loc, int isBlack, int depth){
 	for (horisontalDiff = -1; horisontalDiff < 2; horisontalDiff++){
 		int verticalDiff;
 		for (verticalDiff = -1; verticalDiff < 2; verticalDiff++){
-			if (verticalDiff == 0 && horisontalDiff == 0){
+			if (verticalDiff == 0 && horisontalDiff == 0){ //for all possible moves
 				continue;
 			}
 			int destRow = loc.row + verticalDiff;
@@ -70,6 +73,7 @@ moveList* getPossibleMovesKing(locationNode loc, int isBlack, int depth){
 }
 
 moveList* getPossibleMovesQueen(locationNode loc, int isBlack,int depth){
+	//queen = bishop + rook
 	moveList* bishop = getPossibleMovesBishop(loc, isBlack, depth);
 	moveList* rook = getPossibleMovesRook(loc, isBlack, depth);
 	return moveConcat(bishop, rook);
@@ -83,11 +87,11 @@ moveList* getPossibleMovesRook(locationNode loc, int isBlack, int depth){
 	int Direction; //-1 go left/ down, +1 go right/ up
 	for (Direction = -1; Direction < 2; Direction += 2){
 		int isHorisontal; // 0 for vertical, 1 for horisontal
-		for (isHorisontal = 0; isHorisontal < 2; isHorisontal += 1){  
+		for (isHorisontal = 0; isHorisontal < 2; isHorisontal += 1){  //for all diracions
 			int numOfSteps = 1;
 			int toContinu;
 			locationNode destenetion;
-			do
+			do // for any amount of steps
 			{
 				int Diff = Direction*numOfSteps;
 				int destRow = loc.row + Diff*(1-isHorisontal);
@@ -99,7 +103,7 @@ moveList* getPossibleMovesRook(locationNode loc, int isBlack, int depth){
 				}
 
 				numOfSteps++;
-			} while (toContinu == 1 && getPice(destenetion) == EMPTY);
+			} while (toContinu == 1 && getPice(destenetion) == EMPTY); //until no place to go
 		}
 	}
 	moveList* toReturn = removeAndFreeSentinalIfNececery(sentinal);
@@ -137,6 +141,7 @@ moveList* getPossibleMovesKnight(locationNode curLoc, int isBlack, int depth){
 }
 
 moveList* getPossibleMovesBishop(locationNode loc, int isBlack, int depth){
+	//same as rook but sideways
 	moveList* sentinal = EMPTYMOVELIST;
 	if (sentinal == NULL){
 		return NULL;
@@ -208,15 +213,16 @@ moveList* removeAndFreeSentinalIfNececery(moveList* sentinal){
 
 int CheackDeatenetionAndAdd(moveList* sentinal,locationNode origen, locationNode destenetion, int isBlack, int depth){
 	//0-didnt add, 1-add,2- error (frees sentinal's list)
-	if (!isLocationValid(destenetion, 0)){
+	if (!isLocationValid(destenetion, 0)){ //check if loc on board
 		return 0;
 	}
 	char me = getPice(origen);
-	if (EMPTY == getPice(destenetion) || !isSameColorAsMe(destenetion, isBlack)){
+	if (EMPTY == getPice(destenetion) || !isSameColorAsMe(destenetion, isBlack)){ //dest= EMPTY or someting eateble
 		locationNode curLocClone = cloneLocationNode(origen);
 
 		int isSueside = 0;
-		if (depth == 0){
+		if (depth == 0){ 
+			//cheack mnove will not case check
 			whatMoved toUndo = moveUserByLocationNode(origen, destenetion, me);
 			isSueside = amIThreatened(isBlack);
 			if (isSueside == 2){
@@ -227,6 +233,7 @@ int CheackDeatenetionAndAdd(moveList* sentinal,locationNode origen, locationNode
 			undoWhatMoved(toUndo);
 		}
 		if (!isSueside){
+			//add to list
 			moveList* toAdd = createMoveListNode(curLocClone, destenetion, EMPTY);
 			if (toAdd == NULL){
 				freeAllMoveList(sentinal);
@@ -236,14 +243,14 @@ int CheackDeatenetionAndAdd(moveList* sentinal,locationNode origen, locationNode
 			return 1;
 		}
 		else{
-			return 1; //!!!!!!!!!!!!!!!!!1
+			return 1; \
 		}
 	}
 	return 0;
 }
 
 int CheackDeatenetionAndAdd_Pawn(moveList* sentinal,locationNode origen,locationNode destenation, int isEat, int isblack, int depth){
-
+	//baisicly same as CheackDeatenetionAndAdd
 	int isPromoten = destenation.row == (isblack ? 0 : 7);
 	int isToMove=0;
 	if (!isLocationValid(destenation, 0)){
@@ -279,6 +286,7 @@ int CheackDeatenetionAndAdd_Pawn(moveList* sentinal,locationNode origen,location
 
 		if (isToMove && !isSueside){
 			if (isPromoten){
+			//need to add promotion
 				moveList* toAddQueen = createMoveListNode(cloneLocationNode(origen), destenation, 'q');
 				if (toAddQueen == NULL){
 					freeAllMoveList(sentinal);
