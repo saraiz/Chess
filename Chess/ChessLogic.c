@@ -21,7 +21,7 @@ moveList* getAllValidMoves(int isBlack, int depth){
 	return toReturn;
 }
 
-moveList* getValidMovesForLocation(locationNode loc, int depth){ //TODO casteling
+moveList* getValidMovesForLocation(locationNode loc, int depth){ 
 	char pice = tolower( getPice(loc));
 	int isBlack = isSameColorAsMe(loc, 1);
 	switch (pice)
@@ -213,7 +213,7 @@ int CheackDeatenetionAndAdd(moveList* sentinal,locationNode origen, locationNode
 	}
 	char me = getPice(origen);
 	if (EMPTY == getPice(destenetion) || !isSameColorAsMe(destenetion, isBlack)){
-		locationNode curLocClone = cloneLocationNode(origen); //TODO nedded??????????
+		locationNode curLocClone = cloneLocationNode(origen);
 
 		int isSueside = 0;
 		if (depth == 0){
@@ -322,7 +322,7 @@ int CheackDeatenetionAndAdd_Pawn(moveList* sentinal,locationNode origen,location
 	return 0;
 } 
 
-int amIThreatened(int isMyColorBlack){ //TODO free memory
+int amIThreatened(int isMyColorBlack){
 	//0 no, 1 yes, 2 ERROR
 	locationNode kingLocation = getKingLocation(isMyColorBlack);
 	if (kingLocation.row == -1 || kingLocation.column == -1){

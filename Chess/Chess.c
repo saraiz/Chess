@@ -38,20 +38,10 @@ int main(int argc, char* argv[])
 	else if (argc == 1){
 		handleConsole();
 	}
-	//printf("%d", countAlloc); //TODO delete
-	//getchar();
 	return 1;
 }
 
 void handleConsole(){
-
-	/*setSettings("clear\n");
-	setSettings("set <b,8> black king");
-	setSettings("set <e,7> white queen");
-	setSettings("set <b,6> white rook");
-	setSettings("set <d,6> white knight");
-	setSettings("set <h,1> white king");*/
-	
 
 	// Don't delete me. We need to print the board in the begining og the game according to the instructions. 
 	print_board(game_board.board);
@@ -63,8 +53,7 @@ void handleConsole(){
 	else{
 		if (summery.isExecuted == 1){
 			// Need to start the game
-			//printAllPossibleMoves( getAllValidMoves(1,0)); //TODO delete
-			//print_board(game_board.board); //TODO delete
+
 			summery = readGameActions();
 			if (summery.isError){
 				print_error_message(summery.failedFunc);
@@ -76,9 +65,7 @@ void handleConsole(){
 
 		}
 	}
-	//int extern countAlloc;//TODO delete
-	//printf("%d", countAlloc);//TODO delete
-	getchar(); //TODO delete
+	getchar(); 
 }
 
 
@@ -89,7 +76,6 @@ void handleGUI(){
 	}
 	atexit(SDL_Quit);
 
-	//GuiBoardStart(); //TODO delete
 	buildSettingsWindow();
 	
 }

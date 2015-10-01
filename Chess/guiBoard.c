@@ -21,8 +21,6 @@ void GuiBoardStart(int isSetBoard){
 }
 
 int startGame(){
-	//settings.gameMode = PLAYER_VS_AI; //TODO delete
-	//settings.isUserBlack = 1;
 
 	clear_screen();
 	createButtens();
@@ -31,7 +29,7 @@ int startGame(){
 	int isCompFirst = settings.isUserBlack != game_board.isBlackTurn;
 	GuiBData.pageID = isPVC &&  isCompFirst ? 2 : 0;
 	while (!GuiBData.main_quit){
-		printf("%d\n", GuiBData.pageID);
+		//printf("%d\n", GuiBData.pageID);
 		switch (GuiBData.pageID)
 		{
 		case 0:
@@ -80,6 +78,7 @@ int startGame(){
 	}
 
 	free_all_pices();
+	return 1;
 }
 
 int startSet(){
@@ -94,7 +93,7 @@ int startSet(){
 	load_set_popup();
 
 	while (!GuiBData.set_quit){
-		printf("%d\n", GuiBData.pageID);
+		//printf("%d\n", GuiBData.pageID);
 		switch (GuiBData.pageID){
 		case 6:
 			pageID6();
@@ -147,7 +146,7 @@ int handleBoardEvents(){
 		}
 	}
 	return 1;
-}
+} 
 
 int handleBoardButtonClicked(SDL_Event e){
 	//return 0 erroe, 1 sababa
@@ -379,7 +378,7 @@ int load_all_pices(){
 
 	return 1;
 }
-
+ 
 int load_set_popup(){
 	int btnID;
 	for (btnID = 0; btnID < 2; btnID++){
@@ -399,6 +398,7 @@ int load_set_popup(){
 	}
 
 	GuiBData.set_ok = createButton("./images/set/set_ok.bmp",0,115,30,243 ,350);
+	return 1;
 }
 
 int createButtens(){
@@ -661,7 +661,6 @@ int colorSquers(moveList* move,locationNode origin){
 }
 
 int print_side_bar(int Mate_Tie_Check){
-	//TODO - print status
 	//ret 0 if error, 1 SABABA
 	// Mate_Tie_Check = 0 noting, 1 mate, 2 cheack, 3 tie
 	SDL_Rect rDest= {620 ,416 , 160, 180 };
@@ -691,7 +690,6 @@ int print_side_bar(int Mate_Tie_Check){
 }
 
 int print_comp_turn(int is_comp_turn){
-	//TODO - print status
 	//ret 0 if error, 1 SABABA
 	SDL_Rect rDest = { 620, 220, 160, 180 };
 	SDL_Rect rOrigin = { 0, 0, 160, 180 };
@@ -740,7 +738,7 @@ int eventHendelPage0(SDL_Event e){
 			freeAllMoveList(moves);
 			return 0;
 		}
-		//TODO is error?
+
 		if (!isEmptyMoveList(moves)){
 			GuiBData.pageID = 1;
 
@@ -954,7 +952,7 @@ int pageID1(){
 }
 
 int pageID2(){
-	//TODO messege- wait
+
 	//ret: 0 error, 1 ok
 	int MateTieCheck = Mate_Tie_Check();
 
@@ -975,7 +973,7 @@ int pageID2(){
 	}
 	computerTurn(0);
 	SDL_Event e;
-	while (SDL_PollEvent(&e) != 0); //TODO to remove?
+	while (SDL_PollEvent(&e) != 0);
 	GuiBData.pageID = 0;
 	game_board.isBlackTurn = game_board.isBlackTurn ? 0 : 1;
 
@@ -1023,7 +1021,6 @@ int pageID4(){
 	//return: 0 error, 1 sababa
 	createBoard(GuiBData.surface);
 
-	// TODO get best move and color squere
 	moveList bestMove =  GuiGetBestMove();
 	bestMove.next = NULL;
 	colorSquers(&bestMove, bestMove.origin);
