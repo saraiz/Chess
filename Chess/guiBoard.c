@@ -949,6 +949,10 @@ int pageID0(){
 
 	int MateTieCheck = Mate_Tie_Check();
 
+	if (!print_comp_turn(0)){
+		return 0;
+	}
+
 	if (MateTieCheck == -1 || !print_side_bar(MateTieCheck)){
 		return 0;
 	}
@@ -958,10 +962,6 @@ int pageID0(){
 		return 1;
 	}
 	
-	if (!print_comp_turn(0)){
-		return 0;
-	}
-
 	if (!updateSurface(GuiBData.surface)){
 		return 0;
 	}
