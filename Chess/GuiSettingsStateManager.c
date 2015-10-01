@@ -648,7 +648,7 @@ void saveSettings(int isSelectionWinsow){
 }
 
 void restorDefaultSettings(){
-	userGuiSettings.gameMode = TWO_PLAYERS;
+	settings.gameMode = TWO_PLAYERS;
 	game_board.isBlackTurn = 0;
 	settings.isUserBlack = 0;
 	settings.minmax_depth = 1;
