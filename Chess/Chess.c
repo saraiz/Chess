@@ -90,11 +90,11 @@ void handleGUI(){
 	}
 	atexit(SDL_Quit);
 
-	GuiBoardStart(1); //TODO delete
-	//buildSettingsWindow();
+	//GuiBoardStart(1); //TODO delete
+	buildSettingsWindow();
 
-	//int extern countAlloc;//TODO delete
-	printf("surface %d", countSurface);//TODO delete
-	getchar();
+	int extern countAlloc;//TODO delete
+	//printf("surface %d", countSurface);//TODO delete
+	//getchar();
 	
 }

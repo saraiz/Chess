@@ -779,7 +779,7 @@ void computerTurn(int isToPrint){
 	//freeAllMoveList(result.bestMovesList);
 }
 
-moveList GuiGetBestMove(){
+moveList GuiGetBestMove(int depth){
 	// TBD handle best difficulty
 	moveList emptyMove;
 	//emptyMove.origin = createLocationNode(-1, -1);
@@ -787,7 +787,7 @@ moveList GuiGetBestMove(){
 	emptyMove.soldierToPromoteTo = EMPTY;
 	emptyMove.next = NULL;
 
-	int depth = settings.minmax_depth;
+
 	if (depth == BEST){
 		depth = getBestDepth();
 	}
