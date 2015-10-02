@@ -72,7 +72,7 @@ int startSet();
 int startGame();
 char get_pice_char_from_set_btn_id(int btnID);
 void rmAll();
-void clear_screen();
+void clear_My_screen();
 
 int load_all_pices();
 void free_all_pices();
