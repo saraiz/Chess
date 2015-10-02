@@ -47,9 +47,9 @@ Page createMainMenuPage(){
 	currentPage.bkg = bkg;
 
 	// CreateButtons
-	Button newGameBtn = createButton(NEW_GAME_BTN_URL, 1, 150, 42, SCREEN_WIDTH / 2 - 150 / 2, 200);
-	Button loadGameBtn = createButton(LOAD_GAME_BTN_URL, 2, 150, 42, SCREEN_WIDTH / 2 - 150 / 2, newGameBtn.buttonsDestRect.y + newGameBtn.buttonsDestRect.h + SPACE);
-	Button quitGameBtn = createButton(QUIT_GAME_BTN_URL, 3, 150, 42, SCREEN_WIDTH / 2 - 150 / 2, loadGameBtn.buttonsDestRect.y + loadGameBtn.buttonsDestRect.h + SPACE);
+	Button newGameBtn = createButton_settings(NEW_GAME_BTN_URL, NULL, 1, 150, 42, SCREEN_WIDTH / 2 - 150 / 2, 200);
+	Button loadGameBtn = createButton_settings(LOAD_GAME_BTN_URL, NULL, 2, 150, 42, SCREEN_WIDTH / 2 - 150 / 2, newGameBtn.buttonsDestRect.y + newGameBtn.buttonsDestRect.h + SPACE);
+	Button quitGameBtn = createButton_settings(QUIT_GAME_BTN_URL, NULL, 3, 150, 42, SCREEN_WIDTH / 2 - 150 / 2, loadGameBtn.buttonsDestRect.y + loadGameBtn.buttonsDestRect.h + SPACE);
 	Button *btnLst = (Button*)myMalloc(sizeof(Button)*3);
 	if (btnLst == NULL){
 		currentPage.isError = 1;
@@ -79,20 +79,20 @@ Page createSelecetionPage(){
 	currentPage.bkg = bkg;
 
 	// create game mode section
-	Button game_mode_2PlayersMode = createButton(TWO_PLAYERS_BTN_URL, 1, 150, 42, 35, 50);
-	Button game_mode_playerVsAI = createButton(AGAINS_COMPUTER_BTN_URL, 2, 150, 42, game_mode_2PlayersMode.buttonsDestRect.x + game_mode_2PlayersMode.buttonsDestRect.w + SPACE, 50);
+	Button game_mode_2PlayersMode = createButton_settings(TWO_PLAYERS_BTN_URL, TWO_PLAYERS_SELECTED_BTN_URL, 1, 150, 42, 35, 50);
+	Button game_mode_playerVsAI = createButton_settings(AGAINS_COMPUTER_BTN_URL, AGAINS_COMPUTER_SELECTED_BTN_URL, 2, 150, 42, game_mode_2PlayersMode.buttonsDestRect.x + game_mode_2PlayersMode.buttonsDestRect.w + SPACE, 50);
 
 	// create next player section
-	Button next_player_white = createButton(WHITE_BTN_URL, 3, 150, 42, 35, 137);
-	Button next_player_black = createButton(BLACK_BTN_URL, 4, 150, 42, next_player_white.buttonsDestRect.x + next_player_white.buttonsDestRect.w + SPACE, 137);
+	Button next_player_white = createButton_settings(WHITE_BTN_URL, WHITE_SELECTED_BTN_URL, 3, 150, 42, 35, 137);
+	Button next_player_black = createButton_settings(BLACK_BTN_URL, BLACK_SELECTED_BTN_URL, 4, 150, 42, next_player_white.buttonsDestRect.x + next_player_white.buttonsDestRect.w + SPACE, 137);
 
 	// create next player section
-	Button set_board_no = createButton(NO_BTN_URL, 5, 150, 42, 35, 222);
-	Button set_board_yes = createButton(YES_BTN_URL, 6, 150, 42, set_board_no.buttonsDestRect.x + set_board_no.buttonsDestRect.w + SPACE, 222);
+	Button set_board_no = createButton_settings(NO_BTN_URL, NO_SELECTED_BTN_URL, 5, 150, 42, 35, 222);
+	Button set_board_yes = createButton_settings(YES_BTN_URL, YES_SELECTED_BTN_URL, 6, 150, 42, set_board_no.buttonsDestRect.x + set_board_no.buttonsDestRect.w + SPACE, 222);
 
 	// create ok and cancel buttons
-	Button cancelButton = createButton(CANCEL_BTN_URL, 7, 150, 42, SCREEN_WIDTH - SPACE - 150, SCREEN_HEIGHT - 30 - 42);
-	Button okButton = createButton(NEXT_BTN_URL, 8, 150, 42, cancelButton.buttonsDestRect.x - 30 - cancelButton.buttonsDestRect.w, cancelButton.buttonsDestRect.y);
+	Button cancelButton = createButton_settings(CANCEL_BTN_URL, NULL, 7, 150, 42, SCREEN_WIDTH - SPACE - 150, SCREEN_HEIGHT - 30 - 42);
+	Button okButton = createButton_settings(NEXT_BTN_URL, NULL, 8, 150, 42, cancelButton.buttonsDestRect.x - 30 - cancelButton.buttonsDestRect.w, cancelButton.buttonsDestRect.y);
 	
 	Button *btnLst = (Button*)myMalloc(sizeof(Button) * 8);
 	if (btnLst == NULL){
@@ -160,7 +160,8 @@ Page createAiSettingsPage(){
 		return currentPage;
 	}
 
-	char path[100];
+	char path[200];
+	char selected_path[200];
 	char *btn = "_btn.bmp";
 	int width;
 	int height;
@@ -168,30 +169,32 @@ Page createAiSettingsPage(){
 	for (int i = 1; i <= 5; i++){
 		if (i==5){
 			sprintf(path, "%s", BEST_BTN_URL);
+			sprintf(selected_path, "%s", BEST_SELECTED_BTN_URL);
 			width = 150;
 			height = 42;
 		}
 		else{
 			sprintf(path, "%s%d%s", SLOT_BTN_URL, i, btn);
+			sprintf(selected_path, "%s%d%s", SLOT_SELECTED_BTN_URL, i, btn);
 			width = 50;
 			height = 42;
 		}
 		
-		Button difficulty = createButton(path, i, width, height, x, y);
+		Button difficulty = createButton_settings(path, selected_path, i, width, height, x, y);
 
 		//y = y + slot.buttonsDestRect.h + SPACE;
 		x = x + difficulty.buttonsDestRect.w + 24;
 		btnLst[i - 1] = difficulty;
 	}
 
-	Button userColor_black = createButton(BLACK_BTN_URL, 6, 150, 42, 35, 145);
-	Button userColor_white = createButton(WHITE_BTN_URL, 7, 150, 42, userColor_black.buttonsDestRect.x + userColor_black.buttonsDestRect.w + SPACE, 145);
+	Button userColor_black = createButton_settings(BLACK_BTN_URL, BLACK_SELECTED_BTN_URL, 6, 150, 42, 35, 145);
+	Button userColor_white = createButton_settings(WHITE_BTN_URL, WHITE_SELECTED_BTN_URL, 7, 150, 42, userColor_black.buttonsDestRect.x + userColor_black.buttonsDestRect.w + SPACE, 145);
 	btnLst[5] = userColor_black;
 	btnLst[6] = userColor_white;
 
 	// create ok and cancel buttons
-	Button cancelButton = createButton(CANCEL_BTN_URL, 8, 150, 42, SCREEN_WIDTH - SPACE - 150, SCREEN_HEIGHT - 30 - 42);
-	Button okButton = createButton(NEXT_BTN_URL, 9, 150, 42, cancelButton.buttonsDestRect.x - 30 - cancelButton.buttonsDestRect.w, cancelButton.buttonsDestRect.y);
+	Button cancelButton = createButton_settings(CANCEL_BTN_URL, NULL, 8, 150, 42, SCREEN_WIDTH - SPACE - 150, SCREEN_HEIGHT - 30 - 42);
+	Button okButton = createButton_settings(NEXT_BTN_URL, NULL, 9, 150, 42, cancelButton.buttonsDestRect.x - 30 - cancelButton.buttonsDestRect.w, cancelButton.buttonsDestRect.y);
 	btnLst[7] = cancelButton;
 	btnLst[8] = okButton;
 
@@ -242,11 +245,13 @@ Page createLoadFromSlotPage(){
 		return currentPage;
 	}
 
-	char path[100];
+	char path[200];
+	char selected_path[200];
 	char *btn = "_btn.bmp";
 	for (int i = 1; i <= NUM_OF_SLOTS; i++){
 		sprintf(path, "%s%d%s", SLOT_BTN_URL, i, btn);
-		Button slot = createButton(path, i, 50, 42, x, y);
+		sprintf(selected_path, "%s%d%s", SLOT_SELECTED_BTN_URL, i, btn);
+		Button slot = createButton_settings(path, selected_path, i, 50, 42, x, y);
 
 		//y = y + slot.buttonsDestRect.h + SPACE;
 		x = x + slot.buttonsDestRect.w + SPACE;
@@ -254,8 +259,8 @@ Page createLoadFromSlotPage(){
 	}
 
 	// create ok and cancel buttons
-	Button cancelButton = createButton(CANCEL_BTN_URL, NUM_OF_SLOTS + 1, 150, 42, SCREEN_WIDTH - SPACE - 150, SCREEN_HEIGHT - 30 - 42);
-	Button okButton = createButton(NEXT_BTN_URL, NUM_OF_SLOTS + 2, 150, 42, cancelButton.buttonsDestRect.x - 30 - cancelButton.buttonsDestRect.w, cancelButton.buttonsDestRect.y);
+	Button cancelButton = createButton_settings(CANCEL_BTN_URL, NULL, NUM_OF_SLOTS + 1, 150, 42, SCREEN_WIDTH - SPACE - 150, SCREEN_HEIGHT - 30 - 42);
+	Button okButton = createButton_settings(NEXT_BTN_URL, NULL, NUM_OF_SLOTS + 2, 150, 42, cancelButton.buttonsDestRect.x - 30 - cancelButton.buttonsDestRect.w, cancelButton.buttonsDestRect.y);
 	btnLst[NUM_OF_SLOTS] = cancelButton;
 	btnLst[NUM_OF_SLOTS + 1] = okButton;
 
