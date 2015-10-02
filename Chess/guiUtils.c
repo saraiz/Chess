@@ -6,7 +6,7 @@ int addImageToSurface(SDL_Surface *img, SDL_Rect *rOrigin, SDL_Surface *dest, SD
 	int isSuccess = 1;
 	if (SDL_BlitSurface(img, rOrigin, dest, rDest) != 0) {
 		isSuccess = 0;
-		SDL_FreeSurface(img);
+		my_sdl_free(img);
 		printf("ERROR: failed to blit image: %s\n", SDL_GetError());
 	}
 
@@ -20,6 +20,7 @@ SDL_Surface* loadImage(char* url){
 	}
 
 	countSurface++;//TODO delete
+	//printf("in %d path %s\n", img, url);
 
 	return img;
 }
@@ -31,6 +32,7 @@ SDL_Surface* createSurface(int width, int height){
 	}
 
 	countSurface++;//TODO delete
+	//printf("in %d create surface\n", surface);
 
 	return surface;
 }
@@ -72,12 +74,47 @@ Button createButton(char *imgUrl, int id, int width, int height, int x, int y){
 	SDL_Rect newGameBtnOriginRect = { 0, 0, 0, 0 };
 	newGameBtnOriginRect.w = width;
 	newGameBtnOriginRect.h = height;
-	//newGameBtnOriginRect.x = 2;
-	//newGameBtnOriginRect.y = 2;
 
 	newGameBtn.img = loadImage(imgUrl);
 	if (newGameBtn.img == NULL){
 		return newGameBtn;
+	}
+
+	newGameBtn.buttonsDestRect = newGameBtnDestRect;
+	newGameBtn.buttonsOriginRect = newGameBtnOriginRect;
+
+	return newGameBtn;
+}
+
+Button createButton_settings(char *imgUrl, char *selectedImgUrl, int id, int width, int height, int x, int y){
+	Button newGameBtn;
+	SDL_Rect emptyRect = { 0, 0, 0, 0 };
+	newGameBtn.buttonsDestRect = newGameBtn.buttonsOriginRect = emptyRect;
+
+	newGameBtn.id = id;
+	SDL_Rect newGameBtnDestRect;
+	newGameBtnDestRect.x = x;
+	newGameBtnDestRect.y = y;
+	newGameBtnDestRect.w = width;
+	newGameBtnDestRect.h = height;
+
+	SDL_Rect newGameBtnOriginRect = { 0, 0, 0, 0 };
+	newGameBtnOriginRect.w = width;
+	newGameBtnOriginRect.h = height;
+
+	newGameBtn.img = loadImage(imgUrl);
+	if (newGameBtn.img == NULL){
+		return newGameBtn;
+	}
+
+	if (selectedImgUrl != NULL){
+		newGameBtn.selectedImg = loadImage(selectedImgUrl);
+		if (newGameBtn.img == NULL){
+			return newGameBtn;
+		}
+	}
+	else{
+		newGameBtn.selectedImg = NULL;
 	}
 
 	newGameBtn.buttonsDestRect = newGameBtnDestRect;
@@ -99,7 +136,6 @@ int addButtons(Button *list, int len, SDL_Surface *surface){
 		isSuceess = updateSurface(surface);
 	}
 
-	// TBD - if there is an error I need to free al the buttons before
 	return isSuceess;
 }
 
@@ -113,6 +149,7 @@ locationNode whichSquerWasClicked(SDL_Event e){
 
 void my_sdl_free(SDL_Surface* toFree){
 	if (toFree != NULL){
+		//printf("free %d\n", toFree);
 		SDL_FreeSurface(toFree);
 		countSurface--;//TODO delete
 	}

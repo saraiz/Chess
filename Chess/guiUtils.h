@@ -22,6 +22,7 @@ SDL_Surface* createSurface(int width, int height);
 int updateSurface(SDL_Surface *surface);
 int isClickInRect(SDL_Event e, SDL_Rect buttonRect);
 Button createButton(char *imgUrl, int id, int width, int height, int x, int y);
+Button createButton_settings(char *imgUrl, char *selectedImgUrl, int id, int width, int height, int x, int y);
 int addButtons(Button list[], int len, SDL_Surface *surface);
 locationNode whichSquerWasClicked(SDL_Event e);
 void my_sdl_free(SDL_Surface* toFree);

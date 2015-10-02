@@ -37,6 +37,7 @@ actionSummery readGameActions(){
 
 			summery = executeGameActions(input);
 			if (summery.isExecuted == 1){
+				// The player has finished his move
 				checkForMate_Tie_Check(game_board.isBlackTurn, &isError, &isGameMate, &isGameTie);
 				summery.isError = isError;
 				
@@ -101,6 +102,7 @@ actionSummery executeGameActions(char* input){
 	}
 
 	if (summery.isFound == 0){
+		// if no action was found, it's an illigal move	
 		print_message(ILLEGAL_COMMAND);
 	}
 
@@ -128,6 +130,7 @@ actionSummery checkForGetMoves(char *input){
 		if (isValid){
 			isValid = isPositionContainUserPiece(game_board.isBlackTurn, origin, 1);
 			if (isValid){
+				// Only if the typed location is valid we need to check gor possible moves
 				moveList *lst = getValidMovesForLocation(origin,0);
 				if (lst == NULL){
 					// Error in getValidMovesForLocation
@@ -171,17 +174,7 @@ actionSummery checkForBestMoves(char *input){
 
 		minmaxValue result = minmax(getCurrentBoardData(), depth, 1, -99999, 99999, game_board.isBlackTurn, 0, emptyMove, 1, 1);
 		moveList *bestMoves = result.bestMovesList;
-		// all possible moves
-		//moveList *bestMoves = getBestMoves(game_board.isBlackTurn, depth, result.score);
-		/*if(bestMoves == NULL){
-			// ERROR 
-			
-			summery.isError = 1;
-			strcpy(summery.failedFunc, "calloc");
-
-			return summery;
-		}*/
-
+		
 		if (bestMoves == NULL){
 			// ERROR
 
@@ -229,7 +222,8 @@ actionSummery checkForGetScore(char *input){
 			++depthEnds;
 			// Parse move 
 			moveList move = parseMove(depthEnds);
-			if (isValidMove(move, game_board.isBlackTurn, 1) == 1){ //TODO - ask if we need to check if the move is valid
+			if (isValidMove(move, game_board.isBlackTurn, 1) == 1){
+				// Only if the move is valid we need to check it score
 				int score = getScore(move, value);
 				printf("%d\n", score);
 			}
@@ -259,19 +253,9 @@ actionSummery checkForSave(char *input){
 		
 		int isFailure = saveGame(data, path);
 		if (isFailure == 1){
-			/*// ERROR
-
-			// No need to exit the game in such case. Only print a message
-
-			summery.isError = 1;
-			strcpy(summery.failedFunc, "fopen");
-
-			return summery;*/ 
-
 			print_message(WRONG_FILE_NAME);
 			return summery;
 		}
-
 	}
 
 	return summery;
@@ -285,6 +269,8 @@ actionSummery checkForMove(char *input){
 
 	actionSummery summery = createEmptySummery();
 	if (loc != NULL && loc2 == NULL && loc3 == NULL && loc4 == NULL){
+		// enter here only if it's a move action and not get_moves/get_best_moves/get_score which contains 
+		// the word move as well
 		summery.isFound = 1;
 		
 		moveList move = parseMove(loc);
@@ -315,6 +301,11 @@ actionSummery checkForMove(char *input){
 
 }
 
+/*
+	get's a string and returns a struct which represent a move
+	assuming that the string is representing a valid move format 
+	as talked in the forum
+*/
 moveList parseMove(char* loc){
 	moveList move;
 	move.origin = createLocationNode(-1,-1);
@@ -334,7 +325,7 @@ moveList parseMove(char* loc){
 
 	++loc;
 	loc = getNextChar(loc);
-	loc = loc + 2; // pass "to"
+	loc = loc + 2; // pass the "to"
 	loc = getNextChar(loc);
 
 	locationNode destination = getNextLocation(&loc);
@@ -361,6 +352,10 @@ moveList parseMove(char* loc){
 	return move;
 }
 
+/*
+	searches for the next location in format <x,y>
+	and returns a strucy which represent a location in the board
+*/
 locationNode getNextLocation(char **loc){
 	++(*loc); // pass "<"
 	char* commaSign = strstr(*loc, ",");
@@ -398,6 +393,7 @@ int isValidMove(moveList soldierMove, int isBlack, int isShowMessage){
 	int isOriginValid = isLocationValid(soldierMove.origin, 0);
 	int isDestinationValid = isLocationValid(soldierMove.destination, 0);
 	if (isOriginValid == 0 || isDestinationValid == 0){
+		// The position is not inside the board
 		print_message(WRONG_POSITION);
 		return 0;
 	}
@@ -430,20 +426,22 @@ int isValidMove(moveList soldierMove, int isBlack, int isShowMessage){
 			isCurrentMoveEqaule = isMovesEquale(soldierMove, *move);
 			move = move->next;
 		}
-
 		isValid = isCurrentMoveEqaule;
-		
 	}
 
 	freeAllMoveList(list);
 
 	if (isValid == 0 && isShowMessage){
+		// The move is not valid for the current user
 		print_message(ILLEGAL_MOVE);
 	}
 	return isValid;
 
 }
 
+/*
+	Checks if to moves are exactly the same
+*/
 int isMovesEquale(moveList move1, moveList move2){
 	int isEquale = 0;
 	if (isLocationNodeEquale(move1.origin, move2.origin) == 1 &&
@@ -455,6 +453,9 @@ int isMovesEquale(moveList move1, moveList move2){
 	return isEquale;
 }
 
+/*
+	Checks if 2 locations on the board are exactly the same
+*/
 int isLocationNodeEquale(locationNode node1, locationNode node2){
 	int isEquale = 0;
 	if (node1.column == node2.column && node1.row == node2.row){
@@ -464,6 +465,9 @@ int isLocationNodeEquale(locationNode node1, locationNode node2){
 	return isEquale;
 }
 
+/*
+	Checks if the position containes a user piece by it's color using isBlack
+*/
 int isPositionContainUserPiece(int isBlack, locationNode position, int isShowMessage){
 	int isValid = 1;
 	char soldierToMove = game_board.board[position.row][position.column];
@@ -474,12 +478,16 @@ int isPositionContainUserPiece(int isBlack, locationNode position, int isShowMes
 	}
 
 	if (isValid == 0 && isShowMessage){
+		// The position does not contains the user piece
 		print_message(NO_DICS);
 	}
 
 	return isValid;
 }
 
+/*
+	prints a list of moves
+*/
 int printAllPossibleMoves(moveList* moves){
 	if (moves == NULL || isEmptyMoveList(moves)){
 		return 0;
@@ -499,6 +507,9 @@ int printAllPossibleMoves(moveList* moves){
 	return 1;
 }
 
+/*
+	print one move in the right format
+*/
 int printOneMove(moveList move){
 	// print origin
 	locationInLetters originToPrint = convertNumericLocationToBoardLocation(move.origin.column, move.origin.row);
@@ -520,6 +531,12 @@ int printOneMove(moveList move){
 	return 1;
 }
 
+/*
+	check if the current situation is check
+	0-NO
+	1-YES
+	2-ERROR
+*/
 int isCheck(int isBlack, int isShowMessage){
 	//coppied to Mate_Tie_Check in guiBoard
 	int isKingThreated = amIThreatened(isBlack);
@@ -536,6 +553,12 @@ int isCheck(int isBlack, int isShowMessage){
 	return isKingThreated;
 }
 
+/*
+	check if the current situation is mate
+	0-NO
+	1-YES
+	2-ERROR
+*/
 int isMate(int isBlack, int isShowMessage){
 	//coppied to Mate_Tie_Check in guiBoard
 	int isCheck = amIThreatened(isBlack) == 1;
@@ -555,7 +578,7 @@ int isMate(int isBlack, int isShowMessage){
 	int isMate = 0;
 
 	if (isCheck && isListEmpty){
-		// MATE
+		// MATE - the king is threatened and the player has no valid moves
 		isMate = 1;
 	}
 	
@@ -568,9 +591,13 @@ int isMate(int isBlack, int isShowMessage){
 	return isMate;
 }
 
+/*
+	check if the current situation is a tie
+	0-NO
+	1-YES
+	2-ERROR
+*/
 int isTie(int isBlack, int isShowMessage){
-	//coppied to Mate_Tie_Check in guiBoard
-	// There is a tie if my king is not threatened and I don't have where to move
 	int isCheck = amIThreatened(isBlack) == 1;
 
 	if (isCheck == 2){
@@ -588,7 +615,7 @@ int isTie(int isBlack, int isShowMessage){
 	int isTie = 0;
 
 	if (!isCheck && isListEmpty){
-		// TIE
+		// TIE - the king is not threatened and I don't have where to move
 		isTie = 1;
 	}
 
@@ -599,6 +626,9 @@ int isTie(int isBlack, int isShowMessage){
 	return isTie;
 }
 
+/*
+	searched for the king on the board and returns its location
+*/
 locationNode getKingLocation(int isBlack){
 	locationNode kingLoc = {-1,-1};
 	int isFound = 0;
@@ -626,6 +656,9 @@ locationNode getKingLocation(int isBlack){
 	return kingLoc;
 }
 
+/*
+	get's a char representing the soldier type and converting it to its full name
+*/
 char* convertSoldierTypeToSoldierName(char type){
 	char *name = (char*)myCalloc(7, sizeof(char));
 	if (name == NULL){
@@ -663,46 +696,12 @@ char* convertSoldierTypeToSoldierName(char type){
 	return name;
 }
 
+
+/*
+	gets the soldier full name and returns its type (not case sensative, it's always in lower case)
+*/
 char convertSoldierNameToSoldierType(char *name, int isBlack){
 	char type;
-
-	/*if (strcmp(name, PAWN) == 0 && !isBlack){
-		type = WHITE_P;
-	}
-	else if (strcmp(name, KNIGHT) == 0 && !isBlack){
-		type = WHITE_N;
-	}
-	else if (strcmp(name, BISHOP) == 0 && !isBlack){
-		type = WHITE_B;
-	}
-	else if (strcmp(name, ROOK) == 0 && !isBlack){
-		type = WHITE_R;
-	}
-	else if (strcmp(name, QUEEN) == 0 && !isBlack){
-		type = WHITE_Q;
-	}
-	else if (strcmp(name, KING) == 0 && !isBlack){
-		type = WHITE_K;
-	}
-	else if (strcmp(name, PAWN) == 0 && isBlack){
-		type = BLACK_P;
-	}
-	else if (strcmp(name, KNIGHT) == 0 && isBlack){
-		type = BLACK_N;
-	}
-	else if (strcmp(name, BISHOP) == 0 && isBlack){
-		type = BLACK_B;
-	}
-	else if (strcmp(name, ROOK) == 0 && isBlack){
-		type = BLACK_R;
-	}
-	else if (strcmp(name, QUEEN) == 0 && isBlack){
-		type = BLACK_Q;
-	}
-	else if (strcmp(name, KING) == 0 && !isBlack){
-		type = BLACK_K;
-	}*/
-
 
 	if (strcmp(name, PAWN) == 0){
 		type = WHITE_P;
@@ -752,9 +751,10 @@ char getSoldierTypeByColor(char type, int isBlack){
 	return typeByColor;
 }
 
+/*
+	execute the coputer turn
+*/
 void computerTurn(int isToPrint){
-	// TBD handle best difficulty
-	// copyied to GuiGetBestMove
 	moveList emptyMove;
 	emptyMove.origin = createLocationNode(-1, -1);
 	emptyMove.destination = createLocationNode(-1, -1);
@@ -775,14 +775,13 @@ void computerTurn(int isToPrint){
 			printOneMove(result.bestMove);
 		}
 	}
-
-	//freeAllMoveList(result.bestMovesList);
 }
 
+/*
+	check what is the best moves for the currnt user - used only for GUI
+*/
 moveList GuiGetBestMove(int depth){
-	// TBD handle best difficulty
 	moveList emptyMove;
-	//emptyMove.origin = createLocationNode(-1, -1);
 	emptyMove.destination = createLocationNode(-1, -1);
 	emptyMove.soldierToPromoteTo = EMPTY;
 	emptyMove.next = NULL;
@@ -794,10 +793,13 @@ moveList GuiGetBestMove(int depth){
 
 	minmaxValue result = minmax(getCurrentBoardData(), depth, 1, -99999, 99999, game_board.isBlackTurn, 0, emptyMove, 0, 1);
 	return result.bestMove;
-
-	//freeAllMoveList(result.bestMovesList);
 }
 
+/*
+	move a soldier
+	remove it from the prev location and set in in the new one.
+	only handle promotion
+*/
 void moveUser(moveList userMove, int isBlack){
 	char type = game_board.board[userMove.origin.row][userMove.origin.column];
 	char destinationSoldierType = game_board.board[userMove.destination.row][userMove.destination.column];
@@ -813,48 +815,9 @@ void moveUser(moveList userMove, int isBlack){
 	addUserByValue(userMove.destination, type);
 }
 
-moveList* getBestMoves(int isBlack, int depth, int bestMoveScore){
-	moveList *allPossibleMoves = getAllValidMoves(isBlack, 0);
-	moveList *curr = allPossibleMoves;
-
-	moveList *head;
-	moveList *tail;
-	int headInitialize = 0;
-
-	while (curr != NULL){
-		int score = getScore(*curr, depth);
-		if (bestMoveScore == score){
-			if (headInitialize == 0){
-				headInitialize = 1;
-				head = createMoveListNode(curr->origin, curr->destination, curr->soldierToPromoteTo);
-				if (head == NULL){
-					// ERROR
-
-					return NULL;
-				}
-
-				head->next = NULL;
-				tail = head;
-			}
-			else{
-				tail->next = createMoveListNode(curr->origin, curr->destination, curr->soldierToPromoteTo);
-				if (tail->next == NULL){
-					// ERROR
-
-					return NULL;
-				}
-				tail = tail->next;
-			}
-		}
-
-		curr = curr->next;
-	}
-
-	freeAllMoveList(allPossibleMoves);
-
-	return head;
-}
-
+/*
+	returns the score for the sent move
+*/
 int getScore(moveList move, int depth){
 	minmaxValue result = minmax(getCurrentBoardData(), depth, 1, -99999, 99999, game_board.isBlackTurn, 1, move, 0, 1);
 
