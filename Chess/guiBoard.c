@@ -229,7 +229,7 @@ int handleSetButtonClicked(SDL_Event e){
 		}
 		switch (btnID){
 		case 0: //next
-			if (GuiBData.pageID = 6){
+			if (GuiBData.pageID == 6){
 				if (isBoardValidToStartGame(0)){
 					GuiBData.set_quit = 1;
 					GuiBData.pull_quit = 1;

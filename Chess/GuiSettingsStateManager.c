@@ -19,6 +19,7 @@ int buildSettingsWindow(){
 		GuiBoardStart(0);
 	}
 	else if (isSuccess == 3){
+		// navigate to set board window
 		GuiBoardStart(1);
 	}
 
@@ -240,7 +241,6 @@ Page createLoadFromSlotPage(){
 	int x = 35;
 	Button *btnLst = (Button*)myMalloc(sizeof(Button) * (NUM_OF_SLOTS + 2));
 	if (btnLst == NULL){
-		// TBD - free all images in current page
 		currentPage.isError = 1;
 		return currentPage;
 	}
@@ -292,13 +292,8 @@ int handleEvents(){
 			case (SDL_QUIT) :
 				quit = 1;
 				break;
-			case (SDL_KEYUP) :
-				//if (e.key.keysym.sym == SDLK_ESCAPE) quit = 1;
-				break;
 			case (SDL_MOUSEBUTTONUP) :
 					quit = handleButtonClicked(e);
-				break;
-			default:
 				break;
 			}
 		}
@@ -426,6 +421,7 @@ int handleButtonClicked_selectionWindow(SDL_Event e){
 					isSuccess = navigatToPage("aiSettingsWindow");
 				}
 				else if(userGuiSettings.isSetBoard){
+					// navigate to set board
 					quit = 3;
 				}
 				else{

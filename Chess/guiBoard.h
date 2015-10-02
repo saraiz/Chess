@@ -68,8 +68,11 @@ int Mate_Tie_Check();
 int isPromotion(moveList moveToDo);
 int do_usr_move();
 int StartGame();
+int startSet();
+int startGame();
 char get_pice_char_from_set_btn_id(int btnID);
 void rmAll();
+void clear_screen();
 
 int load_all_pices();
 void free_all_pices();
@@ -107,5 +110,7 @@ int pageID6();
 int pageID7();
 int pageID8();
 int pageIDMinus1();
+
+int load_set_popup();
 
 #endif

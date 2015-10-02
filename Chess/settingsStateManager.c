@@ -402,6 +402,9 @@ void init_board(char board[BOARD_SIZE][BOARD_SIZE]){
 	game_board.numOfWhiteKings = 1;
 }
 
+/*
+	used for easier QA
+*/
 void setSettings(char* input){
 	char* currentLine = input;
 	char* nextLine = input;
@@ -415,6 +418,7 @@ void setSettings(char* input){
 	}
 }
 
+
 char* getNextLine(char* input){
 	char* nextLine = strstr(input, "\n");
 	if (nextLine != NULL){
@@ -424,6 +428,12 @@ char* getNextLine(char* input){
 		return input + strlen(input);
 	}
 }
+
+/*
+	checks if the board will be valid if we will set a soler with type = type and color = color
+	0- NO
+	1- YES
+*/
 
 int isBoardValidAfterSet(char *type, char *color, int isShowMessage){
 	int isValid = 1;
@@ -457,6 +467,12 @@ int isBoardValidAfterSet(char *type, char *color, int isShowMessage){
 	return isValid;
 }
 
+/*
+	Checks if we can start the game with this board 
+	we need 2 king - one for each color
+	0- NO
+	1- YES
+*/
 int isBoardValidToStartGame(int isShowMessage){
 	if ((game_board.numOfBlackKings < 1) || game_board.numOfWhiteKings < 1){
 		if (isShowMessage == 1){
