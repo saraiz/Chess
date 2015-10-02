@@ -22,7 +22,7 @@ void GuiBoardStart(int isSetBoard){ //main
 
 int startGame(){
 
-	clear_screen();
+	clear_My_screen();
 	createButtens();
 	createBoard();
 	int isPVC = settings.gameMode == PLAYER_VS_AI;
@@ -91,7 +91,7 @@ int startGame(){
 
 int startSet(){
 	GuiBData.pageID = 6;
-	clear_screen();
+	clear_My_screen();
 
 	if (!create_set_side()){
 		return 0;
@@ -603,7 +603,7 @@ int createSave(){
 	return 1;
 }
 
-void clear_screen(){
+void clear_My_screen(){
 	//delete all
 	SDL_Rect rect = { 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT };
 	if (SDL_FillRect(GuiBData.surface, &rect, SDL_MapRGB(GuiBData.surface->format, 244, 208, 159)) != 0) {
@@ -949,6 +949,10 @@ int pageID0(){
 
 	int MateTieCheck = Mate_Tie_Check();
 
+	if (!print_comp_turn(0)){
+		return 0;
+	}
+
 	if (MateTieCheck == -1 || !print_side_bar(MateTieCheck)){
 		return 0;
 	}
@@ -958,10 +962,6 @@ int pageID0(){
 		return 1;
 	}
 	
-	if (!print_comp_turn(0)){
-		return 0;
-	}
-
 	if (!updateSurface(GuiBData.surface)){
 		return 0;
 	}
