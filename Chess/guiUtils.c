@@ -74,8 +74,6 @@ Button createButton(char *imgUrl, int id, int width, int height, int x, int y){
 	SDL_Rect newGameBtnOriginRect = { 0, 0, 0, 0 };
 	newGameBtnOriginRect.w = width;
 	newGameBtnOriginRect.h = height;
-	//newGameBtnOriginRect.x = 2;
-	//newGameBtnOriginRect.y = 2;
 
 	newGameBtn.img = loadImage(imgUrl);
 	if (newGameBtn.img == NULL){
@@ -103,8 +101,6 @@ Button createButton_settings(char *imgUrl, char *selectedImgUrl, int id, int wid
 	SDL_Rect newGameBtnOriginRect = { 0, 0, 0, 0 };
 	newGameBtnOriginRect.w = width;
 	newGameBtnOriginRect.h = height;
-	//newGameBtnOriginRect.x = 2;
-	//newGameBtnOriginRect.y = 2;
 
 	newGameBtn.img = loadImage(imgUrl);
 	if (newGameBtn.img == NULL){
@@ -140,7 +136,6 @@ int addButtons(Button *list, int len, SDL_Surface *surface){
 		isSuceess = updateSurface(surface);
 	}
 
-	// TBD - if there is an error I need to free al the buttons before
 	return isSuceess;
 }
 

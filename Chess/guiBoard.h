@@ -67,13 +67,12 @@ SDL_Surface* getPiceImage(int x, int y, int isColored);
 int Mate_Tie_Check();
 int isPromotion(moveList moveToDo);
 int do_usr_move();
+int StartGame();
+int startSet();
 int startGame();
 char get_pice_char_from_set_btn_id(int btnID);
 void rmAll();
 void clear_My_screen();
-int startSet();
-
-
 
 int load_all_pices();
 void free_all_pices();
@@ -88,7 +87,6 @@ int print_comp_turn(int is_comp_turn);
 int create_set_side();
 int create_set_popup();
 int print_set_popup();
-int load_set_popup();
 
 int handleBoardEvents();
 int handleBoardButtonClicked(SDL_Event e);
@@ -112,5 +110,7 @@ int pageID6();
 int pageID7();
 int pageID8();
 int pageIDMinus1();
+
+int load_set_popup();
 
 #endif

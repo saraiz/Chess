@@ -169,7 +169,7 @@ minmaxValue minmax(gameBoard backup,
 				bestMovesTailList->next = NULL;
 			}
 
-			//alpha = max(alpha, bestValue);
+			
 			if (bestValue > alpha){
 				alpha = bestValue;
 			}
@@ -179,6 +179,8 @@ minmaxValue minmax(gameBoard backup,
 
 			if ((isGetBest && betha < alpha) || (!isGetBest && betha <= alpha)){
 				// PRUNING
+				// For get_best_moves in order to get the the right list we need to use < and not <=
+				// For better preformance I use it only for get_best_moves
 				break;
 			}
 
@@ -223,6 +225,8 @@ minmaxValue minmax(gameBoard backup,
 
 			if ((isGetBest && betha < alpha) || (!isGetBest && betha <= alpha)){
 				// PRUNING
+				// For get_best_moves in order to get the the right list we need to use < and not <=
+				// For better preformance I use it only for get_best_moves
 				break;
 			}
 
