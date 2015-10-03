@@ -208,6 +208,8 @@ int handleBoardButtonClicked(SDL_Event e){
 			return GuiBData.pull_quit = eventHendelPage1(e);
 		case 3:
 			return GuiBData.pull_quit = eventHendelPage3(e);
+		case 4:
+			return GuiBData.pull_quit = eventHendelPage4(e);
 		case 5:
 			return GuiBData.pull_quit = eventHendelPage5(e);
 		case -1:
@@ -219,7 +221,7 @@ int handleBoardButtonClicked(SDL_Event e){
 
 int handleSetButtonClicked(SDL_Event e){
 	//same thing as before with set screen
-	if (e.button.x > 75 * BOARD_SIZE&& GuiBData.pageID != 7 && GuiBData.pageID != 8){
+	if (e.button.x > 75 * BOARD_SIZE&& GuiBData.pageID != 7 && GuiBData.pageID != 8 && GuiBData.pageID != 4){
 		int i, btnID = -1;
 		for (i = 0; i < 3; i++){
 			if (isClickInRect(e, GuiBData.set_side_btn [i].buttonsDestRect)){
@@ -314,6 +316,11 @@ void free_all_pices(){
 		}
 	}
 
+	int num;
+	for (num = 0; num < 2; num++){
+		my_sdl_free(GuiBData.getMove[num]);
+		GuiBData.getMove[num] = NULL;
+	}
 	for (btnNum = 0; btnNum < 2; btnNum++){
 		my_sdl_free (GuiBData.set_error[btnNum]);
 		GuiBData.set_error[btnNum] = NULL;
@@ -330,6 +337,15 @@ void free_all_pices(){
 
 	my_sdl_free(GuiBData.set_ok.img);
 	GuiBData.set_ok.img = NULL;
+
+	my_sdl_free(GuiBData.surface);
+	GuiBData.surface = NULL;
+
+	for (btnNum = 0; btnNum < 6; btnNum++){
+		my_sdl_free(GuiBData.Diff_btn[btnNum].img);
+		GuiBData.Diff_btn[btnNum].img = NULL;
+	}
+
 }
 
 int load_all_pices(){
@@ -376,6 +392,7 @@ int load_all_pices(){
 		}
 	}
 
+
 	char* pathStart = "./images/popupsAndButtons/%s.bmp";
 	char path[200];
 	sprintf(path, pathStart, "Check");
@@ -390,6 +407,13 @@ int load_all_pices(){
 	GuiBData.sideBar[4] = loadImage(path);
 	sprintf(path, pathStart, "computerPlaying");
 	GuiBData.sideBar[5] = loadImage(path);
+	sprintf(path, pathStart, "ChooseDifficulty");
+	GuiBData.getMove[0] = loadImage(path);
+	sprintf(path, pathStart, "pleaseWait");
+	GuiBData.getMove[1] = loadImage(path);
+
+	create_best_move_pp_btn();
+
 
 	return 1;
 }
@@ -433,6 +457,17 @@ int createButtens(){
 	return 1;
 }
 
+void create_best_move_pp_btn(){
+	int btnNum;
+	char path[200];
+	for (btnNum = 0; btnNum < 5; btnNum++){
+		sprintf(path, "./images/popupsAndButtons/slot%d_btn.bmp",btnNum);
+		GuiBData.Diff_btn[btnNum] = createButton(path, btnNum, 45, 40,115 + btnNum*80,270 );
+
+	}
+	sprintf(path, "./images/popupsAndButtons/slot%d_btn.bmp", 5);
+	GuiBData.Diff_btn[5] = createButton(path, btnNum, 115, 30,242,350 );
+}
 
 SDL_Surface* getPiceImage(int x, int y, int isColored){ //x,y are GUI base
 	//return the img to pring at (x,y)
@@ -735,6 +770,24 @@ int print_comp_turn(int is_comp_turn){
 
 }
 
+int print_please_wait(){
+	//ret 0 if error, 1 SABABA
+	// print comp turn message
+	SDL_Rect rDest = { 620, 220, 160, 180 };
+	SDL_Rect rOrigin = { 0, 0, 160, 180 };
+	SDL_Surface* image;
+
+	image = GuiBData.getMove[1];
+
+
+
+	if (!addImageToSurface(image, &rOrigin, GuiBData.surface, &rDest)){
+		return 0;
+	}
+	return 1;
+
+}
+
 int printSetError(){
 	//print  setting error
 	SDL_Rect rOrigin = { 0, 0, 400, 200 };
@@ -750,10 +803,26 @@ int printSetError(){
 	return 1;
 }
 
+int printDiffPP(){
+	SDL_Rect rOrigin = { 0, 0, 400, 200 };
+	SDL_Rect rDest = { 100, 200, 400, 200 };
+	if (!addImageToSurface(GuiBData.getMove[0], &rOrigin, GuiBData.surface, &rDest)){
+		return 0;
+	}
+
+	if (!addButtons(GuiBData.Diff_btn, 6, GuiBData.surface)){
+		return 0;
+	}
+	return 1;
+}
+
 
 //event hendlers for different states
 int eventHendelPage0(SDL_Event e){
 	// 0 error, 1 sababa
+	createBoard();
+	updateSurface(GuiBData.surface);
+
 	GuiBData.moveToDo.origin = whichSquerWasClicked(e);
 	if (isSameColorAsMe(GuiBData.moveToDo.origin, game_board.isBlackTurn)){
 		moveList* moves = getValidMovesForLocation(GuiBData.moveToDo.origin, 0);
@@ -761,16 +830,16 @@ int eventHendelPage0(SDL_Event e){
 			return 0;
 			//return ERROR;
 		}
-		if (!colorSquers(moves, GuiBData.moveToDo.origin)){
-			freeAllMoveList(moves);
-			return 0;
-		}
+if (!colorSquers(moves, GuiBData.moveToDo.origin)){
+	freeAllMoveList(moves);
+	return 0;
+}
 
-		if (!isEmptyMoveList(moves)){
-			GuiBData.pageID = 1;
+if (!isEmptyMoveList(moves)){
+	GuiBData.pageID = 1;
 
-		}
-		freeAllMoveList(moves);
+}
+freeAllMoveList(moves);
 	}
 	return 1;
 }
@@ -848,7 +917,23 @@ int eventHendelPage3(SDL_Event e){
 	}
 
 	return 0;
-	
+
+}
+
+int eventHendelPage4(SDL_Event e){
+	int btnNum;
+	int isClicked;
+	for (btnNum = 0; btnNum < 6; btnNum++){
+		if (isClickInRect(e, GuiBData.Diff_btn[btnNum].buttonsDestRect)){
+			isClicked = 1;
+			break;
+		}
+	}
+	if (isClicked){		
+		GuiBData.minmaxDepth = btnNum < 4 ? btnNum + 1 : 3 - btnNum;
+		return 1;
+	}
+	return 0;
 }
 
 int eventHendelPage5(SDL_Event e){
@@ -1024,10 +1109,10 @@ int pageID3(){
 	SDL_Rect rDest = { 100, 200, 400, 200 };
 
 	if (!addImageToSurface(promotionScreen, &rOrigin, GuiBData.surface, &rDest)){
-		SDL_FreeSurface(promotionScreen);
+		my_sdl_free(promotionScreen);
 		return 0;
 	}
-	SDL_FreeSurface(promotionScreen);
+	my_sdl_free(promotionScreen);
 
 	if (!updateSurface(GuiBData.surface)){
 		return 0;
@@ -1047,13 +1132,43 @@ int pageID3(){
 
 int pageID4(){
 	//return: 0 error, 1 sababa
-	createBoard(GuiBData.surface);
 
-	moveList bestMove =  GuiGetBestMove();
-	bestMove.next = NULL;
-	colorSquers(&bestMove, bestMove.origin);
-	if (!updateSurface(GuiBData.surface)){
-		return 0;
+
+	if (settings.gameMode == PLAYER_VS_AI){
+		GuiBData.minmaxDepth = settings.minmax_depth;
+	}
+	else{
+		if (!printDiffPP()){
+			return 0;
+		}
+		handleBoardEvents();
+	}
+	if (GuiBData.minmaxDepth != -2){
+
+		if (!print_please_wait()){
+			return 0;
+		}
+
+		createBoard(GuiBData.surface);
+
+		if (!updateSurface(GuiBData.surface)){
+			return 0;
+		}
+
+		moveList bestMove = GuiGetBestMove(GuiBData.minmaxDepth);
+		bestMove.next = NULL;
+		colorSquers(&bestMove, bestMove.origin);
+		if (!updateSurface(GuiBData.surface)){
+			return 0;
+		}
+	}
+	else{
+		createBoard(GuiBData.surface);
+
+		if (!updateSurface(GuiBData.surface)){
+			return 0;
+		}
+
 	}
 	GuiBData.pageID = 0;
 	return 1;

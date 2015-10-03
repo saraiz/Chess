@@ -31,7 +31,7 @@ typedef struct {
 	1- user need to chose where to move,
 	2- computer turn
 	3- PP promotion
-	4- best moves
+	4- PP best moves
 	5- PP save
 
 	6- set: select place
@@ -46,6 +46,7 @@ typedef struct {
 	locationNode wasClicked;
 	char toSet;
 	int set_which_error_to_print; //0 after set, 1 after start
+	int minmaxDepth; //-2=cancel, else = depth
 
 	SDL_Surface *surface;
 	SDL_Surface* picess[6][2][2][2]; // [b/k/m/n/q/r][pice color b/w][bkg color b/w][isColored]
@@ -53,12 +54,14 @@ typedef struct {
 	SDL_Surface* sideBar[6]; //check, tie, mate b, mate w, empty, comp turn
 	SDL_Surface* set_popup;
 	SDL_Surface* set_error[2]; // error0, error1
+	SDL_Surface* getMove[2]; //popup, banner
 
 	Button boardBtn[4]; // main menu, get best move, save game, quit
 	Button set_side_btn[3]; //next,clear, cancel
 	Button set_popup_pices[6][2]; //[b/k/m/n/q/r][pice color b/w]
 	Button set_popup_btn[2]; //cancel, remove
 	Button set_ok;
+	Button Diff_btn[6]; //cancel, 1,2,3,4,best
 
 }GuiBoardData;
 
@@ -67,12 +70,13 @@ SDL_Surface* getPiceImage(int x, int y, int isColored);
 int Mate_Tie_Check();
 int isPromotion(moveList moveToDo);
 int do_usr_move();
-int StartGame();
-int startSet();
 int startGame();
 char get_pice_char_from_set_btn_id(int btnID);
 void rmAll();
 void clear_My_screen();
+int startSet();
+
+
 
 int load_all_pices();
 void free_all_pices();
@@ -87,12 +91,18 @@ int print_comp_turn(int is_comp_turn);
 int create_set_side();
 int create_set_popup();
 int print_set_popup();
+int load_set_popup();
+int print_please_wait();
+void create_best_move_pp_btn();
+int printDiffPP();
+
 
 int handleBoardEvents();
 int handleBoardButtonClicked(SDL_Event e);
 int eventHendelPage0(SDL_Event e);
 int eventHendelPage1(SDL_Event e);
 int eventHendelPage3(SDL_Event e);
+int eventHendelPage4(SDL_Event e);
 int eventHendelPage5(SDL_Event e);
 int eventHendelPage6(SDL_Event e);
 int eventHendelPage7(SDL_Event e);
@@ -110,7 +120,5 @@ int pageID6();
 int pageID7();
 int pageID8();
 int pageIDMinus1();
-
-int load_set_popup();
 
 #endif

@@ -780,13 +780,13 @@ void computerTurn(int isToPrint){
 /*
 	check what is the best moves for the currnt user - used only for GUI
 */
-moveList GuiGetBestMove(){
+moveList GuiGetBestMove(int depth){
 	moveList emptyMove;
 	emptyMove.destination = createLocationNode(-1, -1);
 	emptyMove.soldierToPromoteTo = EMPTY;
 	emptyMove.next = NULL;
 
-	int depth = settings.minmax_depth;
+
 	if (depth == BEST){
 		depth = getBestDepth();
 	}
