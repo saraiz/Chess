@@ -2,7 +2,7 @@
 
 #include "Chess.h"
 
-int countAlloc = 0;
+//int countAlloc = 0;
 
 void getInput(char** inputPointer){
 	char* input = *inputPointer;
@@ -260,7 +260,6 @@ void clearBoard(){
 
 void* myCalloc(int x, int y){
 	void* alloc = calloc(x, y);
-	countAlloc++; //TODO delete
 	return alloc;
 }
 
@@ -269,7 +268,6 @@ void* myMalloc(int x){
 }
 
 void myFree(void* tofree){
-	countAlloc--; //TODO delete
 	free(tofree);
 }
 

@@ -1,6 +1,5 @@
 #include "guiUtils.h"
 
-int countSurface = 0;//TODO delete
 
 int addImageToSurface(SDL_Surface *img, SDL_Rect *rOrigin, SDL_Surface *dest, SDL_Rect *rDest){
 	int isSuccess = 1;
@@ -19,8 +18,6 @@ SDL_Surface* loadImage(char* url){
 		printf("ERROR: failed to set video mode: %s\n", SDL_GetError());
 	}
 
-	countSurface++;//TODO delete
-	//printf("in %d path %s\n", img, url);
 
 	return img;
 }
@@ -31,8 +28,6 @@ SDL_Surface* createSurface(int width, int height){
 		printf("ERROR: failed to set video mode: %s\n", SDL_GetError());
 	}
 
-	countSurface++;//TODO delete
-	//printf("in %d create surface\n", surface);
 
 	return surface;
 }
@@ -149,8 +144,7 @@ locationNode whichSquerWasClicked(SDL_Event e){
 
 void my_sdl_free(SDL_Surface* toFree){
 	if (toFree != NULL){
-		//printf("free %d\n", toFree);
 		SDL_FreeSurface(toFree);
-		countSurface--;//TODO delete
+
 	}
 }
