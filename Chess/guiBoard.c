@@ -28,7 +28,7 @@ int startGame(){
 	int isPVC = settings.gameMode == PLAYER_VS_AI;
 	int isCompFirst = settings.isUserBlack != game_board.isBlackTurn;
 	GuiBData.pageID = isPVC &&  isCompFirst ? 2 : 0;
-	while (!GuiBData.main_quit){ 
+	while (!GuiBData.main_quit){ // main loop
 		//printf("%d\n", GuiBData.pageID);
 		switch (GuiBData.pageID)
 			/*
@@ -100,7 +100,7 @@ int startSet(){
 	createBoard();
 	load_set_popup();
 
-	while (!GuiBData.set_quit){
+	while (!GuiBData.set_quit){ //main loop
 		//printf("%d\n", GuiBData.pageID);
 		switch (GuiBData.pageID){
 			/*	6- set: select place
@@ -139,14 +139,14 @@ int handleBoardEvents(){
 			case (SDL_KEYUP) :
 				//if (e.key.keysym.sym == SDLK_ESCAPE) quit = 1;
 				break;
-			case (SDL_MOUSEBUTTONUP) :
+			case (SDL_MOUSEBUTTONUP) : //click
 				if (GuiBData.pageID < 6){
-					if (!handleBoardButtonClicked(e)){
+					if (!handleBoardButtonClicked(e)){ //plaing mood
 						return 0;
 					}
 				}
 				else {
-					if (!handleSetButtonClicked(e)){
+					if (!handleSetButtonClicked(e)){ //setting mode
 						return 0;
 					}
 				}
@@ -163,6 +163,7 @@ int handleBoardButtonClicked(SDL_Event e){
 	//return 0 erroe, 1 sababa
 	//play board click event hendler
 	if (e.button.x > 75 * BOARD_SIZE && GuiBData.pageID != 3 && GuiBData.pageID != 5){
+		//user pressed outside board
 		int i,btnID = -1;
 		for (i = 0; i < 4; i++){
 			if (isClickInRect(e, GuiBData.boardBtn[i].buttonsDestRect)){
@@ -199,6 +200,7 @@ int handleBoardButtonClicked(SDL_Event e){
 		}
 	}
 	else {
+		// user pressed board
 		switch (GuiBData.pageID)
 			//board presses
 		{
@@ -275,6 +277,7 @@ int handleSetButtonClicked(SDL_Event e){
 
 
 void free_all_pices(){
+	//free everything
 	int pice, color, bkg, isColored ; 
 	for (pice = 0; pice < 6; pice++){
 		for (color = 0; color < 2; color++){
@@ -349,6 +352,7 @@ void free_all_pices(){
 }
 
 int load_all_pices(){
+	//load everyting
 	//ret: 0 error, else 1
 	int pice, color, bkg, isColored;
 	for (pice = 0; pice < 6; pice++){
@@ -419,6 +423,7 @@ int load_all_pices(){
 }
  
 int load_set_popup(){
+	//load set popup btns
 	int btnID;
 	for (btnID = 0; btnID < 2; btnID++){
 		char path[500];
@@ -441,6 +446,7 @@ int load_set_popup(){
 }
 
 int createButtens(){
+	//create sidebar btn
 	//return 0 error, 1 sababa
 	int btnNum;
 	int startY = 30;
@@ -469,8 +475,10 @@ void create_best_move_pp_btn(){
 	GuiBData.Diff_btn[5] = createButton(path, btnNum, 115, 30,242,350 );
 }
 
-SDL_Surface* getPiceImage(int x, int y, int isColored){ //x,y are GUI base
+SDL_Surface* getPiceImage(int x, int y, int isColored){ 
+	//x,y are GUI base
 	//return the img to pring at (x,y)
+
 	int bkg = x % 2 == y % 2 ? GUI_white : GUI_black;
 	char pice = getPice(createLocationNode( x, BOARD_SIZE-1-y));
 	if (pice == EMPTY){
@@ -508,6 +516,7 @@ SDL_Surface* getPiceImage(int x, int y, int isColored){ //x,y are GUI base
 }
 
 char get_pice_char_from_set_btn_id(int btnID){
+	//return char of pice represented in btn
 	int isBlack = btnID > 5 ? 0 : 1;
 	if (!isBlack){
 		btnID = btnID - 6;
@@ -592,7 +601,7 @@ int do_usr_move(){
 }
 
 void rmAll(){
-	//clear all
+	//clear all picess on board
 	int i;
 	for (i = 0; i < BOARD_SIZE; i++){
 		int j;
@@ -605,7 +614,7 @@ void rmAll(){
 
 
 int createBoard(){ //0 if fail, 1 if ok
-	//print board
+	//print board to screen
 	SDL_Rect rOrigin = { 0, 0, 75, 75 };
 	SDL_Rect rDest = { 0, 0, 75, 75 };
 	int x;
@@ -624,7 +633,7 @@ int createBoard(){ //0 if fail, 1 if ok
 }
 
 int createSave(){
-	//print popup save
+	//print save popup 
 	// 0 eroor, 1 sabba
 	SDL_Surface* img = loadImage("./images/popupsAndButtons/saveGame.bmp");
 	SDL_Rect rOrigin = { 0, 0, 400, 200 };
@@ -639,7 +648,7 @@ int createSave(){
 }
 
 void clear_My_screen(){
-	//delete all
+	//delete everyting on screen
 	SDL_Rect rect = { 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT };
 	if (SDL_FillRect(GuiBData.surface, &rect, SDL_MapRGB(GuiBData.surface->format, 244, 208, 159)) != 0) {
 		printf("ERROR: failed to draw rect: %s\n", SDL_GetError());
@@ -654,7 +663,7 @@ void clear_My_screen(){
 }
 
 int create_set_side(){
-	//sde bar is set status
+	//print set side bar
 	int btnNum;
 	int startY = 30;
 
@@ -684,6 +693,7 @@ int print_set_popup(){
 }
 
 int colorASquere(locationNode loc){
+	//add yellow rect arrornd a squere
 	//x,y are gui base
 	//return 0 if error, 1 sababa
 	int x = loc.column * 75;
@@ -700,7 +710,7 @@ int colorASquere(locationNode loc){
 }
 
 int colorSquers(moveList* move,locationNode origin){
-	//add yellow rect
+	//add yellow rect to evety move->dest and origin
 	//ret 0 error, 1 sababa
 	if (!isEmptyMoveList(move)){
 		moveList* cur = move;
@@ -722,7 +732,7 @@ int colorSquers(moveList* move,locationNode origin){
 int print_side_bar(int Mate_Tie_Check){
 	//ret 0 if error, 1 SABABA
 	// Mate_Tie_Check = 0 noting, 1 mate, 2 cheack, 3 tie
-	//print side bar during game
+	//print Mate_Tie_Check banner
 	SDL_Rect rDest= {620 ,416 , 160, 180 };
 	SDL_Rect rOrigin = { 0, 0, 160, 180 };
 	SDL_Surface* image;
@@ -751,7 +761,7 @@ int print_side_bar(int Mate_Tie_Check){
 
 int print_comp_turn(int is_comp_turn){
 	//ret 0 if error, 1 SABABA
-	// print comp turn message
+	// print or delete comp turn banner
 	SDL_Rect rDest = { 620, 220, 160, 180 };
 	SDL_Rect rOrigin = { 0, 0, 160, 180 };
 	SDL_Surface* image;
@@ -772,7 +782,7 @@ int print_comp_turn(int is_comp_turn){
 
 int print_please_wait(){
 	//ret 0 if error, 1 SABABA
-	// print comp turn message
+	// print please wait for get moves
 	SDL_Rect rDest = { 620, 220, 160, 180 };
 	SDL_Rect rOrigin = { 0, 0, 160, 180 };
 	SDL_Surface* image;
@@ -789,7 +799,7 @@ int print_please_wait(){
 }
 
 int printSetError(){
-	//print  setting error
+	//print  setting error- invalid board
 	SDL_Rect rOrigin = { 0, 0, 400, 200 };
 	SDL_Rect rDest = { 100, 200, 400, 200 };
 	if (!addImageToSurface(GuiBData.set_error[GuiBData.set_which_error_to_print], &rOrigin, GuiBData.surface, &rDest)){
@@ -804,6 +814,7 @@ int printSetError(){
 }
 
 int printDiffPP(){
+	//print diffuclty popup for get moves
 	SDL_Rect rOrigin = { 0, 0, 400, 200 };
 	SDL_Rect rDest = { 100, 200, 400, 200 };
 	if (!addImageToSurface(GuiBData.getMove[0], &rOrigin, GuiBData.surface, &rDest)){
@@ -922,7 +933,7 @@ int eventHendelPage3(SDL_Event e){
 
 int eventHendelPage4(SDL_Event e){
 	int btnNum;
-	int isClicked;
+	int isClicked=0;
 	for (btnNum = 0; btnNum < 6; btnNum++){
 		if (isClickInRect(e, GuiBData.Diff_btn[btnNum].buttonsDestRect)){
 			isClicked = 1;
