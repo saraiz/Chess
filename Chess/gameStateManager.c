@@ -6,7 +6,7 @@ actionSummery readGameActions(){
 	int isError = 0;
 	actionSummery summery = createEmptySummery();
 
-	char* input = (char*)myCalloc(sizeof(char), 50);
+	char* input = (char*)myCalloc(sizeof(char), 500);
 	if (input == NULL){
 		summery.isError = 1;
 		strcpy(summery.failedFunc, "calloc");

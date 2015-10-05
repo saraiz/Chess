@@ -3,7 +3,7 @@
 actionSummery readSettings(){
 	actionSummery summery = createEmptySummery();
 
-	char *input = myMalloc(sizeof(char) * 50);
+	char *input = myMalloc(sizeof(char) * 500);
 	if (input == NULL){
 		summery.isError = 1;
 		strcpy(summery.failedFunc, "malloc");
