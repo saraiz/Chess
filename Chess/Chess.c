@@ -10,15 +10,14 @@
 gameSettings settings = { 1, COLOR_WHITE, 0, 0, TWO_PLAYERS };
 gameBoard game_board = { 0, 0, 0, 0, 0 };
 
-extern int countAlloc;
-extern int countSurface;
+
 
 int main(int argc, char* argv[])
 {
 
 	// If you run your code in nova you should put this lines in comment
-	argc = 2;
-	argv[1] = "gui";
+	//argc = 2;
+	//argv[1] = "gui";
 	////////////////////////////////////////////////////////////////////
 
 	init_board(game_board.board);
@@ -57,9 +56,6 @@ void handleConsole(){
 		}
 	}
 
-	int extern countAlloc;//TODO delete
-	printf("%d", countAlloc);//TODO delete
-	//getchar(); //TODO delete
 }
 
 
@@ -71,7 +67,5 @@ void handleGUI(){
 	atexit(SDL_Quit);
 
 	buildSettingsWindow();
-
-	printf("surface %d", countSurface);//TODO delete
-	//getchar();	
+	
 }
