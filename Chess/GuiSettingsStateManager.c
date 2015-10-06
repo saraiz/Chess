@@ -348,6 +348,8 @@ int handleButtonClicked_mainMenu(SDL_Event e){
 				quit = 1;
 				break;
 			}
+
+			break;
 		}
 	}
 
@@ -430,6 +432,8 @@ int handleButtonClicked_selectionWindow(SDL_Event e){
 				}
 				break;
 			}
+
+			break;
 		}
 	}
 
@@ -491,6 +495,7 @@ int handleButtonClicked_loadFromSlotWindow(SDL_Event e){
 					break;
 				}
 			}
+			break;
 		}
 	}
 
@@ -561,6 +566,8 @@ int handleButtonClicked_aiSettingsWindow(SDL_Event e){
 					break;
 				}
 			}
+
+			break;
 		}
 	}
 
